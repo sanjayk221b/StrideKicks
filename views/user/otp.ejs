@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>OTP Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-dark">
+
+    <div class="container mt-5 ">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="card ">
+                    <div class="card-body ">
+                        <h3 class="card-title text-center">Enter OTP</h3>
+                        <p class="card-text text-center">Check your email for the OTP code.</p>
+
+                        <form id="otpForm" method="post" novalidate="novalidate">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <input type="hidden" name="email" value="<%= email %>">
+                                    <input type="text" class="form-control text-center" name="one" maxlength="1" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control text-center" name="two" maxlength="1" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control text-center" name="three" maxlength="1" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control text-center" name="four" maxlength="1" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row justify-content-center">
+                                <div class="form-group col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                                </div>
+                            </div>
+                            <p class="card-text text-center"> Didn't receive ? <a class="text-danger" href="#" id="resendLink">Resend OTP</a></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // You can add your JavaScript logic here
+        document.getElementById('resendLink').addEventListener('click', function (event) {
+            event.preventDefault();
+            // Add logic to resend OTP
+            alert('Resending OTP...');
+        });
+    </script>
+</body>
+
+</html>

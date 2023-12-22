@@ -1,0 +1,241 @@
+<%- include('../layout/adminLayouts/header') -%>
+
+
+    <body>
+        <div class="container-fluid position-relative d-flex p-0">
+            <!-- Spinner Start -->
+            <div id="spinner"
+                class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <!-- Spinner End -->
+
+
+            <!-- Sidebar Start -->
+            <div class="sidebar pe-4 pb-3">
+                <nav class="navbar bg-secondary navbar-dark">
+                    <a href="#" class="navbar-brand mx-4 mb-3">
+                        <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i></h3>
+                    </a>
+                    <div class="d-flex align-items-center ms-4 mb-4">
+                        <div class="position-relative">
+                            <img class="rounded-circle" src="/adminAssets/img/user.jpg" alt=""
+                                style="width: 40px; height: 40px;">
+                            <div
+                                class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="mb-0">Jhon Doe</h6>
+                            <span>Admin</span>
+                        </div>
+                    </div>
+                    <div class="navbar-nav w-100">
+                        <a href="/admin" class="nav-item nav-link "><i
+                                class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                        <a href="/admin/users" class="nav-item nav-link "><i class="fa fa-keyboard me-2"></i>Users</a>
+                        <a href="/admin/products" class="nav-item nav-link "><i
+                                class="fa fa-keyboard me-2"></i>Products</a>
+                        <a href="/admin/categories" class="nav-item nav-link active"><i
+                                class="fa fa-keyboard me-2"></i>Categories</a>
+                        <!-- <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>category</a> -->
+                        <!-- <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>products</a> -->
+                    </div>
+                </nav>
+            </div>
+            <!-- Sidebar End -->
+
+
+            <!-- Content Start -->
+            <div class="content">
+                <!-- Navbar Start -->
+                <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                    <a href="/admin" class="navbar-brand d-flex d-lg-none me-4">
+                        <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+                    </a>
+                    <a href="#" class="sidebar-toggler flex-shrink-0">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                    <form class="d-none d-md-flex ms-4">
+                        <input class="form-control bg-dark border-0" id="navbar-search" type="search" placeholder="Search">
+                    </form>
+                    <div class="navbar-nav align-items-center ms-auto ">
+                        <div class="nav-item dropdown me-3">
+                            <a href="/admin/addCategories" class="nav-link">
+                                <i class="fa fa-envelope me-lg-2"></i>
+                                <span class="d-none d-lg-inline-flex">Add Category </span>
+                            </a>
+
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
+                                    style="width: 40px; height: 40px;">
+                                <span class="d-none d-lg-inline-flex">John Doe</span>
+                            </a>
+                            <div
+                                class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                                <a href="#" class="dropdown-item">My Profile</a>
+                                <a href="#" class="dropdown-item">Settings</a>
+                                <a href="/admin/login" class="dropdown-item">Log Out</a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <!-- Navbar End -->
+
+
+                <!-- Table Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="col-12">
+        <div class="bg-secondary rounded h-100 p-4">
+            <h6 class="mb-4">Categories</h6>
+            <div class="table-responsive ">
+                <table class="table" id="myDataTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Delete</th> <!-- Added Delete button -->
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(categories.length > 0) { %>
+                            <% for (let i = 0; i < categories.length; i++) { %>
+                                <tr>
+                                    <td>
+                                        <%= i + 1 %>
+                                    </td>
+
+                                    <td>
+                                        <%= categories[i].name %>
+                                    </td>
+
+                                    <td>
+                                        <%= categories[i].description %>
+                                    </td>
+
+                                    <td>
+                                        <span id="status_<%=categories[i]._id%>" class="status-badge">
+                                            <% if(categories[i].isListed) { %>
+                                                <span class="badge rounded-pill alert-success">Listed</span>
+                                            <% } else { %>
+                                                <span class="badge rounded-pill alert-warning">Unlisted</span>
+                                            <% } %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/admin/editCategories?categoryId=<%= categories[i]._id %>">
+                                            <button class="btn btn-outline-primary" type="submit">Edit</button>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-outline-danger" onclick="deleteCategory('<%= categories[i]._id %>')">Delete</button>
+                                    </td>
+                                    <td>
+                                        <button class="btn category-status <%= categories[i].isListed ? 'btn-success' : 'btn-danger' %>"
+                                            data-category-id="<%= categories[i]._id %>"
+                                            data-current-status="<%= categories[i].isListed ? 'Unlisted' : 'Listed' %>">
+                                            <% if(categories[i].isListed) { %>
+                                                Unlist
+                                            <% } else { %>
+                                                List
+                                            <% } %>
+                                        </button>
+                                    </td>
+
+                                </tr>
+                            <% } %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7">Category Not Found</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Table End -->
+
+                <%- include('../layout/adminLayouts/footer') -%>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            document.querySelectorAll('.category-status').forEach(function (button) {
+                                button.addEventListener('click', function () {
+                                    const categoryId = this.getAttribute('data-category-id');
+                                    const currentStatus = this.getAttribute('data-current-status');
+                                    const newStatus = (currentStatus === 'Unlisted') ? 'Listed' : 'Unlisted';
+
+                                    // console.log('Button clicked for category ID:', categoryId);
+                                    // console.log('Current status:', currentStatus);
+                                    // console.log('New status:', newStatus);
+
+                                    updateCategoryStatus(categoryId, newStatus);
+                                });
+                            });
+                        });
+
+                        function updateCategoryStatus(categoryId, action) {
+                            console.log('Updating category status for category ID:', categoryId, 'Action:', action);
+
+                            fetch(`/admin/categories/${action}/${categoryId}`, {
+                                method: 'POST'
+                            })
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    console.log('Server response:', data);
+
+                                    // Update the UI
+                                    const statusElement = document.getElementById(`status_${categoryId}`);
+                                    const button = document.querySelector(`.category-status[data-category-id="${categoryId}"]`);
+
+                                    if (data.categories.isListed) {
+                                        statusElement.innerHTML = '<span class="badge rounded-pill alert-warning">Unlisted</span>';
+                                        button.innerText = 'Unlist';
+                                        button.classList.remove('btn-danger');
+                                        button.classList.add('btn-success');
+                                    } else {
+                                        statusElement.innerHTML = '<span class="badge rounded-pill alert-success">Listed</span>';
+                                        button.innerText = 'List';
+                                        button.classList.remove('btn-success');
+                                        button.classList.add('btn-danger');
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log("Error:", error);
+                                });
+                        }
+
+
+
+
+
+
+                         // Search jQuery for the table and navbar
+                         $(document).ready(function () {
+                            // When the user types in either search box
+                            $("#navbar-search, #name-search").on("keyup", function () {
+                                var searchText = $(this).val().toLowerCase();
+
+                                // Loop through each table row
+                                $("table tbody tr").each(function () {
+                                    var productName = $(this).find("td:eq(1)").text().toLowerCase(); // Get the product name in lowercase
+
+                                    // If the product name contains the search text, show the row; otherwise, hide it
+                                    if (productName.includes(searchText)) {
+                                        $(this).show();
+                                    } else {
+                                        $(this).hide();
+                                    }
+                                });
+                            });
+                        });
+                    </script>
