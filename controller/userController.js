@@ -185,9 +185,7 @@ const loadRegister = async (req, res) => {
 //load Shop
 const loadShop = async (req, res) => {
     try {
-       
-
-
+        const userData = await User.findOne({ _id: req.session.userId });
         const categoryId = req.query.categoryId
         if (categoryId) {
             data = await Products.find({ isListed: true, category: categoryId })
@@ -197,7 +195,7 @@ const loadShop = async (req, res) => {
 
         const categoryData = await Categories.find({ isListed: true })
 
-        res.render('shop', { products: data, categories: categoryData })
+        res.render('shop', { products: data, categories: categoryData, user: userData })
 
     } catch (error) {
         console.log(error);
@@ -210,7 +208,7 @@ const loadProductDetails = async (req, res) => {
         const id = req.query.id
         const userData = await User.findOne({ _id: req.session.userId });
         const products = await Products.findOne({ _id: id })
-        res.render('productDetails', { products: products, user: userData })  
+        res.render('productDetails', { products: products, user: userData })
     } catch (error) {
         console.log(error)
     }
