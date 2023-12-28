@@ -10,7 +10,7 @@ const session = require('express-session')
 const flash = require('express-flash')
 
 
-
+         
 //Database connection
 mongoose.connect(process.env.MONGO_URI);
 
@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 8080
 
 //middleware        
 app.use(express.json());     
-app.use(express.urlencoded({ extended: true }));                                     
+app.use(express.urlencoded({ extended: true }));                                            
                   
 //session
 app.use(session({
@@ -35,9 +35,9 @@ app.use((req, res, next) => {
     res.setHeader("Expires", "0");
     next()
 });                   
-          
+               
 app.use(flash())
- 
+  
      
 //load UserAssets        
 app.use(express.static(path.resolve(__dirname, 'public')))     
@@ -48,10 +48,10 @@ app.use('/js', express.static(path.resolve(__dirname, 'public/userAssets/js')));
    
 //load routers          
 app.use('/', userRouter);
-app.use('/admin', adminRouter);     
+app.use('/admin', adminRouter);      
    
        
 
 app.listen(PORT, () => {     
     console.log(`Server is listening at http://localhost:${PORT}/`);
-})                                                            
+})                                                                     

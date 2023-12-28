@@ -40,6 +40,7 @@ const isLogout = async (req, res, next) => {
 
 const checkBlocked = async (req, res, next) => {
     const userId = req.session.userId;
+    console.log(userId);
 
     if (userId) {
         try {
@@ -51,7 +52,6 @@ const checkBlocked = async (req, res, next) => {
             console.log(error);
         }
     }
-    // Call next to pass control to the next middleware in the stack
     next();
 };
 

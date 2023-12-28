@@ -17,7 +17,7 @@ const verifyRegister = async (req, res) => {
         // Check if email already exists
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
-            return res.status(400).render('register',{message:'Email is already registered'})
+            return res.status(400).render('register', { message: 'Email is already registered' })
         }
 
         if (password !== confirmPassword) {
@@ -74,7 +74,7 @@ const sendOtpVerification = async ({ email }, res) => {
                 </div>
                 <p>This OTP is valid for a short period. Do not share it with anyone.</p>
                 <p>If you did not request this verification, please ignore this email.</p>
-                <P style="color: #007BFF;">From Vogue Vista </p>
+                <P style="color: #007BFF;"></p>
             </div>
         `,
         }
@@ -89,6 +89,10 @@ const sendOtpVerification = async ({ email }, res) => {
         //save otp record
         await newOtpVerification.save();
         await transporter.sendMail(mailOptions);
+        console.log('resend comment',email);
+        setTimeout(async () => {
+            await newOtpVerification.deleteOne({ email: email })
+        }, 20000)
         res.redirect(`/otp?email=${email}`)
     } catch (error) {
         console.log(error.message);
@@ -106,7 +110,7 @@ const verifyOtp = async (req, res) => {
 
 
     if (!user) {
-        res.render('otp', { message: 'otp expired' })
+        res.render('otp', { message: 'otp expired',email:email })
         return;
     }
     const { otp: hashedOtp } = user;
@@ -126,6 +130,21 @@ const verifyOtp = async (req, res) => {
         // res.render('otp', { email: email, message: 'otp is incorrect' })
         req.flash('message', 'Incorrect OTP');
         res.redirect(`/otp?email=${email}`)
+    }
+}
+
+const resendOtp = async (req, res) => {
+    try {
+        console.log('resendId :', req.body);
+        const email = req.body.email
+        console.log("ivda ethi");
+
+        // console.log(user);
+        // Resend OTP Verification mail
+        await sendOtpVerification({ email }, res);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' })
     }
 }
 
@@ -251,5 +270,6 @@ module.exports = {
     verifyLogin,
     loadShop,
     loadProductDetails,
-    logoutUser
+    logoutUser,
+    resendOtp
 }

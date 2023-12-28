@@ -17,12 +17,14 @@ userRouter.post("/register", userController.verifyRegister)
 userRouter.get("/otp", auth.isLogout, userController.loadOtp)
 userRouter.post("/otp", userController.verifyOtp)
 
+userRouter.post('/admin/resendOtp', auth.isLogout, userController.resendOtp);
+
 userRouter.get("/login", auth.isLogout, userController.loadLogin)
 userRouter.post("/login", userController.verifyLogin)
 
 userRouter.get("/logout", auth.isLogin, userController.logoutUser)
 
-userRouter.get('/shop', auth.isLogin, userController.loadShop)
+userRouter.get('/shop', auth.checkBlocked, userController.loadShop)
 
 userRouter.get('/productDetails', auth.isLogin, userController.loadProductDetails)
 

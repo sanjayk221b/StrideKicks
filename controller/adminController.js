@@ -47,7 +47,7 @@ const updateUserStatus = async (req, res) => {
 
             if(sessionId === userId) {
                 req.session.destroy();
-                return res.redirect('/login');
+                return res.redirect('/');
             }
         }
 

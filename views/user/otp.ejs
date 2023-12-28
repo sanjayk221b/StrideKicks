@@ -37,11 +37,17 @@
 
                             <div class="form-row justify-content-center">
                                 <div class="form-group col-md-6">
-                                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                                    <% if( messages.message ) { %>
+                                        <p style="color: red;">
+                                            <%=messages.message %>
+                                        </p>
+                                        <%}%>
+                                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <p class="card-text text-center"> Didn't receive ? <a class="text-danger" href="#" id="resendLink">Resend OTP</a></p>
-                        </form>
+                                <div id="otp-timer" class="text-center"></div>
+                                <p class="card-text text-center"> Didn't receive ? <a class="text-danger"  id="resendLink">Resend OTP</a></p>
+                            </form>
                     </div>
                 </div>
             </div>
@@ -53,43 +59,77 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const timerElement = document.getElementById("otp-timer");
-            let countdown = 120; // Set the initial countdown time in seconds
+    <script>
+   function getQueryParam(paramName) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(paramName);
+}
 
-            function updateTimerDisplay() {
-                timerElement.textContent = `Resend OTP in ${countdown} seconds`;
+document.addEventListener("DOMContentLoaded", function () {
+    const timerElement = document.getElementById("otp-timer");
+    const resendButton = document.getElementById("resendLink");
+    let countdown = 20; // Set the initial countdown time in seconds
+
+    // Get the email from the URL parameters
+    const email = getQueryParam('email');
+
+    function updateTimerDisplay() {
+        timerElement.textContent = `Resend OTP in ${countdown} seconds`;
+    }
+
+    function startTimer() {
+        updateTimerDisplay();
+        const timerInterval = setInterval(function () {
+            countdown--;
+            updateTimerDisplay();
+            if (countdown <= 0) {
+                clearInterval(timerInterval);
+                timerElement.textContent = "Resend OTP";
+                // Enable Resend OTP button
+                resendButton.classList.remove("disabled");
+                // Update the click event listener for Resend OTP
+                resendButton.addEventListener("click", handleResendClick);
             }
+        }, 1000);
+    }
 
-            function startTimer() {
-                updateTimerDisplay();
-                const timerInterval = setInterval(function () {
-                    countdown--;
-                    updateTimerDisplay();
-                    if (countdown <= 0) {
-                        clearInterval(timerInterval);
-                        timerElement.textContent = "Resend OTP";
-                        // Enable Resend OTP button or show a "Resend OTP" link
-                    }
-                }, 1000);
+    function handleResendClick() {
+        // Disable the Resend OTP button during the process
+        resendButton.classList.add("disabled");
+
+        // Make an AJAX request to trigger the resend
+        fetch("/admin/resendOtp", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: email }), 
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-
-            // Call startTimer() when the OTP is initially sent
-            startTimer();
-
-            // Add an event listener for Resend OTP action
-            const resendButton = document.getElementById("resendLink");
-            resendButton.addEventListener("click", function (event) {
-                event.preventDefault();
-                // Implement logic to resend OTP (you can make an API call to your server)
-                // Reset the countdown and start the timer again
-                countdown = 120;
-                startTimer();
-            });
+            return response.json();
+        })
+        .then(data => {
+            console.log(data); // Log the response from the server
+            // Optionally, show a success message to the user
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+            // Optionally, show an error message to the user
         });
+    }
 
-    </script> -->
+    // Initially disable the Resend OTP button
+    resendButton.classList.add("disabled");
+
+    // Call startTimer() when the OTP is initially sent
+    startTimer();
+});
+
+</script>
+
 </body>
 
 </html>
