@@ -79,44 +79,48 @@
 
 
                 <!-- Edit Categories Form Start -->
-<div class="container-fluid pt-5 px-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card bg-secondary text-white">
-                <div class="card-header bg-dark">
-                    <h5>Edit Categories</h5>
-                </div>
-                <div class="card-body">
-                    <form id="editCategoriesForm" method="post" action="/admin/editCategories">
-                        <!-- Hidden field for category ID -->
-                        <input type="hidden" id="categoryId" name="id" value="<%= categories._id %>">
+                <div class="container-fluid pt-5 px-4">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card bg-secondary text-white">
+                                <div class="card-header bg-dark">
+                                    <h5>Edit Categories</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="editCategoriesForm" method="post" action="/admin/editCategories">
+                                        <!-- Hidden field for category ID -->
+                                        <input type="hidden" id="categoryId" name="id" value="<%= categories._id %>">
 
-                        <div class="mb-3">
-                            <label for="categoryName" class="form-label">Category Name</label>
-                            <input type="text" class="form-control bg-dark text-white" id="categoryName"
-                                name="categoryName" value="<%= categories.name %>" required>
+                                        <div class="mb-3">
+                                            <label for="categoryName" class="form-label">Category Name</label>
+                                            <input type="text" class="form-control bg-dark text-white" id="categoryName"
+                                                name="categoryName" value="<%= categories.name %>" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea class="form-control bg-dark text-white" id="description"
+                                                name="description" rows="3"><%= categories.description %></textarea>
+                                        </div>
+                                        <% if( messages.message ) { %>
+                                            <p style="color: red;">
+                                                <%=messages.message %>
+                                            </p>
+                                            <%}%>
+                                                <button type="submit" id="edit" class="btn btn-danger">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control bg-dark text-white" id="description"
-                                name="description" rows="3"><%= categories.description %></textarea>
-                        </div>
-
-                        <button type="submit" id="edit" class="btn btn-danger">Submit</button>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Edit Categories Form End -->
+                <!-- Edit Categories Form End -->
 
 
                 <%- include('../layout/adminLayouts/footer') -%>
 
-                    <script>
+                    <!-- <script>
                         document.getElementById('edit').addEventListener('click', function () {
                             alert('Category edited successfully')
                         })
-                    </script>
+                    </script> -->

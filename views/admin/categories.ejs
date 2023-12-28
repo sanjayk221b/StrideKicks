@@ -4,12 +4,12 @@
     <body>
         <div class="container-fluid position-relative d-flex p-0">
             <!-- Spinner Start -->
-            <div id="spinner"
+            <!-- <div id="spinner"
                 class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
                 <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
-            </div>
+            </div> -->
             <!-- Spinner End -->
 
 
@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <div class="ms-3">
-                            <h6 class="mb-0">Jhon Doe</h6>
+                            <h6 class="mb-0">Sanjay k</h6>
                             <span>Admin</span>
                         </div>
                     </div>
@@ -59,7 +59,8 @@
                         <i class="fa fa-bars"></i>
                     </a>
                     <form class="d-none d-md-flex ms-4">
-                        <input class="form-control bg-dark border-0" id="navbar-search" type="search" placeholder="Search">
+                        <input class="form-control bg-dark border-0" id="navbar-search" type="search"
+                            placeholder="Search">
                     </form>
                     <div class="navbar-nav align-items-center ms-auto ">
                         <div class="nav-item dropdown me-3">
@@ -73,7 +74,7 @@
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                                 <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
                                     style="width: 40px; height: 40px;">
-                                <span class="d-none d-lg-inline-flex">John Doe</span>
+                                <span class="d-none d-lg-inline-flex">Sanjay k</span>
                             </a>
                             <div
                                 class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
@@ -88,130 +89,158 @@
 
 
                 <!-- Table Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="col-12">
-        <div class="bg-secondary rounded h-100 p-4">
-            <h6 class="mb-4">Categories</h6>
-            <div class="table-responsive ">
-                <table class="table" id="myDataTable">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th> <!-- Added Delete button -->
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if(categories.length > 0) { %>
-                            <% for (let i = 0; i < categories.length; i++) { %>
-                                <tr>
-                                    <td>
-                                        <%= i + 1 %>
-                                    </td>
+                <div class="container-fluid pt-4 px-4">
+                    <div class="col-12">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h6 class="mb-4">Categories</h6>
+                            <div class="table-responsive">
+                                <table class="table" id="myDataTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Edit</th>
+                                            <th scope="col">Delete</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="categoryTableBody">
+                                        <% if(categories.length> 0) { %>
+                                            <% for (let i=0; i < categories.length; i++) { %>
+                                                <tr id="categoryRow_<%= categories[i]._id %>">
+                                                    <td>
+                                                        <%= i + 1 %>
+                                                    </td>
+                                                    <td>
+                                                        <%= categories[i].name %>
+                                                    </td>
+                                                    <td>
+                                                        <%= categories[i].description %>
+                                                    </td>
+                                                    <td>
+                                                        <span id="status_<%=categories[i]._id%>" class="status-badge">
+                                                            <% if(categories[i].isListed) { %>
+                                                                <span
+                                                                    class="badge rounded-pill alert-success">Listed</span>
+                                                                <% } else { %>
+                                                                    <span
+                                                                        class="badge rounded-pill alert-warning">Unlisted</span>
+                                                                    <% } %>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <a
+                                                            href="/admin/editCategories?categoryId=<%= categories[i]._id %>">
+                                                            <button class="btn btn-outline-primary btn-sm"
+                                                                type="submit">Edit</button>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            class="btn btn-delete-category btn-outline-danger btn-sm"
+                                                            data-category-id="<%= categories[i]._id %>"
+                                                            onclick="deleteCategory('<%= categories[i]._id %>')">Delete</button>
 
-                                    <td>
-                                        <%= categories[i].name %>
-                                    </td>
-
-                                    <td>
-                                        <%= categories[i].description %>
-                                    </td>
-
-                                    <td>
-                                        <span id="status_<%=categories[i]._id%>" class="status-badge">
-                                            <% if(categories[i].isListed) { %>
-                                                <span class="badge rounded-pill alert-success">Listed</span>
-                                            <% } else { %>
-                                                <span class="badge rounded-pill alert-warning">Unlisted</span>
-                                            <% } %>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="/admin/editCategories?categoryId=<%= categories[i]._id %>">
-                                            <button class="btn btn-outline-primary" type="submit">Edit</button>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-outline-danger" onclick="deleteCategory('<%= categories[i]._id %>')">Delete</button>
-                                    </td>
-                                    <td>
-                                        <button class="btn category-status <%= categories[i].isListed ? 'btn-success' : 'btn-danger' %>"
-                                            data-category-id="<%= categories[i]._id %>"
-                                            data-current-status="<%= categories[i].isListed ? 'Unlisted' : 'Listed' %>">
-                                            <% if(categories[i].isListed) { %>
-                                                Unlist
-                                            <% } else { %>
-                                                List
-                                            <% } %>
-                                        </button>
-                                    </td>
-
-                                </tr>
-                            <% } %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="7">Category Not Found</td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Table End -->
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            class="btn category-status btn-sm <%= categories[i].isListed ? 'btn-success' : 'btn-danger' %>"
+                                                            data-category-id="<%= categories[i]._id %>"
+                                                            data-current-status="<%= categories[i].isListed ? 'Unlisted' : 'Listed' %>"
+                                                            onclick="updateCategoryStatus('<%= categories[i]._id %>')">
+                                                            <% if(categories[i].isListed) { %>
+                                                                Unlist
+                                                                <% } else { %>
+                                                                    List
+                                                                    <% } %>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="7">Category Not Found</td>
+                                                        </tr>
+                                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Table End -->
 
                 <%- include('../layout/adminLayouts/footer') -%>
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
+                            console.log('Script is running!');
+                            // Event listener for delete buttons
+                            document.querySelectorAll('.btn-delete-category').forEach(function (button) {
+                                button.addEventListener('click', function () {
+                                    const categoryId = this.getAttribute('data-category-id');
+                                    // console.log(categoryId);
+                                    deleteCategory(categoryId);
+                                });
+                            });
+
+                            // Event listener for category status buttons
                             document.querySelectorAll('.category-status').forEach(function (button) {
                                 button.addEventListener('click', function () {
                                     const categoryId = this.getAttribute('data-category-id');
                                     const currentStatus = this.getAttribute('data-current-status');
                                     const newStatus = (currentStatus === 'Unlisted') ? 'Listed' : 'Unlisted';
-
-                                    // console.log('Button clicked for category ID:', categoryId);
-                                    // console.log('Current status:', currentStatus);
-                                    // console.log('New status:', newStatus);
-
                                     updateCategoryStatus(categoryId, newStatus);
                                 });
                             });
                         });
 
-                        function updateCategoryStatus(categoryId, action) {
-                            console.log('Updating category status for category ID:', categoryId, 'Action:', action);
-
-                            fetch(`/admin/categories/${action}/${categoryId}`, {
-                                method: 'POST'
-                            })
-                                .then((response) => response.json())
-                                .then((data) => {
-                                    console.log('Server response:', data);
-
-                                    // Update the UI
-                                    const statusElement = document.getElementById(`status_${categoryId}`);
-                                    const button = document.querySelector(`.category-status[data-category-id="${categoryId}"]`);
-
-                                    if (data.categories.isListed) {
-                                        statusElement.innerHTML = '<span class="badge rounded-pill alert-warning">Unlisted</span>';
-                                        button.innerText = 'Unlist';
-                                        button.classList.remove('btn-danger');
-                                        button.classList.add('btn-success');
-                                    } else {
-                                        statusElement.innerHTML = '<span class="badge rounded-pill alert-success">Listed</span>';
-                                        button.innerText = 'List';
-                                        button.classList.remove('btn-success');
-                                        button.classList.add('btn-danger');
+                        function deleteCategory(categoryId) {
+                            if (categoryId) {
+                                // SweetAlert to confirm the deletion
+                                Swal.fire({
+                                    title: 'Are you sure?',
+                                    text: 'Once deleted, you will not be able to recover this category!',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                    
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // If the user confirms, proceed with the fetch request for deletion
+                                        fetch(`/admin/deleteCategories/${categoryId}`, {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    const rowToRemove = document.getElementById(`categoryRow_${categoryId}`);
+                                                    if (rowToRemove) {
+                                                        rowToRemove.remove();
+                                                        Swal.fire(
+                                                            'Deleted!',
+                                                            'Your category has been deleted.',
+                                                            'success'
+                                                        );
+                                                    } else {
+                                                        console.error('Failed to find category row in the DOM');
+                                                    }
+                                                } else {
+                                                    console.error('Failed to delete category. Server returned:', data.message);
+                                                }
+                                            })
+                                            .catch(error => console.error('Error:', error));
                                     }
-                                })
-                                .catch((error) => {
-                                    console.log("Error:", error);
                                 });
+                            } else {
+                                console.error('Invalid category ID:', categoryId);
+                            }
                         }
 
 
@@ -219,15 +248,67 @@
 
 
 
-                         // Search jQuery for the table and navbar
-                         $(document).ready(function () {
+                        function updateCategoryStatus(categoryId, action) {
+                            // Determine action text based on the value
+                            const actionText = action === 'unlist' ? 'list' : 'unlist';
+
+                            // SweetAlert to confirm the action
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: `Do you want to ${actionText} this category?`,
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Yes'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // If the user confirms, proceed with the fetch request
+                                    fetch(`/admin/categories/${action}/${categoryId}`, {
+                                        method: 'POST'
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            // Update the UI
+                                            const statusElement = document.getElementById(`status_${categoryId}`);
+                                            const button = document.querySelector(`.category-status[data-category-id="${categoryId}"]`);
+
+                                            if (data.categories.isListed) {
+                                                statusElement.innerHTML = '<span class="badge rounded-pill alert-warning">Unlisted</span>';
+                                                button.innerText = 'Unlist';
+                                                button.classList.remove('btn-danger');
+                                                button.classList.add('btn-success');
+                                            } else {
+                                                statusElement.innerHTML = '<span class="badge rounded-pill alert-success">Listed</span>';
+                                                button.innerText = 'List';
+                                                button.classList.remove('btn-success');
+                                                button.classList.add('btn-danger');
+                                            }
+                                            location.reload()
+                                        })
+                                        .catch(error => {
+                                            console.log("Error:", error);
+                                        });
+                                }
+                            });
+                        }
+
+
+
+
+
+
+
+                        // Search jQuery for the table and navbar
+                        $(document).ready(function () {
                             // When the user types in either search box
                             $("#navbar-search, #name-search").on("keyup", function () {
                                 var searchText = $(this).val().toLowerCase();
 
                                 // Loop through each table row
                                 $("table tbody tr").each(function () {
-                                    var productName = $(this).find("td:eq(1)").text().toLowerCase(); // Get the product name in lowercase
+                                    var productName = $(this).find("td:eq(1)").text().toLowerCase(); // Get the product name in
+                                    lowercase
 
                                     // If the product name contains the search text, show the row; otherwise, hide it
                                     if (productName.includes(searchText)) {

@@ -1,10 +1,12 @@
+const User = require('../model/userModel')
+
 const isLogin = async (req, res, next) => {
     try {
-        console.log('session',req.session.userId,'hi');
+        console.log('Login session', req.session.userId, 'hi');
         //check If the user is logged in 
-        if(req.session.userId) {
+        if (req.session.userId) {
             //if the user is logged in and trying to access the /login route, redirect to /home
-            if(req.path === '/login'){
+            if (req.path === '/login') {
                 res.redirect('/home');
                 return;
             }
@@ -19,14 +21,14 @@ const isLogin = async (req, res, next) => {
     }
 }
 
-const isLogout = async(req, res, next) => {
+const isLogout = async (req, res, next) => {
     try {
         // console.log('session',req.session.userId);
         // checks if the user is logged in
-        if(req.session.userId) {
-        // if the user is logged in redirect to '/home'
-        res.redirect('/home');
-        return;
+        if (req.session.userId) {
+            // if the user is logged in redirect to '/home'
+            res.redirect('/home');
+            return;
         }
         //continue to the next middleware if the user is logged out
         next();
@@ -35,7 +37,28 @@ const isLogout = async(req, res, next) => {
     }
 }
 
+
+const checkBlocked = async (req, res, next) => {
+    const userId = req.session.userId;
+
+    if (userId) {
+        try {
+            const user = await User.findOne({ _id: userId });
+            if (user && user.isBlocked) {
+                return res.redirect('/');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    // Call next to pass control to the next middleware in the stack
+    next();
+};
+
+
+
 module.exports = {
     isLogin,
-    isLogout
+    isLogout,
+    checkBlocked
 }

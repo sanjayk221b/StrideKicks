@@ -1,10 +1,9 @@
+<!-- Assuming this is your EJS file -->
 <!DOCTYPE html>
 <html lang="zxx">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>OTP Page</title>
+    <!-- Existing head content... -->
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -19,7 +18,7 @@
                         <h3 class="card-title text-center">Enter OTP</h3>
                         <p class="card-text text-center">Check your email for the OTP code.</p>
 
-                        <form id="otpForm" method="post" novalidate="novalidate">
+                        <form id="otpForm" method="post" >
                             <div class="form-row">
                                 <div class="form-group col-md-3">
                                     <input type="hidden" name="email" value="<%= email %>">
@@ -54,14 +53,43 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <script>
-        // You can add your JavaScript logic here
-        document.getElementById('resendLink').addEventListener('click', function (event) {
-            event.preventDefault();
-            // Add logic to resend OTP
-            alert('Resending OTP...');
+    <!-- <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const timerElement = document.getElementById("otp-timer");
+            let countdown = 120; // Set the initial countdown time in seconds
+
+            function updateTimerDisplay() {
+                timerElement.textContent = `Resend OTP in ${countdown} seconds`;
+            }
+
+            function startTimer() {
+                updateTimerDisplay();
+                const timerInterval = setInterval(function () {
+                    countdown--;
+                    updateTimerDisplay();
+                    if (countdown <= 0) {
+                        clearInterval(timerInterval);
+                        timerElement.textContent = "Resend OTP";
+                        // Enable Resend OTP button or show a "Resend OTP" link
+                    }
+                }, 1000);
+            }
+
+            // Call startTimer() when the OTP is initially sent
+            startTimer();
+
+            // Add an event listener for Resend OTP action
+            const resendButton = document.getElementById("resendLink");
+            resendButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                // Implement logic to resend OTP (you can make an API call to your server)
+                // Reset the countdown and start the timer again
+                countdown = 120;
+                startTimer();
+            });
         });
-    </script>
+
+    </script> -->
 </body>
 
 </html>

@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <div class="ms-3">
-                            <h6 class="mb-0">Jhon Doe</h6>
+                            <h6 class="mb-0">Sanjay k</h6>
                             <span>Admin</span>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                                 <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
                                     style="width: 40px; height: 40px;">
-                                <span class="d-none d-lg-inline-flex">John Doe</span>
+                                <span class="d-none d-lg-inline-flex">Sanjay k</span>
                             </a>
                             <div
                                 class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
@@ -105,11 +105,12 @@
                                             <th scope="col">Quantity</th>
                                             <th scope="col">Edit</th>
                                             <th scope="col">Action</th>
+                                            <th scope="col">Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <% if(products.length> 0) { %>
-                                            <% for(let i=0; i < products.length; i++) { %>
+                                            <% for(let i=products.length - 1; i>= 0; i--) { %>
                                                 <tr>
                                                     <td>
                                                         <%= products[i].name %>
@@ -127,9 +128,9 @@
                                                     </td>
                                                     <td>
                                                         <% if (products[i].isListed) { %>
-                                                            <span class="badge bg-success">Listed</span>
+                                                            <span class="badge bg-success badge-sm">Listed</span>
                                                             <% } else { %>
-                                                                <span class="badge bg-danger">Unlisted</span>
+                                                                <span class="badge bg-danger badge-sm">Unlisted</span>
                                                                 <% } %>
                                                     </td>
                                                     <td>
@@ -137,15 +138,19 @@
                                                     </td>
                                                     <td>
                                                         <a href="/admin/editProducts/<%= products[i]._id %>">
-                                                            <button class="btn btn-outline-primary"
+                                                            <button class="btn btn-outline-primary btn-sm"
                                                                 type="submit">Edit</button>
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-outline-success"
+                                                        <button class="btn btn-outline-success btn-sm"
                                                             onclick="toggleProductStatus('<%= products[i]._id %>')">
                                                             <%= products[i].isListed ? 'Unlist' : 'List' %>
                                                         </button>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-delete-category btn-outline-danger btn-sm" onclick="deleteProduct('<%= products[i]._id %>')">Delete</button>
+
                                                     </td>
                                                 </tr>
                                                 <% } %>
@@ -164,33 +169,84 @@
 
 
 
+
                 <%- include('../layout/adminLayouts/footer') -%>
-                    <!-- Add this script at the end of your HTML file or in a separate JavaScript file -->
                     <script>
-                        // Function to toggle the product status (list/unlist)
-                        async function toggleProductStatus(productId) {
+                        // Toggle the product status (list/unlist)
+                        async function toggleProductStatus(productId, action) {
                             try {
-                                const response = await fetch(`/admin/products/${productId}`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
+                                const actionText = action === 'unlist' ? 'list' : 'unlist';
+
+                                // SweetAlert for confirmation
+                                Swal.fire({
+                                    title: 'Confirm Action',
+                                    text: `Do you want to ${actionText} this product?`,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#d33',
+                                    cancelButtonColor: '#3085d6',
+                                    confirmButtonText: `Yes, ${actionText} it!`
+                                }).then(async (result) => {
+                                    if (result.isConfirmed) {
+                                        const response = await fetch(`/admin/products/${productId}`, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                        });
+
+                                        const data = await response.json();
+
+                                        if (data.status) {
+                                            location.reload();
+                                        } else {
+                                            console.error(`Failed to ${actionText.toLowerCase()} product status:`, data.message);
+                                        }
+                                    }
                                 });
-
-                                const data = await response.json();
-
-                                if (data.status) {
-                                    // Reload the page or update the UI as needed
-                                    location.reload();
-                                } else {
-                                    // Handle the error, display a message, or log the error
-                                    console.error('Failed to toggle product status:', data.message);
-                                }
                             } catch (error) {
-                                // Handle fetch errors
-                                console.error('Fetch error:', error);
+                                console.log(error);
                             }
                         }
+
+                        function deleteProduct(productId) {
+    // Use SweetAlert for confirmation
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Once deleted, you will not be able to recover this product!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/admin/deleteProducts/${productId}`, {
+                method: 'POST', // Use DELETE method
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Optionally, update the UI to reflect the deletion
+                    // For example, remove the corresponding table row
+                    // You can use DOM manipulation or a front-end framework for this
+                    Swal.fire('Deleted!', 'The product has been deleted.', 'success');
+                    // Reload the page or update the UI as needed
+                    location.reload(); // Example: reload the page after deletion
+                } else {
+                    console.error('Error:', data.error);
+                    Swal.fire('Error', 'Failed to delete the product.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Internal Server Error.', 'error');
+            });
+        }
+    });
+}
+
+
 
 
 
@@ -202,7 +258,8 @@
 
                                 // Loop through each table row
                                 $("table tbody tr").each(function () {
-                                    var productName = $(this).find("td:eq(0)").text().toLowerCase(); // Get the product name in lowercase
+                                    var productName = $(this).find("td:eq(0)").text().toLowerCase(); // Get the product name in
+                                    lowercase
 
                                     // If the product name contains the search text, show the row; otherwise, hide it
                                     if (productName.includes(searchText)) {

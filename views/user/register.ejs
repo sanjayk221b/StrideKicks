@@ -16,39 +16,41 @@
 	</section>
 	<!-- End Banner Area -->
 
-	<!--================Sign UP Box Area =================-->
+	<!-- ================== Sign UP Box Area ================== -->
 	<section class="login_box_area section_gap">
-		<div class="container 	">
+		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-6">
 					<div class="login_form_inner">
 						<h3>Register</h3>
-						<form class="row login_form" action="" method="post" id="contactForm" novalidate="novalidate">
+						<form class="row login_form" action="" method="post"
+							onsubmit="return validateForm('signupForm')" id="signupForm">
 							<div class="col-md-12 form-group">
-								<input type="text" class="form-control" id="name" name="username" placeholder="Username"
-									onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+								<input type="text" class="form-control" id="username" name="username"
+									placeholder="Username">
+								<div id="usernameError" class="error-message text-danger"></div>
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="email" class="form-control" id="email" name="email" placeholder="email"
-									onfocus="this.placeholder = ''" onblur="this.placeholder = 'email'">
+								<input type="email" class="form-control" id="email" name="email" placeholder="Email">
+								<div id="emailError" class="error-message text-danger"></div>	
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="text" class="form-control" id="name" name="mobile" placeholder="phone"
-									onfocus="this.placeholder = ''" onblur="this.placeholder = 'phone'">
+								<input type="tel" class="form-control" id="mobileNumber" name="mobile"
+									placeholder="Phone">
+								<div id="mobileNumberError" class="error-message text-danger"></div>
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="text" class="form-control" id="name" name="password" placeholder="Password"
-									onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+								<input type="password" class="form-control" id="password" name="password"
+									placeholder="Password">
+								<div id="passwordError" class="error-message text-danger"></div>
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="text" class="form-control" id="name" name="confirmPassword"
-									placeholder="Confirm Password" onfocus="this.placeholder = ''"
-									onblur="this.placeholder = 'Confirm Password'">
+								<input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+									placeholder="Confirm Password">
+								<div id="confirmPasswordError" class="error-message text-danger"></div>
 							</div>
 							<div class="col-md-12 form-group">
 								<div class="creat_account">
-									<!-- <input type="checkbox" id="f-option2" name="selector"> -->
-									<!-- <label for="f-option2">Keep me logged in</label> -->
 								</div>
 							</div>
 							<div class="col-md-12 form-group">
@@ -61,7 +63,9 @@
 			</div>
 		</div>
 	</section>
+
 	<!--================End Sign Up Box Area =================-->
+
 
 	<!-- start footer Area -->
 	<footer class="footer-area section_gap">
@@ -151,8 +155,6 @@
 		</div>
 	</footer>
 	<!-- End footer Area -->
-
-
 	<script src="js/vendor/jquery-2.2.4.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
 		integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
@@ -168,6 +170,87 @@
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
 	<script src="js/gmaps.min.js"></script>
 	<script src="js/main.js"></script>
-</body>
 
-</html>
+	<!-- validation -->
+	<script>
+		// document.getElementById('contactForm').onsubmit = function (event) {
+		// 	event.preventDefault(); // Prevent the default form submission for testing purposes
+		// 	console.log('Form submitted');
+		// };
+
+
+		function validateForm() {
+			var valid = true;
+
+			var username = $("#username").val();
+			if (!username || username.trim() === "") {
+				$("#usernameError").html("Username is required");
+				valid = false;
+			} else if (!/^[a-zA-Z]+$/.test(username)) {
+				$("#usernameError").html("Username should contain only letters");
+				valid = false
+			} else {
+				$("#usernameError").html("");
+			}
+
+			// Email Validation
+			var email = $("#email").val();
+			if (!email || email.trim() === "") {
+				$("#emailError").html("Email cannot be empty");
+				valid = false;
+			} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+				$("#emailError").html("Invalid email address");
+				valid = false;
+			} else {
+				$("#emailError").html("");
+			}
+
+			// Phone Number Validation
+			var phoneNumber = $("#mobileNumber").val();
+
+			if (!phoneNumber || phoneNumber.trim() === "") {
+				$("#mobileNumberError").html("Mobile number cannot be empty");
+				valid = false;
+			} else if (!/^\d+$/.test(phoneNumber)) {
+				$("#mobileNumberError").html("Invalid mobile number");
+				valid = false;
+			} else if (phoneNumber.length !== 10) {
+				$("#mobileNumberError").html("Phone number should be 10 digits");
+				valid = false;
+			} else {
+				$("#mobileNumberError").html("");
+			}
+
+
+			// Password Validation
+			var password = $("#password").val();
+			if (!password || password.trim() === "") {
+				$("#passwordError").html("Password is required");
+				valid = false;
+			} else if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/.test(password)) {
+				$("#passwordError").html("Password should be at least 8 characters long, contain an uppercase letter, a digit, and a special character");
+				valid = false;
+			} else {
+				$("#passwordError").html("");
+			}
+
+
+			// Confirm Password Validation
+			var confirmPassword = $("#confirmPassword").val();
+			if (!confirmPassword || confirmPassword.trim() === "") {
+				$("#confirmPasswordError").html("Confirm your password ");
+				valid = false;
+			} else if (confirmPassword !== password) {
+				$("#confirmPasswordError").html("Passwords do not match");
+				valid = false;
+			} else {
+				$("#confirmPasswordError").html("");
+			}
+			return valid;
+
+		}
+		// </script>
+
+	</body>
+
+	</html>

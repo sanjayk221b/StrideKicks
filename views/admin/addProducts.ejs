@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <div class="ms-3">
-                            <h6 class="mb-0">Jhon Doe</h6>
+                            <h6 class="mb-0">Sanjay k</h6>
                             <span>Admin</span>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                                 <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
                                     style="width: 40px; height: 40px;">
-                                <span class="d-none d-lg-inline-flex">John Doe</span>
+                                <span class="d-none d-lg-inline-flex">Sanjay k</span>
                             </a>
                             <div
                                 class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
@@ -86,7 +86,8 @@
                                     <h5>Add Products</h5>
                                 </div>
                                 <div class="card-body">
-                                    <form id="productForm" enctype="multipart/form-data" method="post">
+                                    <form id="productForm" enctype="multipart/form-data" method="post"
+                                        onsubmit="return validateForm()">
 
                                         <div class="mb-3">
                                             <label for="productName" class="form-label">Product Name</label>
@@ -104,12 +105,14 @@
                                             <label for="productQuantity" class="form-label">Quantity</label>
                                             <input type="number" class="form-control bg-dark text-white"
                                                 id="productQuantity" name="quantity" placeholder="Quantity" required>
+                                            <div id="quantityError" class="error-message text-danger"></div>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="productPrice" class="form-label">Price</label>
                                             <input type="number" class="form-control bg-dark text-white"
                                                 id="productPrice" name="price" placeholder="Price" required>
+                                            <div id="priceError" class="error-message text-danger"></div>
                                         </div>
 
                                         <div class="mb-3">
@@ -125,9 +128,11 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="productImage" class="form-label">Product Image</label>
+                                            <label for="productImage" class="form-label mb-10  ">Product Image</label>
+                                             <span id="imagePreview" class="mt-2"></span>
                                             <input type="file" class="form-control bg-dark text-white" id="productImage"
-                                                name="images" multiple required>
+                                                name="images" multiple>
+                                           
                                         </div>
 
                                         <button type="submit" class="btn btn-danger">Submit</button>
@@ -139,6 +144,62 @@
                 </div>
                 <!-- Add Products Form End -->
 
+
+                <!-- Add the following script in your HTML file -->
+                <script>
+                    function validateForm() {
+                        // Get form elements
+                        var productName = document.getElementById("productName").value;
+                        var productQuantity = document.getElementById("productQuantity").value;
+                        var productPrice = document.getElementById("productPrice").value;
+
+                        // Reset error messages
+                        document.getElementById("quantityError").innerText = "";
+                        document.getElementById("priceError").innerText = "";
+
+                        // Validate quantity
+                        if (!Number.isInteger(parseFloat(productQuantity)) || parseInt(productQuantity) <= 0) {
+                            document.getElementById("quantityError").innerText = "Please enter a valid whole number for quantity (greater than zero).";
+                            return false; // Prevent form submission
+                        }
+
+                        // Validate price
+                        if (isNaN(productPrice) || parseFloat(productPrice) <= 0) {
+                            document.getElementById("priceError").innerText = "Please enter a valid price (a number greater than zero).";
+                            return false; // Prevent form submission
+                        }
+
+                        // If everything is valid, the form will be submitted
+                        return true;
+                    }
+                </script>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Get the file input element
+                        const fileInput = document.getElementById('productImage');
+
+                        // Get the image preview container
+                        const imagePreviewContainer = document.getElementById('imagePreview');
+
+                        // Add an event listener to the file input
+                        fileInput.addEventListener('change', function () {
+                            // Remove existing preview images
+                            imagePreviewContainer.innerHTML = '';
+
+                            // Loop through selected files and create image previews
+                            for (const file of fileInput.files) {
+                                const img = document.createElement('img');
+                                img.src = URL.createObjectURL(file);
+                                img.className = 'img-sm img-thumbnail mr-2';
+                                img.alt = 'Image Preview';
+                                img.style.width = '80px';
+                                img.style.height = '80px';
+                                imagePreviewContainer.appendChild(img);
+                            }
+                        });
+                    });
+                </script>
 
 
 

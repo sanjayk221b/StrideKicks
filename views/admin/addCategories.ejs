@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <div class="ms-3">
-                            <h6 class="mb-0">Jhon Doe</h6>
+                            <h6 class="mb-0">Sanjay k</h6>
                             <span>Admin</span>
                         </div>
                     </div>
@@ -88,6 +88,8 @@
                                     <h5>Add Categories</h5>
                                 </div>
                                 <div class="card-body">
+
+
                                     <form id="addCategoriesForm" method="post">
 
                                         <div class="mb-3">
@@ -102,14 +104,20 @@
                                                 name="description" rows="3"></textarea>
                                         </div>
 
-                                        <button type="submit" class="btn btn-light">Submit</button>
+                                        <button type="submit" class="btn btn-danger">Submit</button>
                                     </form>
+                                    <% if( messages.message ) { %>
+                                        <p style="color: red;">
+                                            <%=messages.message %>
+                                        </p>
+                                        <%}%>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- Add Categories Form End -->
+
 
 
                 <%- include('../layout/adminLayouts/footer') -%>

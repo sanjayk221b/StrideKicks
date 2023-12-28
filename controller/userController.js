@@ -12,18 +12,21 @@ dotenv.config()
 //Register Verify
 const verifyRegister = async (req, res) => {
     try {
-        // console.log(req.body);
-        const { username, email, mobile, password, confirmPassword } = req.body
-        // console.log(req.body);
+        const { username, email, mobile, password, confirmPassword } = req.body;
 
-        if (password != confirmPassword) {
-            res.status(400).send({ error: "password do not match" })
+        // Check if email already exists
+        const existingUser = await User.findOne({ email: email });
+        if (existingUser) {
+            return res.status(400).render('register',{message:'Email is already registered'})
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400).send({ error: "Passwords do not match" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        // console.log("hashed Password", hashedPassword);
 
-        //create new user
+        // Create new user
         const newUser = new User({
             username,
             email,
@@ -31,17 +34,16 @@ const verifyRegister = async (req, res) => {
             password: hashedPassword,
             verified: false,
             isAdmin: 0
-        })
+        });
 
-        await newUser.save()
-        sendOtpVerification(newUser, res)
-
-
+        await newUser.save();
+        sendOtpVerification(newUser, res);
     } catch (error) {
-        console.log(error);
-        res.status(500).send({ error: "internal server error" })
+        console.error(error);
+        res.status(500).send({ error: "Internal server error" });
     }
-}
+};
+
 
 // Otp verification
 const sendOtpVerification = async ({ email }, res) => {
@@ -63,7 +65,18 @@ const sendOtpVerification = async ({ email }, res) => {
             from: process.env.email_user,
             to: email,
             subject: 'verify your email',
-            html: otp
+            html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+                <h2 style="color: #007BFF;">Verify Your Email</h2>
+                <p>Please use the following OTP to verify your email:</p>
+                <div style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: #007BFF;">${otp}</h3>
+                </div>
+                <p>This OTP is valid for a short period. Do not share it with anyone.</p>
+                <p>If you did not request this verification, please ignore this email.</p>
+                <P style="color: #007BFF;">From Vogue Vista </p>
+            </div>
+        `,
         }
         //hash otp
         const saltrounds = 10;
@@ -110,7 +123,9 @@ const verifyOtp = async (req, res) => {
 
         res.redirect('/home');
     } else {
-        res.render('otp', { message: 'otp is incorrect' })
+        // res.render('otp', { email: email, message: 'otp is incorrect' })
+        req.flash('message', 'Incorrect OTP');
+        res.redirect(`/otp?email=${email}`)
     }
 }
 
@@ -118,10 +133,9 @@ const verifyOtp = async (req, res) => {
 const verifyLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        // console.log(email, password);
         const user = await User.findOne({ email: email });
 
-        if (user) {
+        if (user && !user.isBlocked) {
             const passwordMatch = await bcrypt.compare(password, user.password);
             if (passwordMatch) {
                 req.session.userId = user._id;
@@ -129,11 +143,12 @@ const verifyLogin = async (req, res) => {
 
                 res.redirect("/home");
             } else {
-                res.render("login", { message: "Incorrect Password" });
+                req.flash('message', 'Incorrect Password');
+                res.redirect("/login");
             }
-
         } else {
-            res.render("login", { message: 'user doesnt exist' })
+            req.flash('message', 'User doesn\'t exist');
+            res.redirect("/login");
         }
     } catch (error) {
         console.log(error.message);
@@ -158,6 +173,7 @@ const loadHome = async (req, res) => {
 //Login Page Render
 const loadLogin = async (req, res) => {
     try {
+
         res.render('login');
     } catch {
         console.log(error.message);

@@ -84,7 +84,7 @@
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                                 <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
                                     style="width: 40px; height: 40px;">
-                                <span class="d-none d-lg-inline-flex">John Doe</span>
+                                <span class="d-none d-lg-inline-flex">Sanjay k</span>
                             </a>
                             <div
                                 class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
@@ -99,70 +99,139 @@
 
 
                 <!-- Edit Products Form Start -->
-<div class="container-fluid pt-5 px-4">
-    <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-9">
-            <div class="card bg-secondary text-white">
-                <div class="card-header bg-dark">
-                    <h5>Edit Products</h5>
+                <div class="container-fluid pt-5 px-4">
+                    <div class="row justify-content-center">
+                        <div class="col-md-10 col-lg-9">
+                            <div class="card bg-secondary text-white">
+                                <div class="card-header bg-dark">
+                                    <h5>Edit Products</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form action="/admin/editProducts" id="productForm" enctype="multipart/form-data"
+                                        method="post">
+
+                                        <input type="hidden" id="productId" name="id" value="<%= products._id %>">
+
+                                        <div class="mb-3">
+                                            <label for="productName" class="form-label">Product Name</label>
+                                            <input type="text" class="form-control bg-dark text-white" id="productName"
+                                                name="name" value="<%= products.name %>" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="productDescription" class="form-label">Description</label>
+                                            <textarea class="form-control bg-dark text-white" id="productDescription"
+                                                name="description" rows="3"><%= products.description %></textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="productQuantity" class="form-label">Quantity</label>
+                                            <input type="number" class="form-control bg-dark text-white"
+                                                id="productQuantity" name="quantity"
+                                                value="<%= products.stockQuantity %>" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="productPrice" class="form-label">Price</label>
+                                            <input type="number" class="form-control bg-dark text-white"
+                                                id="productPrice" name="price" value="<%= products.price %>" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="productCategory" class="form-label">Category</label>
+                                            <select class="form-control bg-dark text-white" id="productCategory"
+                                                name="category" required>
+                                                <% categories.forEach(category=> { %>
+                                                    <option value="<%= category.name %>" <% if
+                                                        (category.name===products.category) { %>
+                                                        selected <% } %>>
+                                                            <%= category.name %>
+                                                    </option>
+                                                    <% }) %>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="productImage" class="form-label">Product Image</label>
+                                            <div class="d-flex flex-wrap">
+                                                <% for(let i=0; i<products.image.length;i++) { %>
+                                                    <div class="m-2 text-center" data-image-index="<%= i %>"
+                                                        data-image-name="<%= products.image[i] %>">
+                                                        <img src="/images/<%= products.image[i] %>"
+                                                            class="img-sm img-thumbnail" alt="" width="80px"
+                                                            height="100px">
+                                                        <br>
+                                                        <button type="button"
+                                                            class="btn btn-danger delete-image-btn mt-2">Delete</button>
+                                                    </div>
+                                                    <% } %>
+                                            </div>
+                                            <input type="file" class="form-control bg-dark text-white" id="productImage"
+                                                name="images" multiple>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-danger">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form action="/admin/editProducts" id="productForm" enctype="multipart/form-data" method="post">
+                <!-- Edit Products Form End -->
 
-                        <input type="hidden" id="productId" name="id" value="<%= products._id %>">
+                <script>
+                    // Add an event listener to handle image deletion
+                    document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("click", function (event) {
+                            if (event.target.classList.contains("delete-image-btn")) {
+                                const imageIndex = event.target.closest("[data-image-index]").dataset.imageIndex;
+                                deleteImage(imageIndex);
+                            }
+                        });
+                    });
 
-                        <div class="mb-3">
-                            <label for="productName" class="form-label">Product Name</label>
-                            <input type="text" class="form-control bg-dark text-white" id="productName" name="name"
-                                value="<%= products.name %>" required>
-                        </div>
+                    // Function to send a request to delete the image
+                    // Add an event listener to handle image deletion
+document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("delete-image-btn")) {
+            const imageContainer = event.target.closest("[data-image-index]");
+            const imageIndex = imageContainer.dataset.imageIndex;
+            const img = imageContainer.dataset.imageName;
+            deleteImage(imageIndex, img);
+        }
+    });
+});
 
-                        <div class="mb-3">
-                            <label for="productDescription" class="form-label">Description</label>
-                            <textarea class="form-control bg-dark text-white" id="productDescription" name="description"
-                                rows="3"><%= products.description %></textarea>
-                        </div>
+// Function to send a request to delete the image
+async function deleteImage(imageIndex, img) {
+    try {
+        const productId = document.getElementById("productId").value; // Get product ID from the hidden input
 
-                        <div class="mb-3">
-                            <label for="productQuantity" class="form-label">Quantity</label>
-                            <input type="number" class="form-control bg-dark text-white" id="productQuantity" name="quantity"
-                                value="<%= products.stockQuantity %>" required>
-                        </div>
+        const response = await fetch("/admin/deleteImage", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ img, productId }),
+        });
 
-                        <div class="mb-3">
-                            <label for="productPrice" class="form-label">Price</label>
-                            <input type="number" class="form-control bg-dark text-white" id="productPrice" name="price"
-                                value="<%= products.price %>" required>
-                        </div>
+        const result = await response.json();
 
-                        <div class="mb-3">
-                            <label for="productCategory" class="form-label">Category</label>
-                            <select class="form-control bg-dark text-white" id="productCategory" name="category" required>
-                                <% categories.forEach(category => { %>
-                                    <option value="<%= category.name %>" <% if (category.name === products.category) { %> selected <% } %>>
-                                        <%= category.name %>
-                                    </option>
-                                <% }) %>
-                            </select>
-                        </div>
+        if (result.success) {
+            // Update the UI to reflect the deleted image
+            const imageContainer = document.querySelector(`[data-image-index="${imageIndex}"]`);
+            imageContainer.remove();
+        } else {
+            console.error("Image deletion failed:", result.error);
+        }
+    } catch (error) {
+        console.error("Error deleting image:", error.message);
+    }
+}
 
-                        <div class="mb-3">
-                            <label for="productImage" class="form-label">Product Image</label>
-                            <% for(let i=0; i<products.image.length;i++) { %>
-                                <img src="/images/<%= products.image[i] %>" class="img-sm img-thumbnail" alt=""
-                                    width="80px" height="100px">
-                            <% } %>
-                            <input type="file" class="form-control bg-dark text-white" id="productImage" name="images" multiple >
-                        </div>
 
-                        <button type="submit" class="btn btn-danger">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> 
-</div>
-<!-- Edit Products Form End -->
 
+                </script>
 
                 <%- include('../layout/adminLayouts/footer') -%>

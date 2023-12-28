@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.schema;
+const Schema = mongoose.Schema;
 
 const UserOTPVerification = new mongoose.Schema({
     email: {
@@ -19,7 +19,7 @@ const UserOTPVerification = new mongoose.Schema({
     timestamps: true
 });
 
-UserOTPVerification.index({createdAt: 1}, {expireAfterSeconds: 120})
+// UserOTPVerification.index({createdAt: 1}, {expireAfterSeconds: 120})
 
 module.exports = mongoose.model("userOtp", UserOTPVerification);
 

@@ -27,7 +27,7 @@
                             </div>
                         </div>
                         <div class="ms-3">
-                            <h6 class="mb-0">Jhon Doe</h6>
+                            <h6 class="mb-0">Sanjay k</h6>
                             <span>Admin</span>
                         </div>
                     </div>
@@ -57,14 +57,15 @@
                         <i class="fa fa-bars"></i>
                     </a>
                     <form class="d-none d-md-flex ms-4">
-                        <input class="form-control bg-dark border-0" id="navbar-search" type="search" placeholder="Search">
+                        <input class="form-control bg-dark border-0" id="navbar-search" type="search"
+                            placeholder="Search">
                     </form>
                     <div class="navbar-nav align-items-center ms-auto">
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                                 <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
                                     style="width: 40px; height: 40px;">
-                                <span class="d-none d-lg-inline-flex">John Doe</span>
+                                <span class="d-none d-lg-inline-flex">Sanjay k</span>
                             </a>
                             <div
                                 class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
@@ -83,7 +84,7 @@
                         <div class="bg-secondary rounded h-100 p-4">
                             <h6 class="mb-4">Categories</h6>
                             <div class="table-responsive ">
-                                <table class="table" id="usersTable">
+                                <table class="table " id="usersTable">
                                     <thead>
                                         <tr>
                                             <th scope="col">Username</th>
@@ -179,44 +180,59 @@
                         })
 
                         function updateUserStatus(userId, action) {
-                            console.log('Updating user status for user ID:', userId, 'Action:', action);
+                            //  SweetAlert for confirmation
+                            Swal.fire({
+                                title: 'Confirm Action',
+                                text: `Are you sure you want to ${action === 'blocked' ? 'block' : 'unblock'} this user?`,
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                cancelButtonColor: '#3085d6',
+                                confirmButtonText: 'Yes, proceed!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // If the user confirms, update the status
+                                    fetch(`/admin/users/${action}/${userId}`, {
+                                        method: 'POST'
+                                    })
+                                        .then((response) => response.json())
+                                        .then((data) => {
+                                            if (data.status === 'success') {
+                                                // Update the UI here
+                                                const statusElement = document.getElementById(`status_${userId}`);
+                                                const button = document.querySelector(`.user-status[data-user-id="${userId}"]`);
 
-                            fetch(`/admin/users/${action}/${userId}`, {
-                                method: 'POST'
-                            })
-                                .then((response) => response.json())
-                                .then((data) => {
-                                    console.log('Server response:', data);
+                                                const isBlocked = data.user.isBlocked;
+                                                const statusText = isBlocked ? 'Blocked' : 'Active';
+                                                const badgeClass = isBlocked ? 'alert-warning' : 'alert-success';
+                                                const buttonClass = isBlocked ? 'bg-success' : 'bg-danger';
 
-                                    // Update the UI
-                                    const statusElement = document.getElementById(`status_${userId}`);
-                                    const button = document.querySelector(`.user-status[data-user-id="${userId}"]`);
+                                                statusElement.innerHTML = `<span class="badge rounded-pill ${badgeClass}">${statusText}</span>`;
+                                                button.textContent = isBlocked ? 'Unblock' : 'Block';
+                                                button.classList.remove(isBlocked ? 'bg-danger' : 'bg-success');
+                                                button.classList.add(buttonClass);
 
-                                    if (data.status === 'success') {
-                                        const isBlocked = data.user.isBlocked;
-                                        const statusText = isBlocked ? 'Blocked' : 'Active';
-                                        const badgeClass = isBlocked ? 'alert-warning' : 'alert-success';
-
-                                        const buttonClass = isBlocked ? 'bg-success' : 'bg-danger';
-
-                                        statusElement.innerHTML = `<span class="badge rounded-pill ${badgeClass}">${statusText}</span>`;
-                                        button.textContent = isBlocked ? 'Unblock' : 'Block';
-                                        button.classList.remove(isBlocked ? 'bg-danger' : 'bg-success');
-                                        button.classList.add(buttonClass);
-                                    } else {
-                                        console.log('Status update failed.');
-                                    }
-                                })
-                                .catch((error) => {
-                                    console.log("Error:", error);
-                                })
+                                                // Show success message
+                                                Swal.fire('Success!', `User has been ${isBlocked ? 'blocked' : 'unblocked'}`, 'success');
+                                            } else {
+                                                // Show error message
+                                                Swal.fire('Error!', 'Failed to update user status', 'error');
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            // Show error message
+                                            Swal.fire('Error!', 'Failed to update user status', 'error');
+                                        });
+                                }
+                            });
                         }
 
 
 
 
-                         // Search jQuery for the table and navbar
-                         $(document).ready(function () {
+
+                        // Search jQuery for the table and navbar
+                        $(document).ready(function () {
                             // When the user types in either search box
                             $("#navbar-search, #name-search").on("keyup", function () {
                                 var searchText = $(this).val().toLowerCase();
