@@ -155,12 +155,12 @@
                 <%- include('../layout/adminLayouts/footer') -%>
 
                     <script>
-                        // var $j = jQuery.noConflict()
+                        var $j = jQuery.noConflict()
 
-                        // $j(document).ready(function () {
-                        //     $j('#usersTable').DataTable({
-                        //     })
-                        // })
+                        $j(document).ready(function () {
+                            $j('#usersTable').DataTable({
+                            })
+                        })
 
                         document.addEventListener('DOMContentLoaded', function () {
                             // console.log('dom content downloaded');

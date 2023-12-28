@@ -45,10 +45,10 @@ const updateUserStatus = async (req, res) => {
         } else {
             updatedUser = await User.findByIdAndUpdate(userId, { isBlocked: true }, { new: true });
 
-            if(sessionId === userId) {
-                req.session.destroy();
-                return res.redirect('/');
-            }
+            // if(sessionId === userId) {
+            //     req.session.destroy();
+            //     return res.redirect('/');
+            // }
         }
 
         return res.send({ status: 'success', user: updatedUser });
@@ -90,22 +90,20 @@ const addCategories = async (req, res) => {
 const editCategories = async (req, res) => {
     try {
         console.log(req.body);
-        const categoryName = req.body.categoryName.toUpperCase(); // Convert to lowercase
+        const categoryName = req.body.categoryName.toUpperCase(); 
 
-        // Check if the edited category name already exists (excluding the current category being edited)
         const categoryExist = await Categories.findOne({
             _id: { $ne: req.body.id }, // Exclude the current category
             name: { $regex: new RegExp('^' + categoryName + '$', 'i') }
         });
 
         if (categoryExist) {
-            // Category already exists, handle accordingly
             req.flash('message', 'Category name already in use');
             res.redirect(`/admin/editCategories?categoryId=${req.body.id}`);
         } else {
             // Update the category details
             await Categories.findByIdAndUpdate(req.body.id, {
-                name: categoryName, // Save the lowercase version
+                name: categoryName,
                 description: req.body.description
             });
 

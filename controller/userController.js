@@ -92,7 +92,7 @@ const sendOtpVerification = async ({ email }, res) => {
         console.log('resend comment',email);
         setTimeout(async () => {
             await newOtpVerification.deleteOne({ email: email })
-        }, 20000)
+        }, 60000)
         res.redirect(`/otp?email=${email}`)
     } catch (error) {
         console.log(error.message);

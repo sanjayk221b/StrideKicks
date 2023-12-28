@@ -45,7 +45,8 @@ const checkBlocked = async (req, res, next) => {
     if (userId) {
         try {
             const user = await User.findOne({ _id: userId });
-            if (user && user.isBlocked) {
+            if (user && user.isBlocked === true) {
+                
                 return res.redirect('/');
             }
         } catch (error) {

@@ -149,7 +149,9 @@
                                                         </button>
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-delete-category btn-outline-danger btn-sm" onclick="deleteProduct('<%= products[i]._id %>')">Delete</button>
+                                                        <button
+                                                            class="btn btn-delete-category btn-outline-danger btn-sm"
+                                                            onclick="deleteProduct('<%= products[i]._id %>')">Delete</button>
 
                                                     </td>
                                                 </tr>
@@ -172,6 +174,17 @@
 
                 <%- include('../layout/adminLayouts/footer') -%>
                     <script>
+
+                        var $j = jQuery.noConflict()
+
+                        $j(document).ready(function () {
+                            $j('#myDataTable').DataTable({
+                            })
+                        })
+
+
+
+
                         // Toggle the product status (list/unlist)
                         async function toggleProductStatus(productId, action) {
                             try {
@@ -210,41 +223,41 @@
                         }
 
                         function deleteProduct(productId) {
-    // Use SweetAlert for confirmation
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'Once deleted, you will not be able to recover this product!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/admin/deleteProducts/${productId}`, {
-                method: 'POST', // Use DELETE method
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Optionally, update the UI to reflect the deletion
-                    // For example, remove the corresponding table row
-                    // You can use DOM manipulation or a front-end framework for this
-                    Swal.fire('Deleted!', 'The product has been deleted.', 'success');
-                    // Reload the page or update the UI as needed
-                    location.reload(); // Example: reload the page after deletion
-                } else {
-                    console.error('Error:', data.error);
-                    Swal.fire('Error', 'Failed to delete the product.', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire('Error', 'Internal Server Error.', 'error');
-            });
-        }
-    });
-}
+                            // Use SweetAlert for confirmation
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: 'Once deleted, you will not be able to recover this product!',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                cancelButtonColor: '#3085d6',
+                                confirmButtonText: 'Yes, delete it!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    fetch(`/admin/deleteProducts/${productId}`, {
+                                        method: 'POST', // Use DELETE method
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                // Optionally, update the UI to reflect the deletion
+                                                // For example, remove the corresponding table row
+                                                // You can use DOM manipulation or a front-end framework for this
+                                                Swal.fire('Deleted!', 'The product has been deleted.', 'success');
+                                                // Reload the page or update the UI as needed
+                                                location.reload(); // Example: reload the page after deletion
+                                            } else {
+                                                console.error('Error:', data.error);
+                                                Swal.fire('Error', 'Failed to delete the product.', 'error');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                            Swal.fire('Error', 'Internal Server Error.', 'error');
+                                        });
+                                }
+                            });
+                        }
 
 
 
