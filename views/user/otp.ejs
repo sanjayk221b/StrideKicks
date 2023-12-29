@@ -102,6 +102,12 @@
                 // Disable the Resend OTP button during the process
                 resendButton.classList.add("disabled");
 
+                // Swal.fire({
+                //     icon: 'info',
+                //     title: 'Sending OTP...',
+                //     showConfirmButton: false,
+                // });
+
                 // Make an AJAX request to trigger the resend
                 fetch("/admin/resendOtp", {
                     method: "POST",
@@ -117,12 +123,16 @@
                         return response.json();
                     })
                     .then(data => {
-                        console.log(data); // Log the response from the server
-                        // Optionally, show a success message to the user
+                        console.log(data);
+                        alert('OTP has been sent successfully!');
+                        // Swal.fire({
+                        //     icon: 'success',
+                        //     title: 'OTP Sent!',
+                        //     text: 'The OTP has been successfully sent to your email.',
+                        // });
                     })
                     .catch(error => {
                         console.error('There was a problem with the fetch operation:', error);
-                        // Optionally, show an error message to the user
                     });
             }
 

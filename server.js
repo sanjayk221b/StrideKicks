@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 8080
 //middleware                 
 app.use(express.json());     
 app.use(express.urlencoded({ extended: true }));                                            
-                  
+                     
 //session
 app.use(session({
     secret: process.env.SECRET,
@@ -54,4 +54,4 @@ app.use('/admin', adminRouter);
 
 app.listen(PORT, () => {     
     console.log(`Server is listening at http://localhost:${PORT}/`);
-})                                                                                    
+})                                                                                                           

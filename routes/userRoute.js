@@ -9,7 +9,7 @@ userRouter.set('views', './views/user')
 
 
 userRouter.get("/", auth.isLogout, userController.loadHome);
-userRouter.get("/home", auth.isLogin, auth.checkBlocked, userController.loadHome)
+userRouter.get("/home", auth.checkBlocked, userController.loadHome)
 
 userRouter.get("/error403", userController.error403);
 
@@ -28,7 +28,7 @@ userRouter.get("/logout", auth.isLogin, userController.logoutUser)
 
 userRouter.get('/shop', auth.checkBlocked, userController.loadShop)
 
-userRouter.get('/productDetails', auth.isLogin, auth.checkBlocked, userController.loadProductDetails)
+userRouter.get('/productDetails', auth.checkBlocked,auth.isLogin, userController.loadProductDetails)
 
 
 module.exports = userRouter;

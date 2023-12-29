@@ -48,7 +48,7 @@ const checkBlocked = async (req, res, next) => {
             if (user && user.isBlocked === true) {
                 req.session.destroy()
                 return res.redirect('/error403');
-            }
+            } 
         } catch (error) {
             console.log(error);
         }

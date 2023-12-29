@@ -27,7 +27,7 @@ adminRouter.set('views', './views/admin');
 
 adminRouter.use(express.static(path.resolve(__dirname, 'public')))
 
-adminRouter.get('/', adminController.loadDashboard);
+adminRouter.get('/', adminAuth.isAdminLogin,adminController.loadDashboard);
 
 //login and logout
 adminRouter.get('/login', adminAuth.isAdminLogout, adminController.loadLogin);

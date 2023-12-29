@@ -22,8 +22,8 @@
 
                         <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                             <ul class="nav navbar-nav menu_nav ml-auto">
-                                <li class="nav-item active"><a class="nav-link" href="/home">Home</a></li>
-                                <li class="nav-item submenu dropdown">
+                                <li class="nav-item "><a class="nav-link" href="/home">Home</a></li>
+                                <li class="nav-item submenu dropdown active">
                                     <a href="/shop" class="nav-link dropdown-toggle" role="button"
                                         aria-haspopup="true">Shop</a>
                                 </li>
@@ -680,19 +680,16 @@
 
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
-                    // Function to handle zoom on a specific image
+                    //  zoom on a specific image
                     function zoomIn(event, zoomFactor) {
                         const image = event.target;
 
-                        // Apply the zoom effect only to the image
                         image.style.transform = `scale(${zoomFactor})`;
                     }
 
-                    // Function to reset zoom on a specific image
                     function resetZoom(event) {
                         const image = event.target;
 
-                        // Reset the zoom effect
                         image.style.transform = 'scale(1)';
                     }
 
@@ -701,9 +698,8 @@
                     const productImages = sProductCarousel.querySelectorAll('.image-container img');
                     productImages.forEach(img => {
                         img.addEventListener('mouseover', function () {
-                            // Apply zoom effect on mouseover
-                            img.style.transform = 'scale(1.5)'; // Adjust the zoom factor as needed
-                            img.style.transition = 'transform 0.3s ease'; // Optional: Add a transition for a smooth effect
+                            img.style.transform = 'scale(2.0)'; 
+                            img.style.transition = 'transform 0.3s ease'; 
                         });
 
                         img.addEventListener('mousemove', function (e) {
@@ -716,13 +712,11 @@
                         });
 
                         img.addEventListener('mouseleave', function () {
-                            // Reset to normal size on mouseleave
                             img.style.transform = 'scale(1)';
                         });
 
-                        // Add event listeners for zooming in and resetting zoom
                         img.addEventListener('mousemove', function (e) {
-                            zoomIn(e, 1.5); // Adjust zoomFactor as needed
+                            zoomIn(e, 1.5); 
                         });
 
                         img.addEventListener('mouseout', resetZoom);
