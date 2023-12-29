@@ -46,8 +46,8 @@ const checkBlocked = async (req, res, next) => {
         try {
             const user = await User.findOne({ _id: userId });
             if (user && user.isBlocked === true) {
-                
-                return res.redirect('/');
+                req.session.destroy()
+                return res.redirect('/error403');
             }
         } catch (error) {
             console.log(error);

@@ -80,7 +80,7 @@
                                 class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                                 <a href="#" class="dropdown-item">My Profile</a>
                                 <a href="#" class="dropdown-item">Settings</a>
-                                <a href="/admin/login" class="dropdown-item">Log Out</a>
+                                <a href="/admin/logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
                     </div>
@@ -173,15 +173,28 @@
                 <!-- Table End -->
 
                 <%- include('../layout/adminLayouts/footer') -%>
+
+                    <style>
+                        div.dataTables_wrapper div.search-form {
+                            float: right;
+                            margin-top: -38px;
+                            /* Adjust this value as needed */
+                        }
+                    </style>
+
                     <script>
 
                         var $j = jQuery.noConflict()
 
                         $j(document).ready(function () {
                             $j('#myDataTable').DataTable({
-                            })
-                        })
-                        
+                                "dom": '<"top"lf>t<"bottom"ip>'
+                            });
+
+                            // Additional code...
+                        });
+
+
                         document.addEventListener('DOMContentLoaded', function () {
                             console.log('Script is running!');
                             // Event listener for delete buttons
@@ -307,24 +320,24 @@
 
 
 
-                        // Search jQuery for the table and navbar
-                        $(document).ready(function () {
-                            // When the user types in either search box
-                            $("#navbar-search, #name-search").on("keyup", function () {
-                                var searchText = $(this).val().toLowerCase();
+                        // // Search jQuery for the table and navbar
+                        // $(document).ready(function () {
+                        //     // When the user types in either search box
+                        //     $("#navbar-search, #name-search").on("keyup", function () {
+                        //         var searchText = $(this).val().toLowerCase();
 
-                                // Loop through each table row
-                                $("table tbody tr").each(function () {
-                                    var productName = $(this).find("td:eq(1)").text().toLowerCase(); // Get the product name in
-                                    lowercase
+                        //         // Loop through each table row
+                        //         $("table tbody tr").each(function () {
+                        //             var productName = $(this).find("td:eq(1)").text().toLowerCase(); // Get the product name in
+                        //             lowercase
 
-                                    // If the product name contains the search text, show the row; otherwise, hide it
-                                    if (productName.includes(searchText)) {
-                                        $(this).show();
-                                    } else {
-                                        $(this).hide();
-                                    }
-                                });
-                            });
-                        });
+                        //             // If the product name contains the search text, show the row; otherwise, hide it
+                        //             if (productName.includes(searchText)) {
+                        //                 $(this).show();
+                        //             } else {
+                        //                 $(this).hide();
+                        //             }
+                        //         });
+                        //     });
+                        // });
                     </script>

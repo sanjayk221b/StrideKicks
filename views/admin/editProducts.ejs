@@ -90,7 +90,7 @@
                                 class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                                 <a href="#" class="dropdown-item">My Profile</a>
                                 <a href="#" class="dropdown-item">Settings</a>
-                                <a href="/admin/login" class="dropdown-item">Log Out</a>
+                                <a href="/admin/logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
                     </div>
@@ -192,43 +192,43 @@
 
                     // Function to send a request to delete the image
                     // Add an event listener to handle image deletion
-document.addEventListener("DOMContentLoaded", function () {
-    document.addEventListener("click", function (event) {
-        if (event.target.classList.contains("delete-image-btn")) {
-            const imageContainer = event.target.closest("[data-image-index]");
-            const imageIndex = imageContainer.dataset.imageIndex;
-            const img = imageContainer.dataset.imageName;
-            deleteImage(imageIndex, img);
-        }
-    });
-});
+                    document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("click", function (event) {
+                            if (event.target.classList.contains("delete-image-btn")) {
+                                const imageContainer = event.target.closest("[data-image-index]");
+                                const imageIndex = imageContainer.dataset.imageIndex;
+                                const img = imageContainer.dataset.imageName;
+                                deleteImage(imageIndex, img);
+                            }
+                        });
+                    });
 
-// Function to send a request to delete the image
-async function deleteImage(imageIndex, img) {
-    try {
-        const productId = document.getElementById("productId").value; // Get product ID from the hidden input
+                    // Function to send a request to delete the image
+                    async function deleteImage(imageIndex, img) {
+                        try {
+                            const productId = document.getElementById("productId").value; // Get product ID from the hidden input
 
-        const response = await fetch("/admin/deleteImage", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ img, productId }),
-        });
+                            const response = await fetch("/admin/deleteImage", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ img, productId }),
+                            });
 
-        const result = await response.json();
+                            const result = await response.json();
 
-        if (result.success) {
-            // Update the UI to reflect the deleted image
-            const imageContainer = document.querySelector(`[data-image-index="${imageIndex}"]`);
-            imageContainer.remove();
-        } else {
-            console.error("Image deletion failed:", result.error);
-        }
-    } catch (error) {
-        console.error("Error deleting image:", error.message);
-    }
-}
+                            if (result.success) {
+                                // Update the UI to reflect the deleted image
+                                const imageContainer = document.querySelector(`[data-image-index="${imageIndex}"]`);
+                                imageContainer.remove();
+                            } else {
+                                console.error("Image deletion failed:", result.error);
+                            }
+                        } catch (error) {
+                            console.error("Error deleting image:", error.message);
+                        }
+                    }
 
 
 

@@ -259,6 +259,14 @@ const logoutUser = async (req, res) => {
     }
 }
 
+const error403 = async (req, res) => {
+    try {
+        res.render('error403')
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 module.exports = {
     loadHome,
@@ -271,5 +279,6 @@ module.exports = {
     loadShop,
     loadProductDetails,
     logoutUser,
-    resendOtp
+    resendOtp,
+    error403
 }

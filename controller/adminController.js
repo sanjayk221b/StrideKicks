@@ -16,16 +16,23 @@ const adminLogin = async (req, res) => {
         const password = req.body.password;
 
         if (admin_email == email && admin_pass == password) {
-
+            req.session.admin = email
             res.redirect('/admin')
         } else {
-            res.render('adminLogin', { message: 'invalid username and password' })
+            // Check for incorrect email or password and flash corresponding messages
+            if (admin_email !== email) {
+                req.flash('message', 'Incorrect Email');
+            } else {
+                req.flash('message', 'Incorrect Password');
+            }
+            res.redirect('/admin/login');
         }
 
     } catch (error) {
         console.log(error.message);
     }
 }
+
 
 //Block Or Unblock user
 const updateUserStatus = async (req, res) => {
@@ -224,6 +231,16 @@ const load_EditCategories = async (req, res) => {
     }
 }
 
+//logout admin
+const logoutAdmin = async (req, res) => {
+    try {
+        req.session.admin = null
+        res.redirect("/admin/login");
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 module.exports = {
     loadLogin,
     adminLogin,
@@ -236,5 +253,6 @@ module.exports = {
     load_EditCategories,
     editCategories,
     updateCategoryStatus,
-    deleteCategories
+    deleteCategories,
+    logoutAdmin
 }   

@@ -16,7 +16,7 @@ mongoose.connect(process.env.MONGO_URI);
 
 const PORT = process.env.PORT || 8080
 
-//middleware        
+//middleware                 
 app.use(express.json());     
 app.use(express.urlencoded({ extended: true }));                                            
                   
@@ -54,4 +54,4 @@ app.use('/admin', adminRouter);
 
 app.listen(PORT, () => {     
     console.log(`Server is listening at http://localhost:${PORT}/`);
-})                                                                     
+})                                                                                    

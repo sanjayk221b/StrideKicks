@@ -3,6 +3,7 @@ const adminRouter = express();
 const adminController = require('../controller/adminController');
 const productsController = require('../controller/productsController')
 const path = require('path')
+const adminAuth = require('../midddleware/adminAuth')
 
 const multer = require('multer');
 
@@ -29,38 +30,38 @@ adminRouter.use(express.static(path.resolve(__dirname, 'public')))
 adminRouter.get('/', adminController.loadDashboard);
 
 //login and logout
-adminRouter.get('/login', adminController.loadLogin);
+adminRouter.get('/login', adminAuth.isAdminLogout, adminController.loadLogin);
 adminRouter.post('/login', adminController.adminLogin);
-adminRouter.get('/logout', adminController.loadLogin);
+adminRouter.get('/logout',adminController.logoutAdmin);
 
 //User management routes
-adminRouter.get('/users', adminController.loadUsers);
+adminRouter.get('/users',adminAuth.isAdminLogin, adminController.loadUsers);
 adminRouter.post('/users/:action/:id', adminController.updateUserStatus);
 
 
 //Product management routes
-adminRouter.get('/products', productsController.loadProducts);
-adminRouter.post('/products/:id',productsController.updateProductStatus)
+adminRouter.get('/products',adminAuth.isAdminLogin, productsController.loadProducts);
+adminRouter.post('/products/:id', productsController.updateProductStatus)
 
-adminRouter.get('/addProducts', productsController.load_AddProducts);
+adminRouter.get('/addProducts',adminAuth.isAdminLogin, productsController.load_AddProducts);
 adminRouter.post('/addProducts', upload, productsController.addProducts);
 
-adminRouter.get('/editProducts/:id', productsController.load_EditProducts)
-adminRouter.post('/editProducts',upload,productsController.editProducts);
-adminRouter.post('/deleteProducts/:productId',productsController.deleteProducts)
-adminRouter.post('/deleteImage',productsController.deleteImage)
+adminRouter.get('/editProducts/:id',adminAuth.isAdminLogin, productsController.load_EditProducts)
+adminRouter.post('/editProducts', upload, productsController.editProducts);
+adminRouter.post('/deleteProducts/:productId', productsController.deleteProducts)
+adminRouter.post('/deleteImage', productsController.deleteImage)
 
 //Category management routes
-adminRouter.get('/categories', adminController.loadCategories);
+adminRouter.get('/categories',adminAuth.isAdminLogin, adminController.loadCategories);
 adminRouter.post('/categories/:action/:id', adminController.updateCategoryStatus)
 
-adminRouter.get('/addCategories', adminController.load_AddCategories);
+adminRouter.get('/addCategories',adminAuth.isAdminLogin, adminController.load_AddCategories);
 adminRouter.post('/addCategories', adminController.addCategories);
 
-adminRouter.get('/editCategories', adminController.load_EditCategories);
+adminRouter.get('/editCategories',adminAuth.isAdminLogin, adminController.load_EditCategories);
 adminRouter.post('/editCategories', adminController.editCategories);
 
-adminRouter.delete('/deleteCategories/:id',adminController.deleteCategories)
+adminRouter.delete('/deleteCategories/:id', adminController.deleteCategories)
 
 
 

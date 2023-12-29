@@ -80,7 +80,7 @@
                                 class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                                 <a href="#" class="dropdown-item">My Profile</a>
                                 <a href="#" class="dropdown-item">Settings</a>
-                                <a href="/admin/login" class="dropdown-item">Log Out</a>
+                                <a href="/admin/logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
                     </div>
@@ -240,12 +240,8 @@
                                         .then(response => response.json())
                                         .then(data => {
                                             if (data.success) {
-                                                // Optionally, update the UI to reflect the deletion
-                                                // For example, remove the corresponding table row
-                                                // You can use DOM manipulation or a front-end framework for this
                                                 Swal.fire('Deleted!', 'The product has been deleted.', 'success');
-                                                // Reload the page or update the UI as needed
-                                                location.reload(); // Example: reload the page after deletion
+                                                location.reload(); // reload the page after deletion
                                             } else {
                                                 console.error('Error:', data.error);
                                                 Swal.fire('Error', 'Failed to delete the product.', 'error');
