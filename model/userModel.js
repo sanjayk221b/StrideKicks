@@ -20,6 +20,28 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    address: [
+        {
+            name: {
+                type: String,
+            },
+            houseName: {
+                type: String,
+            },
+            city: {
+                type: String,
+            },
+            state: {
+                type: String,
+            },
+            mobile: {
+                type: Number,
+            },
+            pincode: {
+                type: Number,
+            },
+        },
+    ],
     isAdmin: {
         type: Number,
         default: 1
@@ -34,7 +56,7 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
 },
     {
         timestamps: true

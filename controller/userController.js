@@ -89,7 +89,7 @@ const sendOtpVerification = async ({ email }, res) => {
         //save otp record
         await newOtpVerification.save();
         await transporter.sendMail(mailOptions);
-        console.log('resend comment',email);
+        console.log('resend comment', email);
         setTimeout(async () => {
             await newOtpVerification.deleteOne({ email: email })
         }, 60000)
@@ -110,7 +110,7 @@ const verifyOtp = async (req, res) => {
 
 
     if (!user) {
-        res.render('otp', { message: 'otp expired',email:email })
+        res.render('otp', { message: 'otp expired', email: email })
         return;
     }
     const { otp: hashedOtp } = user;
@@ -137,7 +137,7 @@ const resendOtp = async (req, res) => {
     try {
         console.log('resendId :', req.body);
         const email = req.body.email
-        console.log("ivda ethi");
+        // console.log("ivda ethi");
 
         // console.log(user);
         // Resend OTP Verification mail
@@ -154,7 +154,7 @@ const verifyLogin = async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email: email });
 
-        if (user && !user.isBlocked) {
+        if (user && !user.isBlocked && user.verified) {
             const passwordMatch = await bcrypt.compare(password, user.password);
             if (passwordMatch) {
                 req.session.userId = user._id;
@@ -174,6 +174,31 @@ const verifyLogin = async (req, res) => {
     }
 }
 
+//Add Address
+const addAddress = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        console.log('add Address', req.body);
+        const { name, houseName, city, state, mobile, pincode } = req.body;
+
+        await User.findOneAndUpdate({ _id: userId }, {
+            $push: {
+              address: {
+                name: name,
+                houseName: houseName,
+                city: city,
+                state: state,
+                mobile: mobile,
+                pincode: pincode
+              }
+            }
+          });
+          res.redirect('/home')
+          
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 //Home Render
 const loadHome = async (req, res) => {
@@ -221,16 +246,16 @@ const loadRegister = async (req, res) => {
 const loadShop = async (req, res) => {
     try {
         const userData = await User.findOne({ _id: req.session.userId });
-        const categoryId = req.query.categoryId
+        const categoryId = req.query.categoryId;
         if (categoryId) {
-            data = await Products.find({ isListed: true, category: categoryId })
+            data = await Products.find({ isListed: true, category: categoryId });
         } else {
-            data = await Products.find({ isListed: true })
+            data = await Products.find({ isListed: true });
         }
 
-        const categoryData = await Categories.find({ isListed: true })
+        const categoryData = await Categories.find({ isListed: true });
 
-        res.render('shop', { products: data, categories: categoryData, user: userData })
+        res.render('shop', { products: data, categories: categoryData, user: userData });
 
     } catch (error) {
         console.log(error);
@@ -246,6 +271,32 @@ const loadProductDetails = async (req, res) => {
         res.render('productDetails', { products: products, user: userData })
     } catch (error) {
         console.log(error)
+    }
+}
+
+const load_AddAddress = async (req, res) => {
+    try {
+        const userData = await User.findOne({ _id: req.session.userId });
+        res.render('addAddress', { user: userData })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const loadProfile = async (req, res) => {
+    try {
+        const userData = await User.findOne({ _id: req.session.userId });
+        res.render('profile', { user: userData })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const load_EditProfile = async (req, res) => {
+    try {
+        res.render('editProfile');
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -280,5 +331,9 @@ module.exports = {
     loadProductDetails,
     logoutUser,
     resendOtp,
-    error403
+    error403,
+    load_AddAddress,
+    loadProfile,
+    addAddress,
+    load_EditProfile
 }

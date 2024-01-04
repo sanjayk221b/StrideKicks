@@ -175,15 +175,13 @@
                 <%- include('../layout/adminLayouts/footer') -%>
                     <script>
 
-                        // var $j = jQuery.noConflict()
+                        var $j = jQuery.noConflict();
 
-                        // $j(document).ready(function () {
-                        //     $j('#myDataTable').DataTable({
-                        //     })
-                        // })
-
-
-
+                        $j(document).ready(function () {
+                            $j('#myDataTable').DataTable({
+                                "order": [[/*columnIndex*/, "desc"]]
+                            });
+                        });
 
                         // Toggle the product status (list/unlist)
                         async function toggleProductStatus(productId, action) {

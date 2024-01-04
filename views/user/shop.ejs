@@ -1,68 +1,68 @@
 <%- include('../layout/userLayouts/header') -%>
 
 
-<body>
+    <body>
 
-	<!-- Start Header Area -->
-	<header class="header_area sticky-header">
-		<div class="main_menu">
-			<nav class="navbar navbar-expand-lg navbar-light main_box">
-				<div class="container">
-					<!-- Brand and toggle get grouped for better mobile display -->
-					<a class="navbar-brand logo_h" href="index.html"><img src="img/logo.png" alt=""></a>
-					<button class="navbar-toggler" type="button" data-toggle="collapse"
-						data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-						aria-expanded="false" aria-label="Toggle navigation">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>	
-						<span class="icon-bar"></span>  
-					</button>
-					<!-- Collect the nav links, forms, and other content for toggling -->
-					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
-						<ul class="nav navbar-nav menu_nav ml-auto">
-							<li class="nav-item "><a class="nav-link" href="/home">Home</a></li>
-							<li class="nav-item submenu dropdown active">
-								<a href="/shop" class="nav-link dropdown-toggle"  role="button"
-									aria-haspopup="true" >Shop</a>
-							</li>
-							<li class="nav-item "><a class="nav-link" href="#">about</a></li>
+        <!-- Start Header Area -->
+        <header class="header_area sticky-header">
+            <div class="main_menu">
+                <nav class="navbar navbar-expand-lg navbar-light main_box">
+                    <div class="container">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <a class="navbar-brand logo_h" href="index.html"><img src="img/logo.png" alt=""></a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                            <ul class="nav navbar-nav menu_nav ml-auto">
+                                <li class="nav-item "><a class="nav-link" href="/home">Home</a></li>
+                                <li class="nav-item submenu dropdown active">
+                                    <a href="/shop" class="nav-link dropdown-toggle" role="button"
+                                        aria-haspopup="true">Shop</a>
+                                </li>
+                                <li class="nav-item "><a class="nav-link" href="#">about</a></li>
 
-							<li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
 
-							<li class="nav-item submenu dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-user"></i></a>
-                                <ul class="dropdown-menu">
-                                    <% if (locals.user) { %>
-                                        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-                                    <% } else { %>
-                                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                                    <% } %>
-                                </ul>
-                            </li>
-                            
-						</ul>
-						<ul class="nav navbar-nav navbar-right">
-							<li class="nav-item"><a href="#" class="cart"><span class="ti-bag"></span></a></li>
-							<li class="nav-item">
-								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
-		</div>
-		<div class="search_input" id="search_input_box">
-			<div class="container">
-				<form class="d-flex justify-content-between">
-					<input type="text" class="form-control" id="search_input" placeholder="Search Here">
-					<button type="submit" class="btn"></button>
-					<span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
-				</form>
-			</div>
-		</div>
-	</header>
-	<!-- End Header Area -->
+                                <li class="nav-item submenu dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                                        aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-user"></i></a>
+                                    <ul class="dropdown-menu">
+                                        <% if (locals.user) { %>
+                                            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                                            <% } else { %>
+                                                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                                                <% } %>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="nav-item"><a href="/cart" class="cart"><span class="ti-bag"></span></a></li>
+                                <li class="nav-item">
+                                    <button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div class="search_input" id="search_input_box">
+                <div class="container">
+                    <form class="d-flex justify-content-between">
+                        <input type="text" class="form-control" id="search_input" placeholder="Search Here">
+                        <button type="submit" class="btn"></button>
+                        <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+                    </form>
+                </div>
+            </div>
+        </header>
+        <!-- End Header Area -->
 
         <!-- Start Banner Area -->
         <section class="banner-area organic-breadcrumb">
@@ -86,15 +86,14 @@
                     <div class="sidebar-categories">
                         <div class="head">Browse Categories</div>
                         <ul class="main-categories">
-                            <li class="main-nav-list"><a  href="/shop"
-                                aria-expanded="false" aria-controls="fruitsVegetable"><span
-                                    class="lnr lnr-arrow-right"></span>
-                                All Categories<span class="number"></span>
-                            </a>
-                        </li>
+                            <li class="main-nav-list"><a href="/shop" aria-expanded="false"
+                                    aria-controls="fruitsVegetable"><span class="lnr lnr-arrow-right"></span>
+                                    All Categories<span class="number"></span>
+                                </a>
+                            </li>
                             <% if(categories.length> 0) { %>
                                 <% for(let i=0; i< categories.length; i++) { %>
-                                    <li class="main-nav-list"><a  href="/shop?categoryId=<%=categories[i].name%>"
+                                    <li class="main-nav-list"><a href="/shop?categoryId=<%=categories[i].name%>"
                                             aria-expanded="false" aria-controls="fruitsVegetable"><span
                                                 class="lnr lnr-arrow-right"></span>
                                             <%=categories[i].name%><span class="number"></span>
@@ -142,17 +141,17 @@
                             </select>
                         </div>
                         <div class="pagination">
-                                <a href="#" class="prev-arrow"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
-                                <a href="#" class="active">1</a>
-                                <a href="#">2</a>
-                                <a href="#">3</a>
-                                <a href="#" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
-                                <a href="#">6</a>
-                                <a href="#" class="next-arrow"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+                            <a href="#" class="prev-arrow"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
+                            <a href="#" class="active">1</a>
+                            <a href="#">2</a>
+                            <a href="#">3</a>
+                            <a href="#" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
+                            <a href="#">6</a>
+                            <a href="#" class="next-arrow"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
                         </div>
                     </div>
                     <!-- End Filter Bar -->
-                    
+
                     <!-- Start Best Seller -->
                     <section class="lattest-product-area pb-40 category-list">
                         <div class="row">
@@ -162,15 +161,19 @@
                                         <div class="single-product">
                                             <img class="img-fluid" src="/images/<%= products[i].image[0] %>" alt="">
                                             <div class="product-details">
-                                                <h6><%= products[i].name%></h6>
+                                                <h6>
+                                                    <%= products[i].name%>
+                                                </h6>
                                                 <div class="price">
-                                                    <h6>$<%= products[i].price%></h6>
+                                                    <h6>$<%= products[i].price%>
+                                                    </h6>
                                                     <h6 class="l-through">$2210.00</h6>
                                                 </div>
                                                 <div class="prd-bottom">
-                                                    <a href="" class="social-info">
+                                                    <a href="#" class="social-info addToCartBtn"
+                                                        data-productId="<%= products[i]._id %>">
                                                         <span class="ti-bag"></span>
-                                                        <p class="hover-text">add to bag</p>
+                                                        <p class="hover-text">Add to Cart</p>
                                                     </a>
                                                     <a href="" class="social-info">
                                                         <span class="lnr lnr-heart"></span>
@@ -180,7 +183,8 @@
                                                         <span class="lnr lnr-sync"></span>
                                                         <p class="hover-text">compare</p>
                                                     </a> -->
-                                                    <a href="/productDetails?id=<%= products[i].id %>" class="social-info">
+                                                    <a href="/productDetails?id=<%= products[i].id %>"
+                                                        class="social-info">
                                                         <span class="lnr lnr-move"></span>
                                                         <p class="hover-text">View More</p>
                                                     </a>
@@ -363,3 +367,39 @@
         <!-- End related-product Area -->
 
         <%- include('../layout/userLayouts/footer') -%>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Event listener for the "Add to Cart" buttons
+                    document.querySelectorAll('.addToCartBtn').forEach(function (button) {
+                        button.addEventListener('click', async function (event) {
+                            try {
+                                event.preventDefault();
+
+                                // Get the product ID from the button's data-productId attribute
+                                const productId = button.getAttribute('data-productId');
+
+                                // Send a POST request to the '/addToCart' endpoint with the product ID
+                                const response = await fetch('/addToCart', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ productId, quantity: 1 }), // Fixed quantity as 1
+                                });
+
+                                // Parse the JSON response from the server
+                                const responseData = await response.json();
+
+                                // Display a success or error message based on the response
+                                if (responseData.success) {
+                                    alert('Item added to cart successfully!');
+                                } else {
+                                    alert('Error adding item to cart.');
+                                }
+                            } catch (error) {
+                                console.error('An error occurred:', error);
+                            }
+                        });
+                    });
+                });
+            </script>

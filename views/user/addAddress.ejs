@@ -1,0 +1,66 @@
+<%- include('../layout/userLayouts/header') -%>
+
+<body>
+
+    
+
+    <!-- Start Banner Area -->
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Add Address</h1>
+                    <!-- <nav class="d-flex align-items-center">
+                        <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="single-product.html">Checkout</a>
+                    </nav> -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Banner Area -->
+
+    <!--================Checkout Area =================-->
+    <section class="checkout_area section_gap">
+        <div class="container">
+            <div class="billing_details">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h3>Add address</h3>
+                        <form class="row contact_form" action="/address" method="post" novalidate="novalidate">
+                            <div class="col-md-12 form-group p_star">
+                                <label for="name">Full Name:</label>
+                                <input type="text" class="form-control" id="name" name="name">
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <label for="houseName">House Name:</label>
+                                <input type="text" class="form-control" id="houseName" name="houseName">
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <label for="mobile">Phone Number:</label>
+                                <input type="text" class="form-control" id="mobile" name="mobile">
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <label for="state">State:</label>
+                                <input type="text" class="form-control" id="state" name="state">
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <label for="city">Town/City:</label>
+                                <input type="text" class="form-control" id="city" name="city">
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <label for="pincode">Postcode/ZIP:</label>
+                                <input type="text" class="form-control" id="pincode" name="pincode" >
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="genric-btn info">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>  
+    <!--================End Checkout Area =================-->
+
+    <%- include('../layout/userLayouts/footer') -%>

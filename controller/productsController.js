@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 dotenv.config();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');   
 const User = require('../model/userModel');
 const Categories = require('../model/categoriesModel')
 const Products = require('../model/productsModel')

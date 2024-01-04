@@ -64,7 +64,4 @@ adminRouter.post('/editCategories', adminController.editCategories);
 adminRouter.delete('/deleteCategories/:id', adminController.deleteCategories)
 
 
-
-
-
 module.exports = adminRouter;

@@ -30,4 +30,58 @@
     
     <!-- Template Stylesheet -->
     <link href="/adminAssets/css/style.css" rel="stylesheet">
+
+    <style>
+        .dataTables_filter {
+          margin-bottom: 10px;
+          margin-left: 750px;
+        }
+    
+        .dataTables_filter input {
+          padding: 5px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+      </style>
+      <style>
+        /* Override DataTables default show entries styling */
+        .dataTables_length {
+          margin-bottom: -30px;
+        }
+    
+        .dataTables_length label {
+          font-weight: bold;
+          margin-right: 10px;
+        }
+    
+        .dataTables_length select {
+          padding: 5px;
+        }
+      </style>
+      <style>
+        /* Override DataTables default pagination styling */
+        .dataTables_paginate {
+          display: flex;
+          justify-content: center;
+        }
+    
+        .paginate_button {
+          /* Add your custom styles here */
+          display: inline-block;
+          padding: 5px 10px;
+          margin-right: 10px;
+          border: 1px solid #ff0000;
+          border-radius: 4px;
+          cursor: pointer;
+          color: #ffffff;
+          background-color: #ff0000;
+        }
+    
+        .paginate_button.current {
+          /* Add your custom styles for the current page button */
+          background-color: #ffffff;
+          color: #000000;
+          border-color: #ffffff;
+        }
+      </style>
 </head>

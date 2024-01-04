@@ -12,10 +12,10 @@ const flash = require('express-flash')
 
          
 //Database connection
-mongoose.connect(process.env.MONGO_URI);
-
+mongoose.connect(process.env.MONGO_URI);                                                     
+            
 const PORT = process.env.PORT || 8080
-
+     
 //middleware                 
 app.use(express.json());     
 app.use(express.urlencoded({ extended: true }));                                            
@@ -35,9 +35,9 @@ app.use((req, res, next) => {
     res.setHeader("Expires", "0");
     next()
 });                   
-               
+                
 app.use(flash())
-  
+   
      
 //load UserAssets        
 app.use(express.static(path.resolve(__dirname, 'public')))     
@@ -54,4 +54,4 @@ app.use('/admin', adminRouter);
 
 app.listen(PORT, () => {     
     console.log(`Server is listening at http://localhost:${PORT}/`);
-})                                                                                                           
+})                                                                                                                     

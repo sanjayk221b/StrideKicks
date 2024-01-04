@@ -1,0 +1,229 @@
+<%- include('../layout/userLayouts/header') -%>
+    <style>
+        .choose-address {
+            margin-bottom: 20px;
+        }
+
+        .address-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .address-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .address-item input {
+            margin-right: 10px;
+        }
+    </style>
+
+    <body>
+
+        <!-- Start Header Area -->
+        <header class="header_area sticky-header">
+            <div class="main_menu">
+                <nav class="navbar navbar-expand-lg navbar-light main_box">
+                    <div class="container">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <a class="navbar-brand logo_h" href="index.html"><img src="img/logo.png" alt=""></a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <!-- <p>User Data: <%= JSON.stringify(locals.user) %></p> -->
+
+                        <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                            <ul class="nav navbar-nav menu_nav ml-auto">
+                                <li class="nav-item active"><a class="nav-link" href="/home">Home</a></li>
+                                <li class="nav-item submenu dropdown">
+                                    <a href="/shop" class="nav-link dropdown-toggle" role="button"
+                                        aria-haspopup="true">Shop</a>
+                                </li>
+                                <li class="nav-item "><a class="nav-link" href="#">about</a></li>
+
+                                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                                <li class="nav-item submenu dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                                        aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-user"></i></a>
+                                    <ul class="dropdown-menu">
+                                        <% if (locals.user) { %>
+                                            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                                            <% } else { %>
+                                                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                                                <% } %>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="nav-item"><a href="/cart" class="cart"><span class="ti-bag"></span></a></li>
+                                <li class="nav-item">
+                                    <button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div class="search_input" id="search_input_box">
+                <div class="container">
+                    <form class="d-flex justify-content-between">
+                        <input type="text" class="form-control" id="search_input" placeholder="Search Here">
+                        <button type="submit" class="btn"></button>
+                        <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+                    </form>
+                </div>
+            </div>
+        </header>
+        <!-- End Header Area -->
+
+        <!-- Start Banner Area -->
+        <section class="banner-area organic-breadcrumb">
+            <div class="container">
+                <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                    <div class="col-first">
+                        <h1>Checkout</h1>
+                        <nav class="d-flex align-items-center">
+                            <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                            <a href="single-product.html">Checkout</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Banner Area -->
+
+        <!--================Checkout Area =================-->
+        <section class="checkout_area section_gap">
+            <div class="container">
+                <form id="checkoutForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Choose Address</h3>
+                            <div class="address-list border p-3">
+                                <% if(userData && userData.address) { %>
+                                    <% userData.address.forEach((address, index)=> { %>
+                                        <label class="address-item border p-3">
+                                            <input type="radio" name="address"
+                                                value="<%= address.name %> <%= address.houseName %> <%= address.city %> <%= address.state %> <%= address.mobile %> <%= address.pincode %>">
+                                            <span>
+                                                <%= address.name %>
+                                            </span>&nbsp;
+                                            <span>
+                                                <%= address.houseName %>
+                                            </span>&nbsp;
+                                            <span>
+                                                <%= address.city %>
+                                            </span>&nbsp;
+                                            <span>
+                                                <%= address.state %>
+                                            </span>&nbsp;
+                                            <span>
+                                                <%= address.mobile %>
+                                            </span>&nbsp;
+                                            <span>
+                                                <%= address.pincode %>
+                                            </span>
+                                        </label><br>
+                                        <% }) %>
+                                            <% } %>
+                            </div>
+                            <br>
+                            <div class="col-md-12">
+                                <a href="/address" class="genric-btn info radius">Add Address</a>
+                            </div>
+                            <br>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="order_box">
+                                <h2>Your Order</h2>
+                                <ul class="list">
+                                    <li><a href="#">Product <span>Total</span></a></li>
+                                    <% if(cart) { %>
+                                        <% cart.items.forEach(item=> { %>
+                                            <li><a href="#">
+                                                    <%= item.productId.name %><span class="middle">x <%= item.quantity
+                                                                %></span> <span class="last">$<%= item.totalPrice %>
+                                                        </span>
+                                                </a></li>
+                                            <% }) %>
+                                                <% } else { %>
+
+                                                    <% } %>
+                                </ul>
+
+                                <ul class="list list_2">
+                                    <li><a href="#">Shipping <span>Flat rate: $00.00</span></a></li>
+                                    <li><a href="#">Total <span>$<%= subTotal %></span></a></li>
+                                </ul>
+
+                                <div class="payment_item">
+                                    <div class="radion_btn">
+                                        <input type="radio" id="f-option5" name="paymentMethod" value="COD" checked>
+                                        <label for="f-option5">Cash On Delivery</label>
+                                        <div class="check"></div>
+                                    </div>
+                                    <!-- Add more payment options if needed -->
+                                </div>
+
+                                <button type="button" class="primary-btn" onclick="placeOrder()">Place order</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <!--================End Checkout Area =================-->
+
+        <%- include('../layout/userLayouts/footer') -%>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const placeOrderButton = document.querySelector('.primary-btn');
+
+                    function getQueryParam(name) {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        return urlParams.get(name);
+                    }
+                    const orderId = getQueryParam('orderId');
+
+                    placeOrderButton.addEventListener('click', async function () {
+                        try {
+                            const selectedAddressInput = document.querySelector('input[name="address"]:checked');
+                            const address = selectedAddressInput ? selectedAddressInput.value : '';
+
+                            const paymentMethod = "COD";
+
+                            const response = await fetch('/placeOrder', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ address, paymentMethod }),
+                            });
+
+                            const responseData = await response.json();
+
+                            if (responseData.success) {
+                                window.location.href = '/confirmation?orderId=' + responseData.orderId;
+                            } else {
+                                console.error(responseData.error);
+                                alert('Failed to place the order. Please try again.');
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            alert('An unexpected error occurred. Please try again.');
+                        }
+                    });
+                });
+
+
+            </script>
