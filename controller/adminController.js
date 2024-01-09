@@ -51,11 +51,6 @@ const updateUserStatus = async (req, res) => {
             updatedUser = await User.findByIdAndUpdate(userId, { isBlocked: false }, { new: true });
         } else {
             updatedUser = await User.findByIdAndUpdate(userId, { isBlocked: true }, { new: true });
-
-            // if(sessionId === userId) {
-            //     req.session.destroy();
-            //     return res.redirect('/');
-            // }
         }
 
         return res.send({ status: 'success', user: updatedUser });
@@ -231,6 +226,8 @@ const load_EditCategories = async (req, res) => {
     }
 }
 
+
+
 //logout admin
 const logoutAdmin = async (req, res) => {
     try {
@@ -254,5 +251,5 @@ module.exports = {
     editCategories,
     updateCategoryStatus,
     deleteCategories,
-    logoutAdmin
+    logoutAdmin,
 }   

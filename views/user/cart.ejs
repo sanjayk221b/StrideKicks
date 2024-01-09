@@ -35,6 +35,7 @@
                                         aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-user"></i></a>
                                     <ul class="dropdown-menu">
                                         <% if (locals.user) { %>
+                                            <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
                                             <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
                                             <% } else { %>
                                                 <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
@@ -86,126 +87,137 @@
             <div class="container">
                 <div class="cart_inner">
                     <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if(cart && cart.items && cart.items.length> 0) { %>
-                                    <% cart.items.forEach(item=> { %>
-                                        <tr data-product-id="<%= item.productId.id %>">
-                                            <td>
-                                                <div class="media">
-                                                    <div class="d-flex">
-                                                        <img src="/sharpImages/<%= item.productId.image[0] %>"
-                                                            width="100px" height="110px" alt="">
+                        <div id="cartContent">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Product</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(cart && cart.items && cart.items.length> 0) { %>
+                                        <% cart.items.forEach(item=> { %>
+                                            <tr data-product-id="<%= item.productId.id %>">
+                                                <td>
+                                                    <div class="media">
+                                                        <div class="d-flex">
+                                                            <img src="/sharpImages/<%= item.productId.image[0] %>"
+                                                                width="100px" height="110px" alt="">
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <p>
+                                                                <%= item.productId.name %>
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div class="media-body">
-                                                        <p>
-                                                            <%= item.productId.name %>
-                                                        </p>
+                                                </td>
+                                                <td>
+                                                    <h5>$<%= item.productId.price.toFixed(2) %>
+                                                    </h5>
+                                                </td>
+                                                <td>
+                                                    <div class="product_count">
+                                                        <input type="text" name="qty" id="sst_<%= item.productId.id %>"
+                                                            maxlength="12" value="<%= item.quantity %>"
+                                                            title="Quantity:" class="input-text qty" readonly
+                                                            data-stock="<%= item.productId.stockQuantity %>">
+                                                        <button class="increase items-count" type="button"
+                                                            onclick="increaseQuantity('<%= item.productId.id %>')">
+                                                            <i class="lnr lnr-chevron-up"></i>
+                                                        </button>
+                                                        <button class="reduced items-count" type="button"
+                                                            onclick="decreaseQuantity('<%= item.productId.id %>')">
+                                                            <i class="lnr lnr-chevron-down"></i>
+                                                        </button>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <h5>$<%= item.productId.price.toFixed(2) %>
-                                                </h5>
-                                            </td>
-                                            <td>
-                                                <div class="product_count">
-                                                    <input type="text" name="qty" id="sst_<%= item.productId.id %>"
-                                                        maxlength="12" value="<%= item.quantity %>" title="Quantity:"
-                                                        class="input-text qty" readonly>
-                                                    <button class="increase items-count" type="button"
-                                                        onclick="increaseQuantity('<%= item.productId.id %>')">
-                                                        <i class="lnr lnr-chevron-up"></i>
-                                                    </button>
-                                                    <button class="reduced items-count" type="button"
-                                                        onclick="decreaseQuantity('<%= item.productId.id %>')">
-                                                        <i class="lnr lnr-chevron-down"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <h5>$<%= (item.productId.price * item.quantity).toFixed(2) %>
-                                                </h5>
-                                            </td>
-                                            <td>
-                                                <a href="#" onclick="removeProduct('<%= item.productId.id %>')">
-                                                    <i class="fa-solid fa-trash" style="color: #000000;"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <% }) %>
+                                                </td>
+                                                <td>
+                                                    <h5>$<%= (item.productId.price * item.quantity).toFixed(2) %>
+                                                    </h5>
+                                                </td>
+                                                <td>
+                                                    <a href="#"
+                                                        onclick="removeProduct('<%= item.productId.id %>', event)">
+                                                        <i class="fa-solid fa-trash" style="color: #000000;"></i>
+                                                    </a>
+                                                </td>
 
 
-                                            <% } else { %>
-                                                <tr>
-                                                    <td colspan="4">
-                                                        <p>Your cart is empty.</p>
-                                                    </td>
-                                                </tr>
-                                                <% } %>
+                                            </tr>
+                                            <% }) %>
 
-                                                    <tr class="bottom_button">
-                                                        <td>
-                                                            <a class="gray_btn" href="" onclick="updateCart()">Update
-                                                                Cart</a>
-                                                        </td>
-                                                        <td>
 
-                                                        </td>
-                                                        <td>
-
-                                                        </td>
-                                                        <td>
-                                                            <!-- <div class="cupon_text d-flex align-items-center">
-                                                    <input type="text" placeholder="Coupon Code">
-                                                    <a class="primary-btn" href="#">Apply</a>
-                                                    <a class="gray_btn" href="#">Close Coupon</a>
-                                                </div> -->
-                                                        </td>
-                                                    </tr>
+                                                <% } else { %>
                                                     <tr>
-                                                        <td>
-
-                                                        </td>
-                                                        <td>
-
-                                                        </td>
-                                                        <td>
-                                                            <h5>Subtotal</h5>
-                                                        </td>
-                                                        <td>
-                                                            <h5>$<%= subTotal%>
-                                                            </h5>
+                                                        <td colspan="4">
+                                                            <p>Your cart is empty.</p>
                                                         </td>
                                                     </tr>
-                                                    <tr class="shipping_area">
-                                                        <td>
+                                                    <% } %>
 
-                                                        </td>
-                                                        <td>
+                                                        <tr class="bottom_button">
+                                                            <td>
 
-                                                        </td>
-                                                        <td>
-                                                            <h5>Shipping</h5>
-                                                        </td>
-                                                        <td>
-                                                            <div class="shipping_box">
-                                                                <ul class="list">
-                                                                    <!-- <li><a href="#">Flat Rate: $5.00</a></li> -->
-                                                                    <li class="active"><a href="#">Free Shipping</a>
-                                                                    </li>
-                                                                    <!-- <li><a href="#">Flat Rate: $10.00</a></li> -->
-                                                                    <!-- <li class="active"><a href="#">Local Delivery: $2.00</a></li> -->
-                                                                </ul>
-                                                                <!-- <h6>Calculate Shipping <i class="fa fa-caret-down"
+                                                            </td>
+                                                            <td>
+                                                                <!-- <a class="gray_btn" href=""
+                                                                    onclick="updateCart()">Update
+                                                                    Cart</a> -->
+                                                            </td>
+                                                            <td>
+
+                                                            </td>
+                                                            <td>
+
+                                                            </td>
+                                                            <td>
+                                                                <div
+                                                                    class="cupon_text d-flex align-items-center pull-right">
+                                                                    <input type="text" placeholder="Coupon Code">
+                                                                    <a class="primary-btn" href="#">Apply</a>
+                                                                    <!-- <a class="gray_btn" href="#">Close Coupon</a> -->
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                                <h5>Subtotal</h5>
+                                                            </td>
+                                                            <td>
+                                                                <h5>$<%= subTotal%>
+                                                                </h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="shipping_area">
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                                <h5>Shipping</h5>
+                                                            </td>
+                                                            <td>
+                                                                <div class="shipping_box">
+                                                                    <ul class="list">
+                                                                        <!-- <li><a href="#">Flat Rate: $5.00</a></li> -->
+                                                                        <li class="active"><a href="#">Free Shipping</a>
+                                                                        </li>
+                                                                        <!-- <li><a href="#">Flat Rate: $10.00</a></li> -->
+                                                                        <!-- <li class="active"><a href="#">Local Delivery: $2.00</a></li> -->
+                                                                    </ul>
+                                                                    <!-- <h6>Calculate Shipping <i class="fa fa-caret-down"
                                                             aria-hidden="true"></i>
                                                     </h6>
                                                     <select class="shipping_select">
@@ -220,29 +232,32 @@
                                                     </select>
                                                     <input type="text" placeholder="Postcode/Zipcode">
                                                     <a class="gray_btn" href="#">Update Details</a> -->
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="out_button_area">
-                                                        <td>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="out_button_area">
+                                                            <td>
 
-                                                        </td>
-                                                        <td>
+                                                            </td>
 
-                                                        </td>
-                                                        <td>
-
-                                                        </td>
-                                                        <td>
-                                                            <div class="checkout_btn_inner d-flex align-items-center">
-                                                                <a class="gray_btn" href="#">Go back</a>
-                                                                <a class="primary-btn" href="/checkout">Proceed to
-                                                                    checkout</a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                            </tbody>
-                        </table>
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                                <div
+                                                                    class="checkout_btn_inner d-flex align-items-center pull-right">
+                                                                    <a class="gray_btn" href="/shop">Go back</a>
+                                                                    <a class="primary-btn" href="/checkout">Proceed to
+                                                                        checkout</a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -255,12 +270,15 @@
                 function increaseQuantity(productId) {
                     const quantityInput = document.getElementById(`sst_${productId}`);
                     let currentQuantity = parseInt(quantityInput.value);
+                    const stockQuantity = parseInt(quantityInput.getAttribute('data-stock'));
 
-                    if (!isNaN(currentQuantity) && currentQuantity >= 0) {
+                    if (!isNaN(currentQuantity) && currentQuantity < stockQuantity) {
                         quantityInput.value = currentQuantity + 1;
                         updateTotal(productId);
+                        updateCart();
                     }
                 }
+
                 function decreaseQuantity(productId) {
                     const quantityInput = document.getElementById(`sst_${productId}`);
                     let currentQuantity = parseInt(quantityInput.value);
@@ -268,6 +286,7 @@
                     if (!isNaN(currentQuantity) && currentQuantity > 1) {
                         quantityInput.value = currentQuantity - 1;
                         updateTotal(productId);
+                        updateCart();
                     }
                 }
 
@@ -308,16 +327,20 @@
                         success: function (response) {
                             // Handle the response from the server if needed
                             console.log(response);
+                            // Reload the content of the "cartContent" div
+                            $('#cartContent').load(window.location.href + ' #cartContent');
                         },
-                        error: function (error) {
+                        error: function (error) { // Add the error parameter here
                             console.error(error);
                         }
                     });
-
                 }
 
-                //Remove Cart Item
-                function removeProduct(productId) {
+                // Remove Cart Item
+                function removeProduct(productId, event) {
+                    // Prevent the default behavior of the anchor tag
+                    event.preventDefault();
+
                     $.ajax({
                         type: 'DELETE',
                         url: '/cart/removeItem',
@@ -325,15 +348,14 @@
                         data: JSON.stringify({ productId }),
                         success: function (response) {
                             console.log(response);
-                            location.reload()
+                            // Reload the content of the "cartContent" div
+                            $('#cartContent').load(window.location.href + ' #cartContent');
                         },
                         error: function (error) {
                             console.error(error);
                         }
                     });
                 }
-
-
 
 
             </script>

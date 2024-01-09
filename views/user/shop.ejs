@@ -34,6 +34,7 @@
                                         aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-user"></i></a>
                                     <ul class="dropdown-menu">
                                         <% if (locals.user) { %>
+                                            <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
                                             <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
                                             <% } else { %>
                                                 <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
@@ -159,7 +160,7 @@
                                 <% for(let i=0; i < products.length; i++) { %>
                                     <div class="col-lg-4 col-md-6 mb-4">
                                         <div class="single-product">
-                                            <img class="img-fluid" src="/images/<%= products[i].image[0] %>" alt="">
+                                            <img class="img-fluid" src="/sharpImages/<%= products[i].image[0] %>" alt="">
                                             <div class="product-details">
                                                 <h6>
                                                     <%= products[i].name%>

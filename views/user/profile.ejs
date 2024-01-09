@@ -63,13 +63,13 @@
                         </a>
                     </li>
                     <li>
-                        <a class="nav-link" href="./user.html">
+                        <a class="nav-link" href="/orders">
                             <i class="nc-icon nc-circle-09"></i>
                             <p>Orders</p>
                         </a>
                     </li>
                     <li>
-                        <a class="nav-link" href="./user.html">
+                        <a class="nav-link" href="/manageAddress">
                             <i class="nc-icon nc-circle-09"></i>
                             <p>Manage Address</p>
                         </a>
@@ -84,15 +84,15 @@
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg " color-on-scroll="500">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="#pablo"> Dashboard </a>
-                    <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                    <a class="navbar-brand" href="#"> <%=user.username%> </a>
+                    <!-- <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                         aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-bar burger-lines"></span>
                         <span class="navbar-toggler-bar burger-lines"></span>
                         <span class="navbar-toggler-bar burger-lines"></span>
-                    </button>
+                    </button> -->
                     <div class="collapse navbar-collapse justify-content-end" id="navigation">
-                        <ul class="nav navbar-nav mr-auto">
+                        <!-- <ul class="nav navbar-nav mr-auto">
                             <li class="nav-item">
                                 <a href="#" class="nav-link" data-toggle="dropdown">
                                     <i class="nc-icon nc-palette"></i>
@@ -105,14 +105,14 @@
                                     <span class="d-lg-block">&nbsp;Search</span>
                                 </a>
                             </li>
-                        </ul>
+                        </ul> -->
                         <ul class="navbar-nav ml-auto">
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a class="nav-link" href="#pablo">
                                     <span class="no-icon">Account</span>
                                 </a>
-                            </li>
-                            <li class="nav-item dropdown">
+                            </li> -->
+                            <!-- <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="http://example.com"
                                     id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="false">
@@ -126,10 +126,10 @@
                                     <div class="divider"></div>
                                     <a class="dropdown-item" href="#">Separated link</a>
                                 </div>
-                            </li>
+                            </li> -->
                             <li class="nav-item">
-                                <a class="nav-link" href="#pablo">
-                                    <span class="no-icon">Log out</span>
+                                <a class="nav-link " href="/logout">
+                                    <span class="no-icon text-danger">Log out</span>
                                 </a>
                             </li>
                         </ul>
@@ -152,20 +152,20 @@
                                                 <div class="form-group">
                                                     <label>Name</label>
                                                     <input type="text" class="form-control" placeholder="Company"
-                                                        value="Mike" readonly>
+                                                        value="<%= user.username %>" readonly>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12 pl-1">
                                             <div class="form-group">
                                                 <label for="exampleInputEmail1">Email address</label>
-                                                <input type="email" class="form-control" placeholder="Email" readonly>
+                                                <input type="email" class="form-control" value="<%= user.email %>" readonly>
                                             </div>
                                         </div>
                                         <div class="col-md-12 pl-1">
                                             <div class="form-group">
                                                 <label>Phone</label>
-                                                <input type="number" class="form-control" placeholder="Phone" readonly>
+                                                <input type="text" class="form-control" value="<%= user.mobile %>" readonly>
                                             </div>
                                         </div>
                                 </div>

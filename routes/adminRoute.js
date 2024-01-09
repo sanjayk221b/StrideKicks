@@ -1,7 +1,8 @@
 const express = require('express');
 const adminRouter = express();
 const adminController = require('../controller/adminController');
-const productsController = require('../controller/productsController')
+const productsController = require('../controller/productsController');
+const orderController = require('../controller/orderController')
 const path = require('path')
 const adminAuth = require('../midddleware/adminAuth')
 
@@ -61,7 +62,12 @@ adminRouter.post('/addCategories', adminController.addCategories);
 adminRouter.get('/editCategories',adminAuth.isAdminLogin, adminController.load_EditCategories);
 adminRouter.post('/editCategories', adminController.editCategories);
 
-adminRouter.delete('/deleteCategories/:id', adminController.deleteCategories)
+adminRouter.delete('/deleteCategories/:id',adminAuth.isAdminLogin, adminController.deleteCategories)
+
+//Order Management Routes
+adminRouter.get('/orders',adminAuth.isAdminLogin,orderController.load_AdminOrders)
+ 
+adminRouter.post('/updateOrderStatus',adminAuth.isAdminLogin,orderController.updateOrderStatus)
 
 
 module.exports = adminRouter;

@@ -39,16 +39,24 @@ userRouter.post('/updateCart',auth.checkBlocked,auth.isLogin,cartController.upda
 userRouter.delete('/cart/removeItem',auth.checkBlocked,auth.isLogin,cartController.removeItem);
 
 userRouter.get('/checkout',auth.checkBlocked,auth.isLogin,cartController.loadCheckout);
-
 userRouter.post('/placeOrder',auth.checkBlocked,auth.isLogin,orderController.placeOrder);
-
 userRouter.get('/confirmation',auth.checkBlocked, auth.isLogin,orderController.load_orderConfirmation);
 
 userRouter.get('/profile',auth.checkBlocked,auth.isLogin,userController.loadProfile);
-
 userRouter.get('/editProfile',auth.checkBlocked,auth.isLogin,userController.load_EditProfile);
+userRouter.post('/editProfile',auth.checkBlocked,auth.isLogin,userController.updateUserProfile);
+userRouter.post('/updatePassword',auth.checkBlocked,auth.isLogin,userController.updatePassword);
+userRouter.get('/forgotPassword',auth.checkBlocked,userController.load_forgotPassword);
 
 userRouter.get('/address',auth.checkBlocked,auth.isLogin,userController.load_AddAddress);
 userRouter.post('/address',auth.checkBlocked, auth.isLogin,userController.addAddress);
+
+userRouter.get('/manageAddress',auth.checkBlocked,auth.isLogin,userController.load_manageAddress);
+
+userRouter.get('/orders',auth.checkBlocked,auth.isLogin,orderController.load_userOrders);
+userRouter.get('/singleOrder',auth.checkBlocked,auth.isLogin,orderController.load_SingleOrder);
+userRouter.post('/cancelOrder',auth.checkBlocked,auth.isLogin,orderController.cancelOrder);
+userRouter.post('/returnOrder',auth.checkBlocked,auth.isLogin,orderController.cancelOrder);
+
 
 module.exports = userRouter;      

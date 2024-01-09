@@ -117,6 +117,33 @@ const updateCart = async (req, res) => {
     }
 };
 
+// const updateQuantity = async (req, res) => {
+//     try {
+//         const userId = req.session.userId;
+//         const productId = req.body.productId;
+//         const count = req.body.count;
+
+//         const cart = await Cart.findOne({ userId: req.session.userId });
+//         if (!cart) {
+//             return res.json({ success: false, message: 'Cart not found.' });
+//         }
+
+//         const cartProduct = cart.items.find((item) => item.productId.toString() === productId);
+//         if (!cartProduct) {
+//             return res.json({ success: false, message: 'Product not found in the cart.' });
+//         }
+
+//         const product = await Products.findById(productId);
+//         if (!product) {
+//             console.log('Product not found in the database.');
+//             return res.json({ success: false, message: 'Product not found in the database.' });
+//         }
+
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
 const removeItem = async (req, res) => {
     try {
         const { userId } = req.session;
@@ -150,7 +177,7 @@ const loadCheckout = async (req, res) => {
                 }))
             }
 
-            res.render('checkout', { cart: cartDetails, userData: user, subTotal: amount })
+            res.render('checkout', { cart: cartDetails, user: user, subTotal: amount })
         }
     } catch (error) {
         console.log(error);
@@ -164,5 +191,6 @@ module.exports = {
     addToCart,
     updateCart,
     removeItem,
-    loadCheckout
+    loadCheckout,
+    // updateQuantity
 }

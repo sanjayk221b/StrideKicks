@@ -57,19 +57,19 @@
                         </a>
                     </li>
                     <li>
-                        <a class="nav-link active" href="./user.html">
+                        <a class="nav-link active" href="/editProfile">
                             <i class="nc-icon nc-circle-09"></i>
                             <p>Edit profile</p>
                         </a>
                     </li>
                     <li>
-                        <a class="nav-link" href="./user.html">
+                        <a class="nav-link" href="/orders">
                             <i class="nc-icon nc-circle-09"></i>
                             <p>Orders</p>
                         </a>
                     </li>
                     <li>
-                        <a class="nav-link" href="./user.html">
+                        <a class="nav-link" href="/manageAddress">
                             <i class="nc-icon nc-circle-09"></i>
                             <p>Manage Address</p>
                         </a>
@@ -143,34 +143,81 @@
                         <div class="col-md-12">
                             <div class="card ">
                                 <div class="card-header">
-                                    <h4 class="card-title">Profile</h4>
+                                    <h4 class="card-title">Edit Profile</h4>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body ">
                                     <form>
                                         <div class="row">
                                             <div class="col-md-12 pr-1">
                                                 <div class="form-group">
                                                     <label>Name</label>
-                                                    <input type="text" class="form-control" placeholder="Company"
-                                                        value="Mike" >
+                                                    <input type="text" class="form-control" name="username"
+                                                        value="<%= user.username %>">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12 pl-1">
                                             <div class="form-group">
                                                 <label for="exampleInputEmail1">Email address</label>
-                                                <input type="email" class="form-control" placeholder="Email" >
+                                                <input type="email" class="form-control" name="email"
+                                                    value="<%= user.email %>" readonly>
                                             </div>
                                         </div>
                                         <div class="col-md-12 pl-1">
                                             <div class="form-group">
                                                 <label>Phone</label>
-                                                <input type="number" class="form-control" placeholder="Phone" >
+                                                <input type="text" class="form-control" name="mobile"
+                                                    value="<%= user.mobile%>">
                                             </div>
                                         </div>
+                                        <div class="text-center">
+                                            <button type="submit" id="updateProfileBtn"
+                                                class="btn btn-info btn-fill mb-2 ">Update
+                                                Profile</button>
+                                        </div>
+
                                 </div>
-                                <div></div>
-                                <button type="submit" class="btn btn-info btn-fill pull-right">Update Profile</button>
+                                <div class="clearfix">
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title">Edit Password</h4>
+                                </div>
+                                <div class="card-body ">
+                                    <form>
+                                        <div class="row">
+                                            <div class="col-md-12 pr-1">
+                                                <div class="form-group">
+                                                    <label>Current Password</label>
+                                                    <input type="password" name="currentPassword" class="form-control"
+                                                        value="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 pl-1">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">New Password</label>
+                                                <input type="password" name="newPassword" class="form-control" value="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 pl-1">
+                                            <div class="form-group">
+                                                <label>Confirm Password</label>
+                                                <input type="password" name="confirmPassword" class="form-control"
+                                                    value="">
+                                            </div>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" id="updatePasswordBtn"
+                                                class="btn btn-info btn-fill ">Update
+                                                Password</button>
+                                        </div>
+                                </div>
                                 <div class="clearfix">
                                 </div>
                                 </form>
@@ -239,10 +286,56 @@
     $(document).ready(function () {
         // Javascript method's body can be found /userAssets/profile/js/demos.js
         demo.initDashboardPageCharts();
-
         demo.showNotification();
-
     });
+</script>
+
+<script>
+    //updatePassword
+    $('#updateProfileBtn').on('click', function () {
+        var username = $('input[name="username"]').val();
+        var mobile = $('input[name="mobile"]').val();
+        var data = { username: username, mobile: mobile };
+
+        $.ajax({
+            type: 'POST',
+            url: '/editProfile',
+            data: data,
+            success: function (response) {
+                console.log('Profile updated successfully:', response);
+            },
+            error: function (error) {
+                console.error('Error updating profile:', error);
+            }
+        });
+    });
+
+
+    //updatePassword
+    $('#updatePasswordBtn').on('click', function () {
+        let currentPassword = $('input[name="currentPassword"]').val();
+        let newPassword = $('input[name="newPassword"]').val();
+        let confirmPassword = $('input[name="confirmPassword"]').val();
+
+        let data = {
+            currentPassword: currentPassword,
+            newPassword: newPassword,
+            confirmPassword: confirmPassword
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/updatePassword',
+            data: data,
+            success: function (response) {
+                console.log('Password updated successfully:', response);
+            },
+            error: function (error) {
+                console.error('Error updating password:', error);
+            }
+        });
+    });
+
 </script>
 
 </html>

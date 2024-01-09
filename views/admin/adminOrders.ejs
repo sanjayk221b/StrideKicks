@@ -1,0 +1,323 @@
+<%- include('../layout/adminLayouts/header') -%>
+
+
+    <body>
+        <div class="container-fluid position-relative d-flex p-0">
+            <!-- Spinner Start -->
+            <!-- <div id="spinner"
+                class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div> -->
+            <!-- Spinner End -->
+
+
+            <!-- Sidebar Start -->
+            <div class="sidebar pe-4 pb-3">
+                <nav class="navbar bg-secondary navbar-dark">
+                    <a href="#" class="navbar-brand mx-4 mb-3">
+                        <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i></h3>
+                    </a>
+                    <div class="d-flex align-items-center ms-4 mb-4">
+                        <div class="position-relative">
+                            <img class="rounded-circle" src="/adminAssets/img/user.jpg" alt=""
+                                style="width: 40px; height: 40px;">
+                            <div
+                                class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="mb-0">Sanjay k</h6>
+                            <span>Admin</span>
+                        </div>
+                    </div>
+                    <div class="navbar-nav w-100">
+                        <a href="/admin" class="nav-item nav-link "><i
+                                class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                        <a href="/admin/users" class="nav-item nav-link "><i class="fa fa-keyboard me-2"></i>Users</a>
+                        <a href="/admin/products" class="nav-item nav-link "><i
+                                class="fa fa-keyboard me-2"></i>Products</a>
+                        <a href="/admin/categories" class="nav-item nav-link "><i
+                                class="fa fa-keyboard me-2"></i>Categories</a>
+                        <a href="/admin/orders" class="nav-item nav-link active"><i
+                                class="fa fa-keyboard me-2"></i>Orders</a>
+                        <!-- <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>products</a> -->
+                    </div>
+                </nav>
+            </div>
+            <!-- Sidebar End -->
+
+
+            <!-- Content Start -->
+            <div class="content">
+                <!-- Navbar Start -->
+                <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                    <a href="/admin" class="navbar-brand d-flex d-lg-none me-4">
+                        <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+                    </a>
+                    <a href="#" class="sidebar-toggler flex-shrink-0">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                    <form class="d-none d-md-flex ms-4">
+                        <input class="form-control bg-dark border-0" id="navbar-search" type="search"
+                            placeholder="Search by Name">
+                    </form>
+                    <div class="navbar-nav align-items-center ms-auto ">
+                        <div class="nav-item dropdown me-3">
+                            <a href="/admin/addProducts" class="nav-link">
+                                <i class="fa fa-envelope me-lg-2"></i>
+                                <span class="d-none d-lg-inline-flex">Add Products </span>
+                            </a>
+
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
+                                    style="width: 40px; height: 40px;">
+                                <span class="d-none d-lg-inline-flex">Sanjay k</span>
+                            </a>
+                            <div
+                                class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                                <a href="#" class="dropdown-item">My Profile</a>
+                                <a href="#" class="dropdown-item">Settings</a>
+                                <a href="/admin/logout" class="dropdown-item">Log Out</a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <!-- Navbar End -->
+
+
+                <!-- Table Start -->
+                <div class="container-fluid pt-4 px-4">
+                    <div class="col-12">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h4 class="mb-4">Orders </h4>
+                            <div class="table-responsive">
+                                <table class="table" id="myDataTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Order ID</th>
+                                            <th scope="col">Customer</th>
+                                            <th scope="col">Total Price</th>
+                                            <th scope="col">Order Date</th>
+                                            <th scope="col">Payment Method</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col"></th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (orders.length> 0) { %>
+                                            <% orders.forEach(order=> { %>
+                                                <% if(order.items && order.items.length> 0) {%>
+                                                    <% order.items.forEach(item=> { %>
+                                                        <tr>
+                                                            <td>
+                                                                <%= order.orderId %>
+                                                            </td>
+
+                                                            <td>
+                                                                <%= order.username %>
+                                                            </td>
+                                                            <td>
+                                                                <%= order.totalAmount %>
+                                                            </td>
+                                                            <td>
+                                                                <%= moment(order.date).format('DD-MM-YYYY') %>
+                                                            </td>
+                                                            <td>
+                                                                <%= order.payment %>
+                                                            </td>
+                                                            <td>
+                                                                <select class="form-select statusSelector"
+                                                                    name="statusSelector"
+                                                                    onchange="updateOrderStatus(this.value,'<%=order._id%>','<%=item._id%>')">
+                                                                    <option value="placed"
+                                                                        <%=item.orderStatus==='placed' ? 'selected' : ''
+                                                                        %>>Placed</option>
+                                                                    <option value="shipped"
+                                                                        <%=item.orderStatus==='shipped' ? 'selected'
+                                                                        : '' %>>Shipped</option>
+                                                                    <option value="out_for_delivery"
+                                                                        <%=item.orderStatus==='out_for_delivery'
+                                                                        ? 'selected' : '' %>>Out for Delivery</option>
+                                                                    <option value="delivered"
+                                                                        <%=item.orderStatus==='delivered' ? 'selected'
+                                                                        : '' %>>Delivered</option>
+                                                                    <option value="request_return"
+                                                                        <%=item.orderStatus==='request_return'
+                                                                        ? 'selected' : '' %>>Request Return</option>
+                                                                    <option value="returned"
+                                                                        <%=item.orderStatus==='returned' ? 'selected'
+                                                                        : '' %>>Returned</option>
+                                                                    <option value="request_cancellation"
+                                                                        <%=item.orderStatus==='request_cancellation'
+                                                                        ? 'selected' : '' %>>Request Cancellation
+                                                                    </option>
+                                                                    <option value="cancelled"
+                                                                        <%=item.orderStatus==='cancelled' ? 'selected'
+                                                                        : '' %>>Cancelled</option>
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button"
+                                                                    class="btn btn-outline-info btn-sm ">view</button>
+                                                            </td>
+                                                            <td>
+
+                                                            </td>
+                                                        </tr>
+                                                        <% }) %>
+                                                            <% } %>
+                                                                <% }) %>
+                                                                    <% } else { %>
+                                                                        <tr>
+                                                                            <td>No orders available</td>
+                                                                        </tr>
+                                                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Table End -->
+
+
+
+
+                <%- include('../layout/adminLayouts/footer') -%>
+                    <script>
+
+                        var $j = jQuery.noConflict();
+
+                        $j(document).ready(function () {
+                            $j('#myDataTable').DataTable({
+                                "order": [[/*columnIndex*/, "desc"]]
+                            });
+                        });
+
+                        // Toggle the product status (list/unlist)
+                        async function toggleProductStatus(productId, action) {
+                            try {
+                                const actionText = action === 'unlist' ? 'list' : 'unlist';
+
+                                // SweetAlert for confirmation
+                                Swal.fire({
+                                    title: 'Confirm Action',
+                                    text: `Do you want to ${actionText} this product?`,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#d33',
+                                    cancelButtonColor: '#3085d6',
+                                    confirmButtonText: `Yes, ${actionText} it!`
+                                }).then(async (result) => {
+                                    if (result.isConfirmed) {
+                                        const response = await fetch(`/admin/products/${productId}`, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                        });
+
+                                        const data = await response.json();
+
+                                        if (data.status) {
+                                            location.reload();
+                                        } else {
+                                            console.error(`Failed to ${actionText.toLowerCase()} product status:`, data.message);
+                                        }
+                                    }
+                                });
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        }
+                        //Delete Product
+                        function deleteProduct(productId) {
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: 'Once deleted, you will not be able to recover this product!',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                cancelButtonColor: '#3085d6',
+                                confirmButtonText: 'Yes, delete it!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    fetch(`/admin/deleteProducts/${productId}`, {
+                                        method: 'POST', // Use DELETE method
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                Swal.fire('Deleted!', 'The product has been deleted.', 'success');
+                                                location.reload(); // reload the page after deletion
+                                            } else {
+                                                console.error('Error:', data.error);
+                                                Swal.fire('Error', 'Failed to delete the product.', 'error');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                            Swal.fire('Error', 'Internal Server Error.', 'error');
+                                        });
+                                }
+                            });
+                        }
+
+                        function updateOrderStatus(newStatus, orderId, itemId) {
+                            console.log('Update Order Status called with:', newStatus, orderId, itemId);
+
+                            // Log the fetch request details
+                            fetch('/admin/updateOrderStatus', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    orderId: orderId,
+                                    itemId: itemId,
+                                    newStatus: newStatus,
+                                }),
+                            })
+                                .then(response => {
+                                    console.log('Response:', response);
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log('Success:', data);
+                                    // Optionally update the UI or perform additional actions
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
+                        }
+
+
+
+
+
+                        // // Search jQuery for the table and navbar
+                        // $(document).ready(function () {
+                        // // When the user types in either search box
+                        // $("#navbar-search, #name-search").on("keyup", function () {
+                        // var searchText = $(this).val().toLowerCase();
+
+                        // // Loop through each table row
+                        // $("table tbody tr").each(function () {
+                        // var productName = $(this).find("td:eq(0)").text().toLowerCase(); // Get the product name in
+                        // lowercase
+
+                        // // If the product name contains the search text, show the row; otherwise, hide it
+                        // if (productName.includes(searchText)) {
+                        // $(this).show();
+                        // } else {
+                        // $(this).hide();
+                        // }
+                        // });
+                        // });
+                        // });
+                    </script>

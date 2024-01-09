@@ -183,22 +183,97 @@ const addAddress = async (req, res) => {
 
         await User.findOneAndUpdate({ _id: userId }, {
             $push: {
-              address: {
-                name: name,
-                houseName: houseName,
-                city: city,
-                state: state,
-                mobile: mobile,
-                pincode: pincode
-              }
+                address: {
+                    name: name,
+                    houseName: houseName,
+                    city: city,
+                    state: state,
+                    mobile: mobile,
+                    pincode: pincode
+                }
             }
-          });
-          res.redirect('/home')
-          
+        });
+        res.redirect('/home')
+
     } catch (error) {
         console.log(error.message);
     }
 }
+
+//Update User Profile
+const updateUserProfile = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const { username, mobile } = req.body;
+        console.log('updateUserProdile');
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                $set: {
+                    username,
+                    mobile,
+                },
+            },
+            { new: true }
+        );
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(updatedUser)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//updatePassword
+const updatePassword = async (req, res) => {
+    try {
+        const user = await User.findById({ _id: req.session.userId });
+
+        const { currentPassword, newPassword, confirmPassword } = req.body;
+
+        const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+        if (!passwordMatch) {
+            return res.status(400).json({ success: false, message: 'Old password is incorrect.' });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ success: false, message: 'New password and confirm password do not match.' });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        user.password = hashedPassword;
+        await user.save();
+        
+        req.session.userId = null
+        return res.status(200).json({ success: true, message: 'Password changed successfully.' });
+
+
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
+//Forgot Password
+const forgotPassword = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const userData = User.findOne({email: email});
+        if(userData) {
+
+        } else {
+            res.render('forgotPassword',{message:' User email is incorrect'})
+        }
+    } catch(error) {
+        console.log(error)
+    }
+}
+
+
+
 
 //Home Render
 const loadHome = async (req, res) => {
@@ -256,7 +331,7 @@ const loadShop = async (req, res) => {
         const categoryData = await Categories.find({ isListed: true });
 
         res.render('shop', { products: data, categories: categoryData, user: userData });
-
+        
     } catch (error) {
         console.log(error);
     }
@@ -294,8 +369,28 @@ const loadProfile = async (req, res) => {
 
 const load_EditProfile = async (req, res) => {
     try {
-        res.render('editProfile');
+        const userData = await User.findOne({ _id: req.session.userId })
+        res.render('editProfile', { user: userData });
     } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const load_manageAddress = async (req, res) => {
+    try {
+
+        const userData = await User.findOne({ _id: req.session.userId })
+        res.render('manageAddress', { user: userData })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const load_forgotPassword = async (req, res) => {
+    try {
+        res.render('forgotPassword')
+    }  catch(error) {
         console.log(error);
     }
 }
@@ -335,5 +430,11 @@ module.exports = {
     load_AddAddress,
     loadProfile,
     addAddress,
-    load_EditProfile
+    load_EditProfile,
+    load_manageAddress,
+    updateUserProfile,
+    updatePassword,
+    load_forgotPassword,
+    forgotPassword
+
 }
