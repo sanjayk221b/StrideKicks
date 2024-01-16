@@ -51,12 +51,16 @@ const userSchema = new mongoose.Schema({
     },
     isBlocked: {
         type: Boolean,
-        default: false  
+        default: false
     },
     createdAt: {
         type: Date,
         default: Date.now
     },
+    token: {
+        type: String,
+        default: ''
+    }
 },
     {
         timestamps: true

@@ -96,17 +96,20 @@
                             </div>
                             <div class="single-prd-item">
                                 <div class="image-container">
-                                    <img id="image2" class="img-fluid" src="/images/<%= products.image[1] %>" alt="" />
+                                    <img id="image2" class="img-fluid" src="/SharpImages/<%= products.image[1] %>"
+                                        alt="" />
                                 </div>
                             </div>
                             <div class="single-prd-item">
                                 <div class="image-container">
-                                    <img id="image3" class="img-fluid" src="/images/<%= products.image[2] %>" alt="" />
+                                    <img id="image3" class="img-fluid" src="/SharpImages/<%= products.image[2] %>"
+                                        alt="" />
                                 </div>
                             </div>
                             <div class="single-prd-item">
                                 <div class="image-container">
-                                    <img id="image4" class="img-fluid" src="/images/<%= products.image[3] %>" alt="" />
+                                    <img id="image4" class="img-fluid" src="/SharpImages/<%= products.image[3] %>"
+                                        alt="" />
                                 </div>
                             </div>
                         </div>
@@ -129,14 +132,13 @@
                                 <label for="qty">Quantity:</label>
                                 <input type="text" name="qty" id="quantityInput" maxlength="12" value="1"
                                     title="Quantity:" class="input-text qty" />
-                                <button
-                                    onclick="var result = document.getElementById('quantityInput'); var quantityInput = result.value; if( !isNaN( quantityInput )) result.value++;return false;"
-                                    class="increase items-count" type="button"><i
-                                        class="lnr lnr-chevron-up"></i></button>
-                                <button
-                                    onclick="var result = document.getElementById('quantityInput'); var quantityInput = result.value; if( !isNaN( quantityInput ) &amp;&amp; quantityInput > 0 ) result.value--;return false;"
-                                    class="reduced items-count" type="button"><i
-                                        class="lnr lnr-chevron-down"></i></button>
+                                <button onclick="increaseQuantity()" class="increase items-count" type="button">
+                                    <i class="lnr lnr-chevron-up"></i>
+                                </button>
+
+                                <button onclick="decreaseQuantity()" class="reduced items-count" type="button">
+                                    <i class="lnr lnr-chevron-down"></i>
+                                </button>
                             </div>
                             <div class="card_area d-flex align-items-center">
                                 <a class="primary-btn" data-productId="<%= products._id %>" href="#">Add to Cart</a>
@@ -714,35 +716,79 @@
 
 
 
-                //AddToCart
+                // AddToCart
                 document.querySelector('.card_area .primary-btn').addEventListener('click', async (event) => {
                     try {
-                        event.preventDefault();
+                        event.preventDefault();  // Prevent the default form submission behavior
 
                         const productId = event.target.getAttribute('data-productId');
-
                         const quantity = document.getElementById('quantityInput').value;
 
-                        const response = await fetch('/addToCart', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ productId, quantity }),
+                        // Check if the stock quantity is greater than or equal to 1
+                        if (<%= products.stockQuantity %> >= 1) {
+                    const response = await fetch('/addToCart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ productId, quantity }),
+                    });
+
+                    const responseData = await response.json();
+
+                    if (responseData.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Item added to cart successfully!',
+                            showConfirmButton: true,
+                            showCancelButton: true,
+                            confirmButtonText: 'Go to Cart',
+                            cancelButtonText: 'Continue Shopping',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                window.location.href = '/cart';
+                            } else {
+                                window.location.href = '/shop';
+                            }
                         });
-
-                        const responseData = await response.json();
-
-                        if (responseData.success) {
-                            alert('Item added to cart successfully!');
-                        } else {
-                            alert('Error adding item to cart.');
-                        }
-                    } catch (error) {
-                        console.error('An error occurred:', error);
+                    } else {
+                        alert('Error adding item to cart.');
                     }
-                });
+                } else {
+                    // Stock quantity is less than 1, show a SweetAlert message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Out of Stock',
+                        text: 'Sorry, this item is out of stock.',
+                        confirmButtonText: 'OK',
+                    });
+                }
+    } catch (error) {
+                    console.error('An error occurred:', error);
+                }
+});
 
 
 
+
+
+                function increaseQuantity() {
+                    var result = document.getElementById('quantityInput');
+                    var quantityInput = parseInt(result.value);
+                    var stockQuantity = <%= products.stockQuantity %>;
+
+                    if (!isNaN(quantityInput) && quantityInput < stockQuantity) {
+                        result.value++;
+                    }
+                }
+
+                function decreaseQuantity() {
+                    var result = document.getElementById('quantityInput');
+                    var quantityInput = parseInt(result.value);
+
+                    if (!isNaN(quantityInput) && quantityInput > 1) {
+                        result.value--;
+                    }
+                }
             </script>

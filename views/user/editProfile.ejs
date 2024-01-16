@@ -153,6 +153,7 @@
                                                     <label>Name</label>
                                                     <input type="text" class="form-control" name="username"
                                                         value="<%= user.username %>">
+                                                        <p id="usernameError" class="error-message"></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -168,6 +169,7 @@
                                                 <label>Phone</label>
                                                 <input type="text" class="form-control" name="mobile"
                                                     value="<%= user.mobile%>">
+                                                    <p id="mobileError" class="error-message"></p>
                                             </div>
                                         </div>
                                         <div class="text-center">
@@ -196,6 +198,7 @@
                                                     <label>Current Password</label>
                                                     <input type="password" name="currentPassword" class="form-control"
                                                         value="">
+                                                        <p id="currentPasswordError" class="error-message"></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -203,6 +206,7 @@
                                             <div class="form-group">
                                                 <label for="exampleInputEmail1">New Password</label>
                                                 <input type="password" name="newPassword" class="form-control" value="">
+                                                <p id="newPasswordError" class="error-message"></p>
                                             </div>
                                         </div>
                                         <div class="col-md-12 pl-1">
@@ -210,6 +214,7 @@
                                                 <label>Confirm Password</label>
                                                 <input type="password" name="confirmPassword" class="form-control"
                                                     value="">
+                                                    <p id="confirmPasswordError" class="error-message"></p>
                                             </div>
                                         </div>
                                         <div class="text-center">
@@ -290,52 +295,120 @@
     });
 </script>
 
+<!-- Add this script to your HTML file -->
 <script>
-    //updatePassword
-    $('#updateProfileBtn').on('click', function () {
-        var username = $('input[name="username"]').val();
-        var mobile = $('input[name="mobile"]').val();
-        var data = { username: username, mobile: mobile };
+    $(document).ready(function () {
+        // AJAX call for updating profile
+        $('#updateProfileBtn').on('click', function (event) {
+            event.preventDefault
+            var username = $('input[name="username"]').val();
+            var mobile = $('input[name="mobile"]').val();
+            var data = { username: username, mobile: mobile };
 
-        $.ajax({
-            type: 'POST',
-            url: '/editProfile',
-            data: data,
-            success: function (response) {
-                console.log('Profile updated successfully:', response);
-            },
-            error: function (error) {
-                console.error('Error updating profile:', error);
+            // Validate and then proceed with the update
+            if (validateAndUpdateProfile()) {
+                $.ajax({
+                    type: 'PUT',
+                    url: '/editProfile',
+                    data: data,
+                    success: function (response) {
+                        console.log('Profile updated successfully:', response);
+                    },
+                    error: function (error) {
+                        console.error('Error updating profile:', error);
+                    }
+                });
             }
         });
-    });
 
+        // AJAX call for updating password
+        $('#updatePasswordBtn').on('click', function () {
+            let currentPassword = $('input[name="currentPassword"]').val();
+            let newPassword = $('input[name="newPassword"]').val();
+            let confirmPassword = $('input[name="confirmPassword"]').val();
 
-    //updatePassword
-    $('#updatePasswordBtn').on('click', function () {
-        let currentPassword = $('input[name="currentPassword"]').val();
-        let newPassword = $('input[name="newPassword"]').val();
-        let confirmPassword = $('input[name="confirmPassword"]').val();
+            // Validate and then proceed with the update
+            if (validateAndUpdatePassword()) {
+                let data = {
+                    currentPassword: currentPassword,
+                    newPassword: newPassword,
+                    confirmPassword: confirmPassword
+                };
 
-        let data = {
-            currentPassword: currentPassword,
-            newPassword: newPassword,
-            confirmPassword: confirmPassword
-        };
-
-        $.ajax({
-            type: 'POST',
-            url: '/updatePassword',
-            data: data,
-            success: function (response) {
-                console.log('Password updated successfully:', response);
-            },
-            error: function (error) {
-                console.error('Error updating password:', error);
+                $.ajax({
+                    type: 'PUT',
+                    url: '/updatePassword',
+                    data: data,
+                    success: function (response) {
+                        console.log('Password updated successfully:', response);
+                    },
+                    error: function (error) {
+                        console.error('Error updating password:', error);
+                    }
+                });
             }
         });
-    });
 
+        function validateAndUpdateProfile() {
+            const username = document.getElementsByName("username")[0].value;
+            const mobile = document.getElementsByName("mobile")[0].value;
+
+            clearErrorMessages();
+
+            if (!username.trim()) {
+                displayErrorMessage("Name cannot be empty.", "usernameError");
+                return false;
+            }
+
+           
+            return true;
+        }
+
+        function validateAndUpdatePassword() {
+            const currentPassword = document.getElementsByName("currentPassword")[0].value;
+            const newPassword = document.getElementsByName("newPassword")[0].value;
+            const confirmPassword = document.getElementsByName("confirmPassword")[0].value;
+
+            clearErrorMessages();
+
+            if (!currentPassword.trim()) {
+                displayErrorMessage("Current Password cannot be empty.", "currentPasswordError");
+                return false;
+            }
+
+            if (!newPassword.trim()) {
+                displayErrorMessage("New Password cannot be empty.", "newPasswordError");
+                return false;
+            }
+
+            if (!confirmPassword.trim()) {
+                displayErrorMessage("Confirm Password cannot be empty.", "confirmPasswordError");
+                return false;
+            }
+
+            if (newPassword !== confirmPassword) {
+                displayErrorMessage("New Password and Confirm Password do not match.", "confirmPasswordError");
+                return false;
+            }
+
+            // If all validations pass, you can submit the form or perform further actions.
+            // updatePasswordForm.submit();
+            return true;
+        }
+
+        function displayErrorMessage(message, errorFieldId) {
+            const errorField = document.getElementById(errorFieldId);
+            errorField.innerHTML = `<p style="color: red;">${message}</p>`;
+        }
+
+        function clearErrorMessages() {
+            const errorFields = document.querySelectorAll(".error-message");
+            errorFields.forEach(function (errorField) {
+                errorField.innerHTML = "";
+            });
+        }
+    });
 </script>
+
 
 </html>

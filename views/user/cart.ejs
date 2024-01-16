@@ -116,7 +116,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <h5>$<%= item.productId.price.toFixed(2) %>
+                                                    <h5>₹<%= item.productId.price.toFixed(2) %>
                                                     </h5>
                                                 </td>
                                                 <td>
@@ -136,7 +136,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <h5>$<%= (item.productId.price * item.quantity).toFixed(2) %>
+                                                    <h5>₹<%= (item.productId.price * item.quantity).toFixed(2) %>
                                                     </h5>
                                                 </td>
                                                 <td>
@@ -194,7 +194,7 @@
                                                                 <h5>Subtotal</h5>
                                                             </td>
                                                             <td>
-                                                                <h5>$<%= subTotal%>
+                                                                <h5>₹<%= subTotal%>
                                                                 </h5>
                                                             </td>
                                                         </tr>
@@ -203,10 +203,11 @@
                                                             </td>
                                                             <td>
                                                             </td>
-                                                            <td>
-                                                            </td>
+
                                                             <td>
                                                                 <h5>Shipping</h5>
+                                                            </td>
+                                                            <td>
                                                             </td>
                                                             <td>
                                                                 <div class="shipping_box">
@@ -308,7 +309,6 @@
                 function updateCart() {
                     const cartItems = [];
 
-                    // Iterate through table rows to collect updated cart items
                     $('tbody tr').each(function () {
                         const productId = $(this).data('product-id');
                         const quantity = parseInt($(`#sst_${productId}`).val());
@@ -321,16 +321,15 @@
 
                     $.ajax({
                         type: 'POST',
-                        url: '/updateCart', // Update this to the correct route on your server
+                        url: '/updateCart', 
                         contentType: 'application/json',
                         data: JSON.stringify({ cartItems }),
                         success: function (response) {
-                            // Handle the response from the server if needed
                             console.log(response);
                             // Reload the content of the "cartContent" div
                             $('#cartContent').load(window.location.href + ' #cartContent');
                         },
-                        error: function (error) { // Add the error parameter here
+                        error: function (error) { 
                             console.error(error);
                         }
                     });
@@ -338,24 +337,39 @@
 
                 // Remove Cart Item
                 function removeProduct(productId, event) {
-                    // Prevent the default behavior of the anchor tag
                     event.preventDefault();
 
-                    $.ajax({
-                        type: 'DELETE',
-                        url: '/cart/removeItem',
-                        contentType: 'application/json',
-                        data: JSON.stringify({ productId }),
-                        success: function (response) {
-                            console.log(response);
-                            // Reload the content of the "cartContent" div
-                            $('#cartContent').load(window.location.href + ' #cartContent');
-                        },
-                        error: function (error) {
-                            console.error(error);
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You are about to remove this item from your cart.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, remove it!',
+                        cancelButtonText: 'Cancel',
+                        confirmButtonColor: 'brown',
+                        cancelButtonColor: 'grey',
+
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // AJAX request to remove the item
+                            $.ajax({
+                                type: 'DELETE',
+                                url: '/cart/removeItem',
+                                contentType: 'application/json',
+                                data: JSON.stringify({ productId }),
+                                success: function (response) {
+                                    console.log(response);
+                                    // Reload the content of the "cartContent" div
+                                    $('#cartContent').load(window.location.href + ' #cartContent');
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                }
+                            });
                         }
                     });
                 }
+
 
 
             </script>

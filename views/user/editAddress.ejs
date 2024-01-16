@@ -1,0 +1,161 @@
+<%- include('../layout/userLayouts/header') -%>
+
+    <body>
+
+
+
+        <!-- Start Banner Area -->
+        <section class="banner-area organic-breadcrumb">
+            <div class="container">
+                <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                    <div class="col-first">
+                        <h1>Edit Address</h1>
+                        <!-- <nav class="d-flex align-items-center">
+                        <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="single-product.html">Checkout</a>
+                    </nav> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Banner Area -->
+
+        <!--================Checkout Area =================-->
+        <section class="checkout_area section_gap">
+            <div class="container">
+                <div class="billing_details">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <h3>Edit address</h3>
+
+                            <% address.forEach((singleAddress, index)=> { %>
+                                <form class="row contact_form" action="/editAddress" method="post"
+                                    onsubmit="return validateAddressForm();" novalidate="novalidate">
+                                    <div class="col-md-12 form-group p_star">
+                                        <label for="name">Full Name:</label>
+                                        <input type="hidden" class="form-control" id="addressId"
+                                            value="<%= singleAddress._id %>" name="addressId">
+                                        <input type="text" class="form-control" id="name"
+                                            value="<%= singleAddress.name %>" name="name">
+                                        <div id="nameError" class="error-message text-danger"></div>
+                                    </div>
+                                    <div class="col-md-12 form-group">
+                                        <label for="houseName">House Name:</label>
+                                        <input type="text" class="form-control" id="houseName"
+                                            value="<%= singleAddress.houseName %>" name="houseName">
+                                        <div id="houseNameError" class="error-message text-danger"></div>
+                                    </div>
+                                    <div class="col-md-12 form-group p_star">
+                                        <label for="mobile">Phone Number:</label>
+                                        <input type="text" class="form-control" id="mobile"
+                                            value="<%= singleAddress.mobile %>" name="mobile">
+                                        <div id="mobileNumberError" class="error-message text-danger"></div>
+                                    </div>
+                                    <div class="col-md-12 form-group p_star">
+                                        <label for="state">State:</label>
+                                        <input type="text" class="form-control" id="state"
+                                            value="<%= singleAddress.state %>" name="state">
+                                        <div id="stateError" class="error-message text-danger"></div>
+                                    </div>
+                                    <div class="col-md-12 form-group p_star">
+                                        <label for="city">Town/City:</label>
+                                        <input type="text" class="form-control" id="city"
+                                            value="<%= singleAddress.city %>" name="city">
+                                        <div id="cityError" class="error-message text-danger"></div>
+                                    </div>
+                                    <div class="col-md-12 form-group">
+                                        <label for="pincode">Postcode/ZIP:</label>
+                                        <input type="text" class="form-control" id="pincode"
+                                            value="<%= singleAddress.pincode %>" name="pincode">
+                                        <div id="pincodeError" class="error-message text-danger"></div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <button type="submit" class="genric-btn info">Submit</button>
+                                    </div>
+                                </form>
+                                <% }) %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--================End Checkout Area =================-->
+
+        <%- include('../layout/userLayouts/footer') -%>
+            <script>
+                function validateAddressForm() {
+                    var valid = true;
+
+                    // Full Name Validation
+                    var name = $("#name").val();
+                    if (!name || name.trim() === "") {
+                        $("#nameError").html("Full Name is required");
+                        valid = false;
+                    } else {
+                        $("#nameError").html("");
+                    }
+
+                    // House Name Validation
+                    var houseName = $("#houseName").val();
+                    if (!houseName || houseName.trim() === "") {
+                        $("#houseNameError").html("House Name is required");
+                        valid = false;
+                    } else {
+                        $("#houseNameError").html("");
+                    }
+
+                    // Phone Number Validation
+                    var mobile = $("#mobile").val();
+                    if (!mobile || mobile.trim() === "") {
+                        $("#mobileNumberError").html("Phone Number is required");
+                        valid = false;
+                    } else if (!/^\d+$/.test(mobile)) {
+                        $("#mobileNumberError").html("Invalid phone number (should contain only digits)");
+                        valid = false;
+                    } else if (mobile.length !== 10) {
+                        $("#mobileNumberError").html("Phone number should be exactly 10 digits");
+                        valid = false;
+                    } else {
+                        $("#mobileNumberError").html("");
+                    }
+
+
+                    // State Validation
+                    var state = $("#state").val();
+                    if (!state || state.trim() === "") {
+                        $("#stateError").html("State is required");
+                        valid = false;
+                    } else {
+                        $("#stateError").html("");
+                    }
+
+                    // Town/City Validation
+                    var city = $("#city").val();
+                    if (!city || city.trim() === "") {
+                        $("#cityError").html("Town/City is required");
+                        valid = false;
+                    } else {
+                        $("#cityError").html("");
+                    }
+
+                    // Pincode Validation
+                    var pincode = $("#pincode").val();
+                    if (!pincode || pincode.trim() === "") {
+                        $("#pincodeError").html("Postcode/ZIP is required");
+                        valid = false;
+                    } else if (!/^\d+$/.test(pincode)) {
+                        $("#pincodeError").html("Invalid pincode (should contain only digits)");
+                        valid = false;
+                    } else if (pincode.length !== 6) {
+                        $("#pincodeError").html("Pincode should be exactly 6 digits");
+                        valid = false;
+                    } else {
+                        $("#pincodeError").html("");
+                    }
+
+
+                    return valid;
+                }
+
+            </script>

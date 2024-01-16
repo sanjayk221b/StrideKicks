@@ -141,26 +141,40 @@
                 <div class="container-fluid ">
                     <div class="row justify-content-center">
                         <div class="col-md-8">
-                            <% orders.forEach(order=> { %>
-                                <div class="card ">
-                                    <div class="card-header ">
-                                        <h4 class="card-title ">
-                                            #Order ID : <%= order.orderId %>
-                                        </h4>
-                                        <hr>
-                                       
-                                    <div class="card-body bg-light">
-                                        <span>Total Amount : <%= order.totalAmount %></span><br><br>
-                                        <span>Order Date : <%= moment(order.date).format('dddd, MMMM Do YYYY') %></span><br><br>
-                                        <span> Delivery Address: <%= order.deliveryAddress %></span><br><br>
-                                        <span>Payment Method : <%= order.payment %></span><br><br>
-                                        <span>Expected Delivery : <%= order.expectedDelivery %></span><br><br>
+                            <% if(orders && orders.length> 0) { %>
+                                <% orders.forEach(order=> { %>
+                                    <div class="card ">
+                                        <div class="card-header ">
+                                            <h4 class="card-title ">
+                                                #Order ID : <%= order.orderId %>
+                                            </h4>
+                                            <hr>
+
+                                            <div class="card-body bg-light">
+                                                <span>Total Amount : <%= order.totalAmount %></span><br><br>
+                                                <span>Order Date : <%= moment(order.date).format('dddd, MMMM Do YYYY')
+                                                        %></span><br><br>
+                                                <span> Delivery Address: <%= order.deliveryAddress %></span><br><br>
+                                                <span>Payment Method : <%= order.payment %></span><br><br>
+                                                <span>Expected Delivery : <%= order.expectedDelivery %></span><br><br>
+                                            </div>
+                                            <a href="/singleOrder?orderId=<%= order.orderId %>"> <button type="button"
+                                                    class="btn btn-info btn-fill pull-right mr-4 mt-2 mb-2">view
+                                                    Order</button></a>
+                                            <!-- <a href=""> <button type="button" class="btn btn-danger btn-fill pull-right mr-4 mt-2 mb-2">cancel Order</button></a> -->
+                                        </div>
                                     </div>
-                                    <a href="/singleOrder?orderId=<%= order.orderId %>"> <button type="button" class="btn btn-info btn-fill pull-right mr-4 mt-2 mb-2">view Order</button></a>
-                                    <!-- <a href=""> <button type="button" class="btn btn-danger btn-fill pull-right mr-4 mt-2 mb-2">cancel Order</button></a> -->
-                                    </div>
-                                </div>
-                                <% }) %>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <div class="card text-center">
+                                                <div class="card-header">
+                                                    <h4 class="card-title"></h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="card-text text-danger">You haven't placed any orders yet.</p>
+                                                </div>
+                                            </div>
+                                            <% } %>
                         </div>
                     </div>
                 </div>

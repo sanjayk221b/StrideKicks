@@ -162,8 +162,9 @@
                                                                 </select>
                                                             </td>
                                                             <td>
-                                                                <button type="button"
-                                                                    class="btn btn-outline-info btn-sm ">view</button>
+                                                                <a href="/admin/orderDetails?orderId=<%= order.orderId %>"><button
+                                                                        type="button"
+                                                                        class="btn btn-outline-info btn-sm ">view</button></a>
                                                             </td>
                                                             <td>
 
@@ -189,15 +190,17 @@
 
 
                 <%- include('../layout/adminLayouts/footer') -%>
+
                     <script>
 
                         var $j = jQuery.noConflict();
 
                         $j(document).ready(function () {
                             $j('#myDataTable').DataTable({
-                                "order": [[/*columnIndex*/, "desc"]]
+                                "order": [[0, "desc"]]
                             });
                         });
+
 
                         // Toggle the product status (list/unlist)
                         async function toggleProductStatus(productId, action) {
@@ -299,25 +302,4 @@
 
 
 
-
-                        // // Search jQuery for the table and navbar
-                        // $(document).ready(function () {
-                        // // When the user types in either search box
-                        // $("#navbar-search, #name-search").on("keyup", function () {
-                        // var searchText = $(this).val().toLowerCase();
-
-                        // // Loop through each table row
-                        // $("table tbody tr").each(function () {
-                        // var productName = $(this).find("td:eq(0)").text().toLowerCase(); // Get the product name in
-                        // lowercase
-
-                        // // If the product name contains the search text, show the row; otherwise, hide it
-                        // if (productName.includes(searchText)) {
-                        // $(this).show();
-                        // } else {
-                        // $(this).hide();
-                        // }
-                        // });
-                        // });
-                        // });
                     </script>

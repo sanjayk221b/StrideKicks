@@ -98,6 +98,8 @@
                                 <table class="table" id="myDataTable">
                                     <thead>
                                         <tr>
+                                            
+                                            <th scope="col">#</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Image</th>
                                             <th scope="col">Category</th>
@@ -113,6 +115,7 @@
                                         <% if(products.length> 0) { %>
                                             <% for(let i=products.length - 1; i>= 0; i--) { %>
                                                 <tr>
+                                                    <td><%i+1%></td>
                                                     <td>
                                                         <%= products[i].name %>
                                                     </td>
@@ -180,9 +183,11 @@
 
                         $j(document).ready(function () {
                             $j('#myDataTable').DataTable({
-                                "order": [[/*columnIndex*/, "desc"]]
+                                "order": [[0, "asc"]] 
                             });
                         });
+
+
 
                         // Toggle the product status (list/unlist)
                         async function toggleProductStatus(productId, action) {

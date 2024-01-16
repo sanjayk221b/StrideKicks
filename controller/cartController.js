@@ -73,7 +73,7 @@ const addToCart = async (req, res) => {
                 })
                 await newCart.save()
             }
-            res.json({ success: true })
+            res.status(200).json({ success: true, message: 'Product added to cart successfully' });
         }
 
     } catch (error) {
@@ -92,7 +92,6 @@ const updateCart = async (req, res) => {
         for (const { productId, quantity } of cartItems) {
             const product = await Products.findOne({ _id: productId });
 
-            // Check if the product is found and has a valid price
             if (product && product.price !== null) {
                 // console.log(product.price);
                 await Cart.findOneAndUpdate(
@@ -117,32 +116,6 @@ const updateCart = async (req, res) => {
     }
 };
 
-// const updateQuantity = async (req, res) => {
-//     try {
-//         const userId = req.session.userId;
-//         const productId = req.body.productId;
-//         const count = req.body.count;
-
-//         const cart = await Cart.findOne({ userId: req.session.userId });
-//         if (!cart) {
-//             return res.json({ success: false, message: 'Cart not found.' });
-//         }
-
-//         const cartProduct = cart.items.find((item) => item.productId.toString() === productId);
-//         if (!cartProduct) {
-//             return res.json({ success: false, message: 'Product not found in the cart.' });
-//         }
-
-//         const product = await Products.findById(productId);
-//         if (!product) {
-//             console.log('Product not found in the database.');
-//             return res.json({ success: false, message: 'Product not found in the database.' });
-//         }
-
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
 
 const removeItem = async (req, res) => {
     try {
@@ -192,5 +165,4 @@ module.exports = {
     updateCart,
     removeItem,
     loadCheckout,
-    // updateQuantity
 }

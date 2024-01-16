@@ -1,5 +1,36 @@
 <%- include('../layout/adminLayouts/header') -%>
 
+    <style>
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .image-container {
+            position: relative;
+            margin: 0 5px 5px 0;
+            width: 85px;
+            overflow-x: auto;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            cursor: pointer;
+            background-color: #ff0000;
+            color: #ffffff;
+            border: none;
+            padding: 5px;
+            font-size: 14px;
+            line-height: 1;
+        }
+    </style>
 
     <body>
         <div class="container-fluid position-relative d-flex p-0">
@@ -93,47 +124,51 @@
                                         <div class="mb-3">
                                             <label for="productName" class="form-label">Product Name</label>
                                             <input type="text" class="form-control bg-dark text-white" id="productName"
-                                                name="name" placeholder="Product Name" required>
+                                                name="name" placeholder="Product Name">
+                                            <p id="productNameError" class="error-message text-danger"></p>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="productDescription" class="form-label">Description</label>
                                             <textarea class="form-control bg-dark text-white" id="productDescription"
                                                 name="description" placeholder="Description" rows="3"></textarea>
+                                            <p id="productDescriptionError" class="error-message text-danger"></p>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="productQuantity" class="form-label">Quantity</label>
                                             <input type="number" class="form-control bg-dark text-white"
-                                                id="productQuantity" name="quantity" placeholder="Quantity" required>
-                                            <div id="quantityError" class="error-message text-danger"></div>
+                                                id="productQuantity" name="quantity" placeholder="Quantity">
+                                            <p id="quantityError" class="error-message text-danger"></p>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="productPrice" class="form-label">Price</label>
                                             <input type="number" class="form-control bg-dark text-white"
-                                                id="productPrice" name="price" placeholder="Price" required>
-                                            <div id="priceError" class="error-message text-danger"></div>
+                                                id="productPrice" name="price" placeholder="Price">
+                                            <p id="priceError" class="error-message text-danger"></p>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="productCategory" class="form-label">Category</label>
                                             <select class="form-control bg-dark text-white" id="productCategory"
-                                                name="category" required>
+                                                name="category">
+                                                <option selected disabled>Select Category</option>
                                                 <% categories.forEach(category=> { %>
-                                                    <option value="<%= category.name %>">
+                                                    <option>
                                                         <%= category.name %>
                                                     </option>
                                                     <% }) %>
                                             </select>
+                                            <p id="productCategoryError" class="error-message text-danger"></p>
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="productImage" class="form-label mb-10  ">Product Image</label>
-                                            <span id="imagePreview" class="mt-2"></span>
-                                            <input type="file" class="form-control bg-dark text-white" id="productImage"
-                                                name="images" multiple>
-
+                                            <label for="productImage" class="form-label mb-10">Product Image</label><br>
+                                            <div id="imagePreview" class="preview-container mt-4"></div>
+                                            <input type="file" class="form-control bg-dark text-white mt-4"
+                                                id="productImage" name="images" multiple>
+                                            <p id="productImageError" class="error-message text-danger"></p>
                                         </div>
 
                                         <button type="submit" class="btn btn-danger">Submit</button>
@@ -146,17 +181,55 @@
                 <!-- Add Products Form End -->
 
 
-                <!-- Add the following script in your HTML file -->
+
                 <script>
                     function validateForm() {
                         // Get form elements
                         var productName = document.getElementById("productName").value;
                         var productQuantity = document.getElementById("productQuantity").value;
                         var productPrice = document.getElementById("productPrice").value;
+                        var productDescription = document.getElementById("productDescription").value;
+                        var productCategory = document.getElementById("productCategory").value;
+                        var productImage = document.getElementById("productImage").value;
 
                         // Reset error messages
+                        document.getElementById("productNameError").innerText = "";
                         document.getElementById("quantityError").innerText = "";
                         document.getElementById("priceError").innerText = "";
+                        document.getElementById("productDescriptionError").innerText = "";
+                        document.getElementById("productCategoryError").innerText = "";
+                        document.getElementById("productImageError").innerText = "";
+
+                        // Validate empty fields
+                        if (productName.trim() === "") {
+                            document.getElementById("productNameError").innerText = "Product Name cannot be empty.";
+                            return false;
+                        }
+
+                        if (productQuantity.trim() === "") {
+                            document.getElementById("quantityError").innerText = "Quantity cannot be empty.";
+                            return false;
+                        }
+
+                        if (productPrice.trim() === "") {
+                            document.getElementById("priceError").innerText = "Price cannot be empty.";
+                            return false;
+                        }
+
+                        if (productDescription.trim() === "") {
+                            document.getElementById("productDescriptionError").innerText = "Description cannot be empty.";
+                            return false;
+                        }
+
+                        if (productCategory.trim() === "" || productCategory === "Select Category") {
+                            document.getElementById("productCategoryError").innerText = "Please select a valid category.";
+                            return false;
+                        }
+
+                        if (productImage.trim() === "") {
+                            document.getElementById("productImageError").innerText = "Please select a product image.";
+                            return false;
+                        }
 
                         // Validate quantity
                         if (!Number.isInteger(parseFloat(productQuantity)) || parseInt(productQuantity) <= 0) {
@@ -176,31 +249,83 @@
                 </script>
 
                 <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        // Get the file input element
-                        const fileInput = document.getElementById('productImage');
+                    document.getElementById('productImage').addEventListener('change', handleFileSelect);
 
-                        // Get the image preview container
-                        const imagePreviewContainer = document.getElementById('imagePreview');
+                    const selectedFiles = [];
 
-                        // Add an event listener to the file input
-                        fileInput.addEventListener('change', function () {
-                            // Remove existing preview images
-                            imagePreviewContainer.innerHTML = '';
+                    function handleFileSelect(event) {
+                        const files = event.target.files;
+                        const imagePreview = document.getElementById('imagePreview');
 
-                            // Loop through selected files and create image previews
-                            for (const file of fileInput.files) {
+                        // Clear existing preview
+                        imagePreview.innerHTML = '';
+
+                        for (let i = 0; i < files.length; i++) {
+                            const file = files[i];
+                            const reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                const imageUrl = e.target.result;
+
+                                const imageContainer = document.createElement('div');
+                                imageContainer.classList.add('image-container');
+
                                 const img = document.createElement('img');
-                                img.src = URL.createObjectURL(file);
-                                img.className = 'img-sm img-thumbnail mr-2';
-                                img.alt = 'Image Preview';
-                                img.style.width = '80px';
-                                img.style.height = '80px';
-                                imagePreviewContainer.appendChild(img);
-                            }
-                        });
-                    });
+                                img.src = imageUrl;
+
+                                const closeButton = document.createElement('button');
+                                closeButton.classList.add('close-button');
+                                closeButton.innerHTML = '&times;';
+                                closeButton.addEventListener('click', function () {
+                                    imageContainer.remove();
+                                    removeFromSelectedFiles(file);
+                                });
+
+                                imageContainer.appendChild(img);
+                                imageContainer.appendChild(closeButton);
+                                imagePreview.appendChild(imageContainer);
+
+                                selectedFiles.push(file);
+                            };
+
+                            reader.readAsDataURL(file);
+                        }
+                    }
+
+                    function removeFromSelectedFiles(fileToRemove) {
+                        const indexToRemove = selectedFiles.indexOf(fileToRemove);
+                        if (indexToRemove !== -1) {
+                            selectedFiles.splice(indexToRemove, 1);
+
+                            // Update the input field with the remaining files
+                            const inputField = document.getElementById('productImage');
+                            inputField.value = null; // Clear the input field
+
+                            selectedFiles.forEach((file, index) => {
+                                const newInput = document.createElement('input');
+                                newInput.type = 'file';
+                                newInput.name = 'images';
+                                newInput.files = [file];
+
+                                // Attach an event listener to the new input for removing the file
+                                newInput.addEventListener('change', function (event) {
+                                    handleFileSelect(event);
+                                });
+
+                                if (index === 0) {
+                                    // If it's the first file, replace the existing input
+                                    inputField.parentNode.replaceChild(newInput, inputField);
+                                } else {
+                                    // For subsequent files, insert before the existing input
+                                    inputField.parentNode.insertBefore(newInput, inputField);
+                                }
+                            });
+                        }
+                    }
+
+
                 </script>
+
 
 
 

@@ -144,8 +144,7 @@
                                                 name="category" required>
                                                 <% categories.forEach(category=> { %>
                                                     <option value="<%= category.name %>" <% if
-                                                        (category.name===products.category) { %>
-                                                        selected <% } %>>
+                                                        (category.name===products.category) { %> selected <% } %>>
                                                             <%= category.name %>
                                                     </option>
                                                     <% }) %>
@@ -156,19 +155,28 @@
                                             <label for="productImage" class="form-label">Product Image</label>
                                             <div class="d-flex flex-wrap">
                                                 <% for(let i=0; i<products.image.length;i++) { %>
-                                                    <div class="m-2 text-center" data-image-index="<%= i %>"
+                                                    <div class="m-2 text-center position-relative"
+                                                        data-image-index="<%= i %>"
                                                         data-image-name="<%= products.image[i] %>">
-                                                        <img src="/images/<%= products.image[i] %>"
-                                                            class="img-sm img-thumbnail" alt="" width="80px"
-                                                            height="100px">
-                                                        <br>
+                                                        <img src="/sharpImages/<%= products.image[i] %>"
+                                                            class="img-sm img-thumbnail" alt="" width="85px">
                                                         <button type="button"
-                                                            class="btn btn-danger delete-image-btn mt-2">Delete</button>
+                                                            class="btn delete-image-btn position-absolute end-0 text-danger"
+                                                            style="font-size: 1.5rem; top: -8px;">&times;</button>
                                                     </div>
                                                     <% } %>
+                                                        <div id="imagePreviewContainer" class="d-flex flex-wrap"
+                                                            style="max-width: 750px;"></div>
+
                                             </div>
-                                            <input type="file" class="form-control bg-dark text-white" id="productImage"
-                                                name="images" multiple>
+                                            <% if( messages.message ) { %>
+                                                <p style="color: red;">
+                                                    <%= messages.message %>
+                                                </p>
+                                                <% } %>
+
+                                                    <input type="file" class="form-control bg-dark text-white"
+                                                        id="productImage" name="images" multiple>
                                         </div>
 
                                         <button type="submit" class="btn btn-danger">Submit</button>
@@ -180,59 +188,88 @@
                 </div>
                 <!-- Edit Products Form End -->
 
-                <script>
-                    // Add an event listener to handle image deletion
-                    document.addEventListener("DOMContentLoaded", function () {
-                        document.addEventListener("click", function (event) {
-                            if (event.target.classList.contains("delete-image-btn")) {
-                                const imageIndex = event.target.closest("[data-image-index]").dataset.imageIndex;
-                                deleteImage(imageIndex);
-                            }
-                        });
-                    });
-
-                    // Function to send a request to delete the image
-                    // Add an event listener to handle image deletion
-                    document.addEventListener("DOMContentLoaded", function () {
-                        document.addEventListener("click", function (event) {
-                            if (event.target.classList.contains("delete-image-btn")) {
-                                const imageContainer = event.target.closest("[data-image-index]");
-                                const imageIndex = imageContainer.dataset.imageIndex;
-                                const img = imageContainer.dataset.imageName;
-                                deleteImage(imageIndex, img);
-                            }
-                        });
-                    });
-
-                    // Function to send a request to delete the image
-                    async function deleteImage(imageIndex, img) {
-                        try {
-                            const productId = document.getElementById("productId").value; // Get product ID from the hidden input
-
-                            const response = await fetch("/admin/deleteImage", {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify({ img, productId }),
+                <%- include('../layout/adminLayouts/footer') -%>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.addEventListener("click", function (event) {
+                                if (event.target.classList.contains("delete-image-btn")) {
+                                    const imageContainer = event.target.closest("[data-image-index]");
+                                    const imageIndex = imageContainer.dataset.imageIndex;
+                                    const img = imageContainer.dataset.imageName;
+                                    deleteImage(imageIndex, img);
+                                }
                             });
 
-                            const result = await response.json();
+                            //  event listener for the file input change
+                            const productImageInput = document.getElementById("productImage");
 
-                            if (result.success) {
-                                // Update the UI to reflect the deleted image
-                                const imageContainer = document.querySelector(`[data-image-index="${imageIndex}"]`);
-                                imageContainer.remove();
-                            } else {
-                                console.error("Image deletion failed:", result.error);
+                            productImageInput.addEventListener("change", function () {
+                                previewImages(this); // 'this' refers to the file input element
+                            });
+
+
+                            // Function to send a request to delete the image
+                            async function deleteImage(imageIndex, img) {
+                                try {
+                                    const productId = document.getElementById("productId").value;
+
+                                    const response = await fetch("/admin/deleteImage", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({ img, productId }),
+                                    });
+
+                                    const result = await response.json();
+
+                                    if (result.success) {
+                                        // Update the UI to reflect the deleted image
+                                        const imageContainer = document.querySelector(`[data-image-index="${imageIndex}"]`);
+                                        imageContainer.remove();
+                                    } else {
+                                        console.error("Image deletion failed:", result.error);
+                                    }
+                                } catch (error) {
+                                    console.error("Error deleting image:", error.message);
+                                }
                             }
-                        } catch (error) {
-                            console.error("Error deleting image:", error.message);
-                        }
-                    }
+
+                            // Function to handle image preview for both existing and newly added images
+                            function previewImages(input) {
+                                const previewContainer = document.getElementById("imagePreviewContainer");
+
+                                if (input.files) {
+                                    for (let i = 0; i < input.files.length; i++) {
+                                        const reader = new FileReader();
+                                        const previewDiv = document.createElement("div");
+                                        previewDiv.classList.add("m-2", "text-center", "position-relative");
+
+                                        reader.onload = function (e) {
+                                            const img = document.createElement("img");
+                                            img.src = e.target.result;
+                                            img.classList.add("img-sm", "img-thumbnail");
+                                            img.style.width = "85px";  // Set the width
+                                            img.style.height = "120px"; // Set the height
+                                            previewDiv.appendChild(img);
+                                        };
+
+                                        reader.readAsDataURL(input.files[i]);
+
+                                        const closeButton = document.createElement("button");
+                                        closeButton.type = "button";
+                                        closeButton.classList.add("btn", "delete-image-btn", "position-absolute", "end-0", "text-danger");
+                                        closeButton.innerHTML = "&times;";
+                                        closeButton.onclick = function () {
+                                            previewDiv.remove();
+                                        };
+
+                                        previewDiv.appendChild(closeButton);
+                                        previewContainer.appendChild(previewDiv);
+                                    }
+                                }
+                            }
 
 
-
-                </script>
-
-                <%- include('../layout/adminLayouts/footer') -%>
+                        });
+                    </script>

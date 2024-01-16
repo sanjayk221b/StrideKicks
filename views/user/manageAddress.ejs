@@ -142,7 +142,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div>
-                                <h4>Address <a href="/address"><button class="btn btn-info btn-fill pull-right ">Add Address</button></a>
+                                <h4>Address <a href="/address?source=profile"><button class="btn btn-info btn-fill pull-right ">Add
+                                            Address</button></a>
                                 </h4>
                             </div>
                             <% if(user && user.address) { %>
@@ -166,9 +167,10 @@
                                                 <li><span>Pincode </span> : <%= address.pincode %>
                                                 </li>
                                             </ul>
-                                            <button type="submit"
-                                                class="btn btn-danger btn-fill pull-right ">Edit</button>
-
+                                            <button type="button" class="btn btn-gray btn-fill pull-right"
+                                                onclick="editAddress('<%= address._id %>')">Edit</button>
+                                            <button type="button" class="btn btn-danger btn-fill pull-right mr-2"
+                                                onclick="deleteAddress('<%= address._id %>')">Delete</button>
 
                                         </div>
                                     </div>
@@ -238,11 +240,60 @@
 <script type="text/javascript">
     $(document).ready(function () {
         // Javascript method's body can be found /userAssets/profile/js/demos.js
-        demo.initDashboardPageCharts();
+        // demo.initDashboardPageCharts();
 
-        demo.showNotification();
+        // demo.showNotification();
 
     });
 </script>
+
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    function deleteAddress(addressId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/deleteAddress/${addressId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your address has been deleted.',
+                            'success'
+                        ).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        console.error('Failed to delete address');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    }
+    //edit address
+    function editAddress(addressId) {
+        window.location.href = '/editAddress?addressId=' + addressId;
+    }
+
+    //add address
+    function addAddress() {
+    const source = 'profile'; 
+    window.location.href = `/address?source=${source}`;
+}
+</script>
+
+
 
 </html>

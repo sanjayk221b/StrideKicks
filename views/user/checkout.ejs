@@ -112,37 +112,44 @@
                             <div class="address-list border p-3">
                                 <% if(user && user.address) { %>
                                     <% user.address.forEach((address, index)=> { %>
-                                        <label class="address-item border p-3">
-                                            <input type="radio" name="address"
-                                                value="<%= address.name %> <%= address.houseName %> <%= address.city %> <%= address.state %> <%= address.mobile %> <%= address.pincode %>">
-                                            <span>
-                                                <%= address.name %>
-                                            </span>&nbsp;
-                                            <span>
-                                                <%= address.houseName %>
-                                            </span>&nbsp;
-                                            <span>
-                                                <%= address.city %>
-                                            </span>&nbsp;
-                                            <span>
-                                                <%= address.state %>
-                                            </span>&nbsp;
-                                            <span>
-                                                <%= address.mobile %>
-                                            </span>&nbsp;
-                                            <span>
-                                                <%= address.pincode %>
-                                            </span>
-                                        </label><br>
+                                        <div class="address-item border p-3">
+                                            <label>
+                                                <input type="radio" name="address"
+                                                    value="<%= address.name %> <%= address.houseName %> <%= address.city %> <%= address.state %> <%= address.mobile %> <%= address.pincode %>">
+                                                <span>
+                                                    <%= address.name %>
+                                                </span>&nbsp;
+                                                <span>
+                                                    <%= address.houseName %>
+                                                </span>&nbsp;
+                                                <span>
+                                                    <%= address.city %>
+                                                </span>&nbsp;
+                                                <span>
+                                                    <%= address.state %>
+                                                </span>&nbsp;
+                                                <span>
+                                                    <%= address.mobile %>
+                                                </span>&nbsp;
+                                                <span>
+                                                    <%= address.pincode %>
+                                                </span>
+                                                <!-- <span class="ml-4"><a href="/editAddress/<%= address._id %>" class="edit-icon " style="color:orange">
+                                                    <i class="fas fa-edit "></i>
+                                                </a></span> -->
+                                            </label>
+
+                                        </div>
                                         <% }) %>
                                             <% } %>
                             </div>
                             <br>
                             <div class="col-md-12">
-                                <a href="/address" class="genric-btn info radius">Add Address</a>
+                                <a href="/address?source=checkout" class="genric-btn info radius">Add Address</a>
                             </div>
                             <br>
                         </div>
+
 
                         <div class="col-md-6">
                             <div class="order_box">
@@ -164,19 +171,27 @@
 
                                 <ul class="list list_2">
                                     <li><a href="#">Shipping <span>Flat rate: $00.00</span></a></li>
-                                    <li><a href="#">Total <span>$<%= subTotal %></span></a></li>
+                                    <li><a href="#">Total <span>₹<%= subTotal %></span></a></li>
                                 </ul>
 
                                 <div class="payment_item">
                                     <div class="radion_btn">
-                                        <input type="radio" id="f-option5" name="paymentMethod" value="COD" checked>
-                                        <label for="f-option5">Cash On Delivery</label>
+                                        <input type="radio" id="f-option1" name="paymentMethod" value="COD">
+                                        <label for="f-option1">Cash On Delivery</label>
                                         <div class="check"></div>
                                     </div>
-                                    <!-- Add more payment options if needed -->
                                 </div>
 
-                                <button type="button" class="primary-btn" onclick="placeOrder()">Place order</button>
+                                <div class="payment_item">
+                                    <div class="radion_btn">
+                                        <input type="radio" id="f-option2" name="paymentMethod" value="razorpay">
+                                        <label for="f-option2">Razorpay</label>
+                                        <div class="check"></div>
+                                    </div>
+                                </div>
+
+
+                                <button type="button" class="primary-btn">Place order</button>
                             </div>
                         </div>
                     </div>
@@ -186,6 +201,7 @@
         <!--================End Checkout Area =================-->
 
         <%- include('../layout/userLayouts/footer') -%>
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                     const placeOrderButton = document.querySelector('.primary-btn');
@@ -194,14 +210,34 @@
                         const urlParams = new URLSearchParams(window.location.search);
                         return urlParams.get(name);
                     }
+
                     const orderId = getQueryParam('orderId');
 
                     placeOrderButton.addEventListener('click', async function () {
-                        try {
-                            const selectedAddressInput = document.querySelector('input[name="address"]:checked');
-                            const address = selectedAddressInput ? selectedAddressInput.value : '';
+                        const selectedAddressInput = document.querySelector('input[name="address"]:checked');
+                        const selectedPaymentMethodInput = document.querySelector('input[name="paymentMethod"]:checked');
 
-                            const paymentMethod = "COD";
+                        if (!selectedAddressInput) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Oops...',
+                                text: 'Please choose an address before placing the order!',
+                            });
+                            return;
+                        }
+
+                        if (!selectedPaymentMethodInput) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Oops...',
+                                text: 'Please choose a payment method before placing the order!',
+                            });
+                            return;
+                        }
+
+                        try {
+                            const address = selectedAddressInput.value;
+                            const paymentMethod = selectedPaymentMethodInput.value;
 
                             const response = await fetch('/placeOrder', {
                                 method: 'POST',
@@ -216,8 +252,16 @@
                             if (responseData.success) {
                                 window.location.href = '/confirmation?orderId=' + responseData.orderId;
                             } else {
-                                console.error(responseData.error);
-                                alert('Failed to place the order. Please try again.');
+                                if (responseData.error === "One or more products in your cart have insufficient stock.") {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Insufficient Stock',
+                                        text: 'One or more products in your cart have insufficient stock.',
+                                    });
+                                } else {
+                                    console.log('response.order: ', responseData.order)
+                                    razorpayPayment(responseData.order);
+                                }
                             }
                         } catch (error) {
                             console.error(error);
@@ -226,5 +270,59 @@
                     });
                 });
 
+
+                function razorpayPayment(order) {
+                    console.log('razorPayment order :', order)
+                    var options = {
+                        "key": "rzp_test_h6GOIv1Khv2rKn", // Enter the Key ID generated from the Dashboard
+                        "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                        "currency": "INR",
+                        "name": "Acme Corp", //your business name
+                        "description": "Test Transaction",
+                        "image": "https://example.com/your_logo",
+                        "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                        "handler": function (response) {
+                            console.log('Razorpay handler called with response:', response);
+                            verifyPayment(response, order)
+                        },
+                        "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                            "name": "Gaurav Kumar", //your customer's name
+                            "email": "gaurav.kumar@example.com",
+                            "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
+                        },
+                        "notes": {
+                            "address": "Razorpay Corporate Office"
+                        },
+                        "theme": {
+                            "color": "#3399cc"
+                        }
+                    };
+                    var rzp1 = new Razorpay(options);
+                    rzp1.open();
+                }
+
+                function verifyPayment(payment, order) {
+                    $.ajax({
+                        url: '/verifyPayment',
+                        data: {
+                            payment,
+                            order
+                        },
+                        method: 'post',
+                        success: (response) => {
+                            console.log('verify payment response',response)
+                            if (response.success) {
+                                location.href = '/confirmation?orderId='+ response.order.orderId
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Payment has failed',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                        }
+                    })
+                }
 
             </script>

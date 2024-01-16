@@ -76,7 +76,7 @@ const updateProductStatus = async (req, res) => {
     }
 
 }
-//Edit Product
+// Edit Product
 const editProducts = async (req, res) => {
     try {
         const { id, name, description, price, category, quantity } = req.body;
@@ -87,18 +87,32 @@ const editProducts = async (req, res) => {
         // Check if a new image is uploaded
         let imageData = [];
         if (req.files) {
-            const existingImageCount = (await Products.findById(id)).image.length;
+            const existingImages = (await Products.findById(id)).image || [];
 
             for (let i = 0; i < req.files.length; i++) {
-                const resizedPath = path.join(__dirname, '../public/sharpImages', req.files[i].filename);
+                if (existingImages.length + i < 4) {
+                    const resizedPath = path.join(__dirname, '../public/sharpImages', req.files[i].filename);
 
-                // Resize image using sharp
-                await sharp(req.files[i].path)
-                    .resize(800, 1200, { fit: 'fill' })
-                    .toFile(resizedPath);
+                    // Resize image using sharp
+                    await sharp(req.files[i].path)
+                        .resize(800, 1200, { fit: 'fill' })
+                        .toFile(resizedPath);
 
-                // Push the resized filename to the array
-                imageData.push(req.files[i].filename);
+                    // Push the resized filename to the array
+                    imageData.push(req.files[i].filename);
+                } else {
+                    req.flash('message', 'Only 4 images are allowed.');
+                    return res.redirect(`/admin/editProducts/${id}`);
+                }
+            }
+
+            // Append newly added images to the existing ones
+            imageData = existingImages.concat(imageData);
+            
+            // Validate the total number of images
+            if (imageData.length !== 4) {
+                req.flash('message', 'Exactly 4 images are required.');
+                return res.redirect(`/admin/editProducts/${id}`);
             }
         }
 
@@ -111,33 +125,20 @@ const editProducts = async (req, res) => {
                 price,
                 category,
                 stockQuantity: quantity,
-                $set: { image: imageData.length > 0 ? imageData : undefined }, // Only update if new images are provided
+                $set: { image: imageData.length > 0 ? imageData : undefined },
             },
             { new: true }
         );
 
-        // Redirect back to the product page
-        res.redirect('/admin/products');
+        res.redirect(`/admin/products`);
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Internal Server Error');
     }
 };
 
-//Delete Product
-const deleteProducts = async (req, res) => {
-    try {
-        const productId = req.params.productId;
 
-        await Products.deleteOne({ _id: productId });
 
-        res.json({ success: true });
-
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ success: false, error: 'Internal Server Error' });
-    }
-};
 
 //Delete Single Image
 const deleteImage = async (req, res) => {
@@ -157,6 +158,21 @@ const deleteImage = async (req, res) => {
       res.status(500).send({ success: false, error: error.message });
     } 
   };
+
+  //Delete Product
+const deleteProducts = async (req, res) => {
+    try {
+        const productId = req.params.productId;
+
+        await Products.deleteOne({ _id: productId });
+
+        res.json({ success: true });
+
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+};
 
 //Load Products
 const loadProducts = async (req, res) => {
