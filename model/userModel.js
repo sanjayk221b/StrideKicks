@@ -60,7 +60,37 @@ const userSchema = new mongoose.Schema({
     token: {
         type: String,
         default: ''
-    }
+    },
+    wallet: {
+        type: Number,
+        default: 0,
+    },
+    wallet_history: [
+        {
+            date: {
+                type: Date,
+            },
+            amount: {
+                type: Number,
+            },
+            description: {
+                type: String,
+            },
+        },
+    ],
+    wishlist: [
+        {
+            productId: {
+                type: mongoose.Types.ObjectId,
+                ref: "products",
+                required: true,
+            },
+            date: {
+                type: Date,
+            },
+        },
+    ],
+
 },
     {
         timestamps: true

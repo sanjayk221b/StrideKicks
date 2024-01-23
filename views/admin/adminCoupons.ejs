@@ -1,0 +1,204 @@
+<%- include('../layout/adminLayouts/header') -%>
+
+
+    <body>
+        <div class="container-fluid position-relative d-flex p-0">
+            <!-- Spinner Start -->
+            <div id="spinner"
+                class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <!-- Spinner End -->
+
+
+            <!-- Sidebar Start -->
+            <div class="sidebar pe-4 pb-3">
+                <nav class="navbar bg-secondary navbar-dark">
+                    <a href="#" class="navbar-brand mx-4 mb-3">
+                        <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i></h3>
+                    </a>
+                    <div class="d-flex align-items-center ms-4 mb-4">
+                        <div class="position-relative">
+                            <img class="rounded-circle" src="/adminAssets/img/user.jpg" alt=""
+                                style="width: 40px; height: 40px;">
+                            <div
+                                class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="mb-0">Sanjay k</h6>
+                            <span>Admin</span>
+                        </div>
+                    </div>
+                    <div class="navbar-nav w-100">
+                        <a href="/admin" class="nav-item nav-link "><i
+                                class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                        <a href="/admin/users" class="nav-item nav-link "><i class="fa fa-keyboard me-2"></i>Users</a>
+                        <a href="/admin/products" class="nav-item nav-link "><i
+                                class="fa fa-keyboard me-2"></i>Products</a>
+                        <a href="/admin/categories" class="nav-item nav-link "><i
+                                class="fa fa-keyboard me-2"></i>Categories</a>
+                        <a href="/admin/orders" class="nav-item nav-link "><i class="fa fa-keyboard me-2"></i>Orders</a>
+                        <a href="/admin/coupons" class="nav-item nav-link active"><i
+                                class="fa fa-keyboard me-2"></i>Coupons</a>
+                    </div>
+                </nav>
+            </div>
+            <!-- Sidebar End -->
+
+
+            <!-- Content Start -->
+            <div class="content">
+                <!-- Navbar Start -->
+                <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                    <a href="/admin" class="navbar-brand d-flex d-lg-none me-4">
+                        <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+                    </a>
+                    <a href="#" class="sidebar-toggler flex-shrink-0">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                    <form class="d-none d-md-flex ms-4">
+                        <input class="form-control bg-dark border-0" id="navbar-search" type="search"
+                            placeholder="Search by Name">
+                    </form>
+                    <div class="navbar-nav align-items-center ms-auto ">
+                        <div class="nav-item dropdown me-3">
+                            <a href="/admin/addCoupons" class="nav-link">
+                                <i class="fa fa-envelope me-lg-2"></i>
+                                <span class="d-none d-lg-inline-flex">Add Coupons </span>
+                            </a>
+
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
+                                    style="width: 40px; height: 40px;">
+                                <span class="d-none d-lg-inline-flex">Sanjay k</span>
+                            </a>
+                            <div
+                                class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                                <a href="#" class="dropdown-item">My Profile</a>
+                                <a href="#" class="dropdown-item">Settings</a>
+                                <a href="/admin/logout" class="dropdown-item">Log Out</a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <!-- Navbar End -->
+
+
+                <!-- Table Start -->
+                <div class="container-fluid pt-4 px-4">
+                    <div class="col-12">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h4 class="mb-4">Coupons</h4>
+                            <div class="table-responsive">
+                                <table class="table" id="myDataTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Coupon</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Expiry Date</th>
+                                            <th scope="col">value</th>
+                                            <th scope="col">Min</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="categoryTableBody">
+                                        <% if(coupon.length> 0) { %>
+                                            <% for (let i=0; i < coupon.length; i++) { %>
+                                                <tr id="<%= coupon[i]._id %>">
+                                                    <td>
+                                                        <%= i + 1 %>
+                                                    </td>
+                                                    <td>
+                                                        <%= coupon[i].couponName %>
+                                                    </td>
+                                                    <td>
+                                                        <%= coupon[i].couponCode %>
+                                                    </td>
+                                                    <td>
+                                                        <%= coupon[i].description %>
+                                                    </td>
+                                                    <td>
+                                                        <%= moment(coupon[i].expiryDate).format(' MMM-D-YYYY') %>
+                                                    </td>
+                                                    <td>
+                                                        <%= coupon[i].discountAmount %>
+                                                    </td>
+                                                    <td>
+                                                        <%= coupon[i].minAmount %>
+                                                    </td>
+                                                    <td>
+                                                        <%= coupon[i].status %>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-delete-coupon btn-outline-danger btn-sm"
+                                                            data-coupon-id="<%= coupon[i]._id%>"
+                                                            onclick="deleteCoupon('<%= coupon[i]._id %>')">Remove
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="7">No coupons available</td>
+                                                        </tr>
+                                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Table End -->
+
+                <%- include('../layout/adminLayouts/footer') -%>
+                    <script>
+
+                        $(document).ready(function () {
+                            $('#myDataTable').DataTable({
+                                "paging": true,
+                                "pageLength": 10 
+                            });
+                        });
+
+
+                        function deleteCoupon(couponId) {
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: 'You won\'t be able to revert this!',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                cancelButtonColor: '#3085d6',
+                                confirmButtonText: 'Yes, delete it!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    fetch('/admin/deleteCoupon', {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({ couponId: couponId }),
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.status) {
+                                                location.reload();
+                                            } else {
+                                                console.error('Deletion failed:', data.message);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                }
+                            });
+                        }
+                    </script>

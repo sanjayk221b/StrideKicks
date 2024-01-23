@@ -42,7 +42,8 @@
                                 class="fa fa-keyboard me-2"></i>Categories</a>
                         <a href="/admin/orders" class="nav-item nav-link active"><i
                                 class="fa fa-keyboard me-2"></i>Orders</a>
-                        <!-- <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>products</a> -->
+                        <a href="/admin/coupons" class="nav-item nav-link "><i
+                                class="fa fa-keyboard me-2"></i>coupons</a>
                     </div>
                 </nav>
             </div>
@@ -93,35 +94,36 @@
                 <div class="container-fluid pt-4 px-4">
                     <div class="col-12">
                         <div class="bg-secondary rounded h-100 p-4">
-                            <h4 class="mb-4"> </h4>
-                            <% orders.forEach(order=> { %>
-                                <% if (order.items && order.items.length> 0) { %>
-                                    <% order.items.forEach(item=> { %>
-                                        <h3 class="card-title ">
-                                            #Order ID : <%= order.orderId %>
-                                        </h3><hr>
+                            <% if (orderItem && orderItem.items && orderItem.items.length> 0) { %>
+                                <% const item=orderItem.items[0]; %>
+                                    <h3 class="card-title ">
+                                        #Order ID: <%= orderItem.orderId %>
+                                    </h3>
+                                    <hr>
 
-                                        <div class="card-body ">
-                                            <img src="/sharpImages/<%= item.productId.image[0] %>"
-                                                class="img-sm img-thumbnail mb-2" alt="" width="100px" height="50px"><br>
-                                            <span>Total Price : <%= item.totalPrice %></span><br><br>
-                                            <span>Order Date : <%= moment(order.date).format('dddd, MMMM Do YYYY') %>
-                                            </span><br><br>
-                                            <span> Delivery Address: <%= order.deliveryAddress %></span><br><br>
-                                            <span>Payment Method : <%= order.payment %></span><br><br>
-                                            <span>Expected Delivery : <%= order.expectedDelivery %></span><br><br>
-
-                                            <span>status : <span style="color: red;">
-                                                    <%= item.orderStatus %>
-                                                </span></span><br><br>
-                                        </div>
-                                        <% }) %>
-                                            <% } %>
-                                                <% }) %>
+                                    <div class="card-body ">
+                                        <img src="/sharpImages/<%= item.productId.image[0] %>"
+                                            class="img-sm img-thumbnail mb-2" alt="" width="100px" height="50px"><br>
+                                        <span>Total Price: <%= item.totalPrice %></span><br><br>
+                                        <span>Order Date: <%= moment(orderItem.date).format('dddd, MMMM Do YYYY') %>
+                                        </span><br><br>
+                                        <span>Delivery Address: <%= orderItem.deliveryAddress %></span><br><br>
+                                        <span>Payment Method: <%= orderItem.payment %></span><br><br>
+                                        <span>Expected Delivery: <%= orderItem.expectedDelivery %></span><br><br>
+                                        <span>Status: <span style="color: red;">
+                                                <%= item.orderStatus %>
+                                            </span></span><br><br>
+                                    </div>
+                                    <% } else { %>
+                                        <p>No order item found.</p>
+                                        <% } %>
                         </div>
                     </div>
                 </div>
                 <!-- Table End -->
+
+
+
 
 
 

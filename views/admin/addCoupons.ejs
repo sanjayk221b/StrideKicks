@@ -1,0 +1,280 @@
+<%- include('../layout/adminLayouts/header') -%>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
+    <body>
+        <div class="container-fluid position-relative d-flex p-0">
+            <!-- Spinner Start -->
+            <div id="spinner"
+                class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <!-- Spinner End -->
+
+
+            <!-- Sidebar Start -->
+            <div class="sidebar pe-4 pb-3">
+                <nav class="navbar bg-secondary navbar-dark">
+                    <a href="#" class="navbar-brand mx-4 mb-3">
+                        <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i></h3>
+                    </a>
+                    <div class="d-flex align-items-center ms-4 mb-4">
+                        <div class="position-relative">
+                            <img class="rounded-circle" src="/adminAssets/img/user.jpg" alt=""
+                                style="width: 40px; height: 40px;">
+                            <div
+                                class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="mb-0">Sanjay k</h6>
+                            <span>Admin</span>
+                        </div>
+                    </div>
+                    <div class="navbar-nav w-100">
+                        <a href="/admin" class="nav-item nav-link "><i
+                                class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                        <a href="/admin/users" class="nav-item nav-link "><i class="fa fa-keyboard me-2"></i>Users</a>
+                        <a href="/admin/products" class="nav-item nav-link "><i
+                                class="fa fa-keyboard me-2"></i>Products</a>
+                        <a href="/admin/categories" class="nav-item nav-link "><i
+                                class="fa fa-keyboard me-2"></i>Categories</a>
+                        <a href="/admin/orders" class="nav-item nav-link "><i class="fa fa-keyboard me-2"></i>Orders</a>
+                        <a href="/admin/coupons" class="nav-item nav-link active"><i
+                                class="fa fa-keyboard me-2"></i>Coupons</a>
+                    </div>
+                </nav>
+            </div>
+            <!-- Sidebar End -->
+
+
+            <!-- Content Start -->
+            <div class="content">
+                <!-- Navbar Start -->
+                <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                    <a href="/admin" class="navbar-brand d-flex d-lg-none me-4">
+                        <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+                    </a>
+                    <a href="#" class="sidebar-toggler flex-shrink-0">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                    <form class="d-none d-md-flex ms-4">
+                        <input class="form-control bg-dark border-0" id="navbar-search" type="search"
+                            placeholder="Search by Name">
+                    </form>
+                    <div class="navbar-nav align-items-center ms-auto ">
+                        <div class="nav-item dropdown me-3">
+                            <a href="#" class="nav-link">
+                                <i class="fa fa-envelope me-lg-2"></i>
+                                <span class="d-none d-lg-inline-flex">Add Coupons </span>
+                            </a>
+
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
+                                    style="width: 40px; height: 40px;">
+                                <span class="d-none d-lg-inline-flex">Sanjay k</span>
+                            </a>
+                            <div
+                                class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                                <a href="#" class="dropdown-item">My Profile</a>
+                                <a href="#" class="dropdown-item">Settings</a>
+                                <a href="/admin/logout" class="dropdown-item">Log Out</a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <!-- Navbar End -->
+
+                <div class="container-fluid pt-4 px-4">
+                    <div class="col-12">
+                        <!-- Add Coupons Form Start -->
+                        <div class="container-fluid pt-5 px-4">
+                            <div class="row justify-content-center">
+                                <div class="col-md-10 col-lg-9">
+                                    <div class="card bg-secondary text-white">
+                                        <div class="card-header bg-dark">
+                                            <h5>Add Coupons</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <form id="couponForm" method="post" action="/admin/addCoupons">
+
+                                                <div class="mb-3">
+                                                    <label for="couponName" class="form-label">Coupon Name</label>
+                                                    <input type="text" class="form-control bg-dark text-white"
+                                                        id="couponName" name="couponName" placeholder="Coupon Name">
+                                                    <p id="couponNameError" class="error-message text-danger"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="couponCode" class="form-label">Coupon Code</label>
+                                                    <input type="text" class="form-control bg-dark text-white"
+                                                        id="couponCode" name="couponCode" placeholder="Coupon Code">
+                                                    <p id="couponCodeError" class="error-message text-danger"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="discountAmount" class="form-label">Discount
+                                                        Amount</label>
+                                                    <input type="text" class="form-control bg-dark text-white"
+                                                        id="discountAmount" name="discountAmount"
+                                                        placeholder="Discount Amount">
+                                                    <p id="discountAmountError" class="error-message text-danger"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="minAmount" class="form-label">Minimum Amount</label>
+                                                    <input type="text" class="form-control bg-dark text-white"
+                                                        id="minAmount" name="minAmount" placeholder="Minimum Amount">
+                                                    <p id="minAmountError" class="error-message text-danger"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="couponDescription" class="form-label">Coupon
+                                                        Description</label>
+                                                    <textarea class="form-control bg-dark text-white"
+                                                        id="couponDescription" name="description"
+                                                        placeholder="Coupon Description" rows="3"></textarea>
+                                                    <p id="couponDescriptionError" class="error-message text-danger">
+                                                    </p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="availability" class="form-label">Availability</label>
+                                                    <input type="text" class="form-control bg-dark text-white"
+                                                        id="availability" name="quantity" placeholder="Availability">
+                                                    <p id="availabilityError" class="error-message text-danger"></p>
+                                                </div>
+
+                                                <div class="mb-3 position-relative">
+                                                    <label for="expiryDate" class="form-label">Expiry Date</label>
+                                                    <div class="input-group pr-3">
+                                                        <input type="text" class="form-control bg-dark text-white"
+                                                            id="expiryDate" name="expiryDate"
+                                                            placeholder="Select Expiry Date">
+                                                        <span class="input-group-text">
+                                                            <i class="fas fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <p id="expiryDateError" class="error-message text-danger"></p>
+                                                </div>
+                                                <button type="submit" class="btn btn-danger">Submit</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Add Coupons Form End -->
+                    </div>
+                </div>
+
+                <%- include('../layout/adminLayouts/footer') -%>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            flatpickr("#expiryDate", {
+                                enableTime: true,
+                                dateFormat: "Y-m-d",
+                            });
+
+                            document.getElementById('couponForm').addEventListener('submit', function (event) {
+                                // Prevent the form from submitting
+                                event.preventDefault();
+
+                                // Validate form fields
+                                var formIsValid = true;
+
+                                // Coupon Name
+                                var couponName = document.getElementById('couponName').value.trim();
+                                if (couponName === '') {
+                                    formIsValid = false;
+                                    document.getElementById('couponNameError').innerText = 'Coupon Name is required';
+                                } else {
+                                    document.getElementById('couponNameError').innerText = '';
+                                }
+
+                                // Coupon Code
+                                var couponCode = document.getElementById('couponCode').value.trim();
+                                if (couponCode === '') {
+                                    formIsValid = false;
+                                    document.getElementById('couponCodeError').innerText = 'Coupon Code is required';
+                                } else {
+                                    document.getElementById('couponCodeError').innerText = '';
+                                }
+
+                                // Discount Amount
+                                var discountAmount = document.getElementById('discountAmount').value.trim();
+                                if (discountAmount === '') {
+                                    formIsValid = false;
+                                    document.getElementById('discountAmountError').innerText = 'Discount Amount is required';
+                                } else if (!Number.isInteger(parseFloat(discountAmount)) || parseInt(discountAmount) <= 0) {
+                                    formIsValid = false;
+                                    document.getElementById('discountAmountError').innerText = 'Discount Amount should be a whole number greater than 0';
+                                } else {
+                                    document.getElementById('discountAmountError').innerText = '';
+                                }
+
+                                // Minimum Amount
+                                var minAmount = document.getElementById('minAmount').value.trim();
+                                if (minAmount === '') {
+                                    formIsValid = false;
+                                    document.getElementById('minAmountError').innerText = 'Minimum Amount is required';
+                                } else if (!Number.isInteger(parseFloat(minAmount)) || parseInt(minAmount) <= 0) {
+                                    formIsValid = false;
+                                    document.getElementById('minAmountError').innerText = 'Minimum Amount should be a whole number greater than 0';
+                                } else {
+                                    document.getElementById('minAmountError').innerText = '';
+                                }
+
+
+                                // Coupon Description
+                                var couponDescription = document.getElementById('couponDescription').value.trim();
+                                if (couponDescription === '') {
+                                    formIsValid = false;
+                                    document.getElementById('couponDescriptionError').innerText = 'Coupon Description is required';
+                                } else {
+                                    document.getElementById('couponDescriptionError').innerText = '';
+                                }
+
+                                // Availability
+                                var availability = document.getElementById('availability').value.trim();
+                                if (availability === '') {
+                                    formIsValid = false;
+                                    document.getElementById('availabilityError').innerText = 'Availability is required';
+                                } else if (!Number.isInteger(parseFloat(availability)) || parseInt(availability) <= 0) {
+                                    formIsValid = false;
+                                    document.getElementById('availabilityError').innerText = 'Please enter a valid whole number for availability (greater than zero)';
+                                } else {
+                                    document.getElementById('availabilityError').innerText = '';
+                                }
+
+
+                                // Expiry Date
+                                var expiryDate = document.getElementById('expiryDate').value.trim();
+                                if (expiryDate === '') {
+                                    formIsValid = false;
+                                    document.getElementById('expiryDateError').innerText = 'Expiry Date is required';
+                                } else {
+                                    // Convert the expiryDate string to a Date object
+                                    var expiryDateObj = new Date(expiryDate);
+                                    var currentDate = new Date();
+
+                                    if (expiryDateObj < currentDate) {
+                                        formIsValid = false;
+                                        document.getElementById('expiryDateError').innerText = 'Expiration Cannot be before current date';
+                                    } else {
+                                        document.getElementById('expiryDateError').innerText = '';
+                                    }
+                                }
+
+
+                                if (formIsValid) {
+                                    this.submit();
+                                }
+                            });
+                        });
+                    </script>

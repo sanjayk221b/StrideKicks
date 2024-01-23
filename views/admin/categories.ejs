@@ -41,8 +41,7 @@
                         <a href="/admin/categories" class="nav-item nav-link active"><i
                                 class="fa fa-keyboard me-2"></i>Categories</a>
                         <a href="/admin/orders" class="nav-item nav-link "><i class="fa fa-keyboard me-2"></i>Orders</a>
-                        <!-- <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>category</a> -->
-                        <!-- <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>products</a> -->
+                        <a href="/admin/coupons" class="nav-item nav-link "><i class="fa fa-keyboard me-2"></i>coupons</a>
                     </div>
                 </nav>
             </div>
@@ -192,7 +191,6 @@
                                 "dom": '<"top"lf>t<"bottom"ip>'
                             });
 
-                            // Additional code...
                         });
 
 
@@ -266,10 +264,6 @@
                         }
 
 
-
-
-
-
                         function updateCategoryStatus(categoryId, action) {
                             // Determine action text based on the value
                             const actionText = action === 'unlist' ? 'list' : 'unlist';
@@ -314,31 +308,4 @@
                                 }
                             });
                         }
-
-
-
-
-
-
-
-                        // // Search jQuery for the table and navbar
-                        // $(document).ready(function () {
-                        //     // When the user types in either search box
-                        //     $("#navbar-search, #name-search").on("keyup", function () {
-                        //         var searchText = $(this).val().toLowerCase();
-
-                        //         // Loop through each table row
-                        //         $("table tbody tr").each(function () {
-                        //             var productName = $(this).find("td:eq(1)").text().toLowerCase(); // Get the product name in
-                        //             lowercase
-
-                        //             // If the product name contains the search text, show the row; otherwise, hide it
-                        //             if (productName.includes(searchText)) {
-                        //                 $(this).show();
-                        //             } else {
-                        //                 $(this).hide();
-                        //             }
-                        //         });
-                        //     });
-                        // });
                     </script>

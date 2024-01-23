@@ -21,8 +21,12 @@ const orderSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    totalDiscountAmount: {
+        type: Number,
+        default: 0
+    },
     date: {
-        type: Date,     
+        type: Date,
         required: true
     },
     expectedDelivery: {
@@ -61,6 +65,10 @@ const orderSchema = mongoose.Schema({
         totalPrice: {
             type: Number,
             required: true
+        },
+        discountPerItem: {
+            type: Number,
+            default: 0
         },
         orderStatus: {
             type: String,

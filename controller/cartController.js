@@ -2,6 +2,7 @@ const User = require('../model/userModel');
 const Products = require('../model/productsModel');
 const Categories = require('../model/categoriesModel');
 const Cart = require('../model/cartModel');
+const Coupons = require('../model/couponModel');
 
 
 //Load Cart
@@ -11,6 +12,7 @@ const loadCart = async (req, res) => {
         if (userId) {
             const cartDetails = await Cart.findOne({ userId: userId }).populate({ path: 'items.productId' });
             const user = await User.findOne({ _id: userId });
+            const coupons = await Coupons.find({})
 
             let amount = 0;
             if (cartDetails) {
@@ -20,7 +22,7 @@ const loadCart = async (req, res) => {
                 }))
             }
 
-            res.render('cart', { cart: cartDetails, user: user, subTotal: amount })
+            res.render('cart', { cart: cartDetails, user: user, subTotal: amount, coupons: coupons })
         }
     } catch (error) {
         console.log(error);
@@ -141,7 +143,7 @@ const loadCheckout = async (req, res) => {
         if (userId) {
             const cartDetails = await Cart.findOne({ userId: userId }).populate({ path: 'items.productId' });
             const user = await User.findOne({ _id: userId });
-
+            const coupons = await Coupons.find({ status: 'Active' })
             let amount = 0;
             if (cartDetails) {
                 cartDetails.items.forEach((cartItem => {
@@ -150,7 +152,7 @@ const loadCheckout = async (req, res) => {
                 }))
             }
 
-            res.render('checkout', { cart: cartDetails, user: user, subTotal: amount })
+            res.render('checkout', { cart: cartDetails, user: user, subTotal: amount, coupons: coupons })
         }
     } catch (error) {
         console.log(error);

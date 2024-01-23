@@ -2,793 +2,789 @@
 
 
     <body>
+        <%- include('../layout/userLayouts/navbar') -%>
 
-        <!-- Start Header Area -->
-        <header class="header_area sticky-header">
-            <div class="main_menu">
-                <nav class="navbar navbar-expand-lg navbar-light main_box">
-                    <div class="container">
-                        <!-- Brand and toggle get grouped for better mobile display -->
-                        <a class="navbar-brand logo_h" href="index.html"><img src="img/logo.png" alt=""></a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <!-- Collect the nav links, forms, and other content for toggling -->
-                        <!-- <p>User Data: <%= JSON.stringify(locals.user) %></p> -->
-
-                        <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
-                            <ul class="nav navbar-nav menu_nav ml-auto">
-                                <li class="nav-item "><a class="nav-link" href="/home">Home</a></li>
-                                <li class="nav-item submenu dropdown active">
-                                    <a href="/shop" class="nav-link dropdown-toggle" role="button"
-                                        aria-haspopup="true">Shop</a>
-                                </li>
-                                <li class="nav-item "><a class="nav-link" href="#">about</a></li>
-
-                                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-                                <li class="nav-item submenu dropdown">
-                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
-                                        aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-user"></i></a>
-                                    <ul class="dropdown-menu">
-                                        <% if (locals.user) { %>
-                                            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-                                            <% } else { %>
-                                                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                                                <% } %>
-                                    </ul>
-                                </li>
-
-                            </ul>
-                            <ul class="nav navbar-nav navbar-right">
-                                <li class="nav-item"><a href="/cart" class="cart"><span class="ti-bag"></span></a></li>
-                                <li class="nav-item">
-                                    <button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-            <div class="search_input" id="search_input_box">
+            <!-- Start Banner Area -->
+            <section class="banner-area organic-breadcrumb">
                 <div class="container">
-                    <form class="d-flex justify-content-between">
-                        <input type="text" class="form-control" id="search_input" placeholder="Search Here">
-                        <button type="submit" class="btn"></button>
-                        <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
-                    </form>
-                </div>
-            </div>
-        </header>
-        <!-- End Header Area -->
-
-        <!-- Start Banner Area -->
-        <section class="banner-area organic-breadcrumb">
-            <div class="container">
-                <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-                    <div class="col-first">
-                        <h1>Product Details Page</h1>
-                        <nav class="d-flex align-items-center">
-                            <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-                            <a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
-                            <a href="single-product.html">product-details</a>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- End Banner Area -->
-
-        <!-- ================Single Product Area =================-->
-        <div class="product_image_area">
-            <div class="container">
-                <div class="row s_product_inner">
-                    <div class="col-lg-5">
-                        <div class="s_Product_carousel">
-                            <div class="single-prd-item">
-                                <div class="image-container">
-                                    <img id="image1" class="img-fluid" alt="/images/<%= products.image[0] %>"
-                                        src="/sharpImages/<%= products.image[0] %>" alt="" />
-                                </div>
-                            </div>
-                            <div class="single-prd-item">
-                                <div class="image-container">
-                                    <img id="image2" class="img-fluid" src="/SharpImages/<%= products.image[1] %>"
-                                        alt="" />
-                                </div>
-                            </div>
-                            <div class="single-prd-item">
-                                <div class="image-container">
-                                    <img id="image3" class="img-fluid" src="/SharpImages/<%= products.image[2] %>"
-                                        alt="" />
-                                </div>
-                            </div>
-                            <div class="single-prd-item">
-                                <div class="image-container">
-                                    <img id="image4" class="img-fluid" src="/SharpImages/<%= products.image[3] %>"
-                                        alt="" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 offset-lg-1">
-                        <div class="s_product_text">
-                            <h3>
-                                <%=products.name%>
-                            </h3>
-                            <h2>$<%=products.price%>
-                            </h2>
-                            <ul class="list">
-                                <li><a class="active" href="#"><span>Category</span> : <%=products.category%></a></li>
-                                <li><a href="#"><span>Availibility</span> : <%=products.stockQuantity%></a></li>
-                            </ul>
-                            <p>
-                                <%=products.description%>.
-                            </p>
-                            <div class="product_count">
-                                <label for="qty">Quantity:</label>
-                                <input type="text" name="qty" id="quantityInput" maxlength="12" value="1"
-                                    title="Quantity:" class="input-text qty" />
-                                <button onclick="increaseQuantity()" class="increase items-count" type="button">
-                                    <i class="lnr lnr-chevron-up"></i>
-                                </button>
-
-                                <button onclick="decreaseQuantity()" class="reduced items-count" type="button">
-                                    <i class="lnr lnr-chevron-down"></i>
-                                </button>
-                            </div>
-                            <div class="card_area d-flex align-items-center">
-                                <a class="primary-btn" data-productId="<%= products._id %>" href="#">Add to Cart</a>
-                                <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
-                            </div>
+                    <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                        <div class="col-first">
+                            <h1>Product Details Page</h1>
+                            <nav class="d-flex align-items-center">
+                                <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                                <a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
+                                <a href="single-product.html">product-details</a>
+                            </nav>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <!--================End Single Product Area ================= -->
+            </section>
+            <!-- End Banner Area -->
 
-        <!--================Product Description Area =================-->
-        <section class="product_description_area">
-            <div class="container">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-                            aria-selected="true">Description</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                            aria-controls="profile" aria-selected="false">Specification</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
-                            aria-controls="contact" aria-selected="false">Comments</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab"
-                            aria-controls="review" aria-selected="false">Reviews</a>
-                    </li>
-                </ul>
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <p>Beryl Cook is one of Britain’s most talented and amusing artists .Beryl’s pictures feature
-                            women of all shapes
-                            and sizes enjoying themselves .Born between the two world wars, Beryl Cook eventually left
-                            Kendrick School in
-                            Reading at the age of 15, where she went to secretarial school and then into an insurance
-                            office. After moving to
-                            London and then Hampton, she eventually married her next door neighbour from Reading, John
-                            Cook. He was an
-                            officer in the Merchant Navy and after he left the sea in 1956, they bought a pub for a year
-                            before John took a
-                            job in Southern Rhodesia with a motor company. Beryl bought their young son a box of
-                            watercolours, and when
-                            showing him how to use it, she decided that she herself quite enjoyed painting. John
-                            subsequently bought her a
-                            child’s painting set for her birthday and it was with this that she produced her first
-                            significant work, a
-                            half-length portrait of a dark-skinned lady with a vacant expression and large drooping
-                            breasts. It was aptly
-                            named ‘Hangover’ by Beryl’s husband and</p>
-                        <p>It is often frustrating to attempt to plan meals that are designed for one. Despite this
-                            fact, we are seeing
-                            more and more recipe books and Internet websites that are dedicated to the act of cooking
-                            for one. Divorce and
-                            the death of spouses or grown children leaving for college are all reasons that someone
-                            accustomed to cooking for
-                            more than one would suddenly need to learn how to adjust all the cooking practices utilized
-                            before into a
-                            streamlined plan of cooking that is more efficient for one person creating less</p>
-                    </div>
-                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <h5>Width</h5>
-                                        </td>
-                                        <td>
-                                            <h5>128mm</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h5>Height</h5>
-                                        </td>
-                                        <td>
-                                            <h5>508mm</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h5>Depth</h5>
-                                        </td>
-                                        <td>
-                                            <h5>85mm</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h5>Weight</h5>
-                                        </td>
-                                        <td>
-                                            <h5>52gm</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h5>Quality checking</h5>
-                                        </td>
-                                        <td>
-                                            <h5>yes</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h5>Freshness Duration</h5>
-                                        </td>
-                                        <td>
-                                            <h5>03days</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h5>When packeting</h5>
-                                        </td>
-                                        <td>
-                                            <h5>Without touch of hand</h5>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h5>Each Box contains</h5>
-                                        </td>
-                                        <td>
-                                            <h5>60pcs</h5>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="comment_list">
-                                    <div class="review_item">
-                                        <div class="media">
-                                            <div class="d-flex">
-                                                <img src="img/product/review-1.png" alt="">
-                                            </div>
-                                            <div class="media-body">
-                                                <h4>Blake Ruiz</h4>
-                                                <h5>12th Feb, 2018 at 05:56 pm</h5>
-                                                <a class="reply_btn" href="#">Reply</a>
-                                            </div>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et
-                                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                            ullamco laboris nisi ut aliquip ex ea
-                                            commodo</p>
-                                    </div>
-                                    <div class="review_item reply">
-                                        <div class="media">
-                                            <div class="d-flex">
-                                                <img src="img/product/review-2.png" alt="">
-                                            </div>
-                                            <div class="media-body">
-                                                <h4>Blake Ruiz</h4>
-                                                <h5>12th Feb, 2018 at 05:56 pm</h5>
-                                                <a class="reply_btn" href="#">Reply</a>
-                                            </div>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et
-                                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                            ullamco laboris nisi ut aliquip ex ea
-                                            commodo</p>
-                                    </div>
-                                    <div class="review_item">
-                                        <div class="media">
-                                            <div class="d-flex">
-                                                <img src="img/product/review-3.png" alt="">
-                                            </div>
-                                            <div class="media-body">
-                                                <h4>Blake Ruiz</h4>
-                                                <h5>12th Feb, 2018 at 05:56 pm</h5>
-                                                <a class="reply_btn" href="#">Reply</a>
-                                            </div>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et
-                                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                            ullamco laboris nisi ut aliquip ex ea
-                                            commodo</p>
+            <!-- ================Single Product Area =================-->
+            <div class="product_image_area">
+                <div class="container">
+                    <div class="row s_product_inner">
+                        <div class="col-lg-5">
+                            <div class="s_Product_carousel">
+                                <div class="single-prd-item">
+                                    <div class="image-container">
+                                        <img id="image1" class="img-fluid" alt="/images/<%= products.image[0] %>"
+                                            src="/sharpImages/<%= products.image[0] %>" alt="" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="review_box">
-                                    <h4>Post a comment</h4>
-                                    <form class="row contact_form" action="contact_process.php" method="post"
-                                        id="contactForm" novalidate="novalidate">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" id="name" name="name"
-                                                    placeholder="Your Full name">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <input type="email" class="form-control" id="email" name="email"
-                                                    placeholder="Email Address">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" id="number" name="number"
-                                                    placeholder="Phone Number">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <textarea class="form-control" name="message" id="message" rows="1"
-                                                    placeholder="Message"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 text-right">
-                                            <button type="submit" value="submit" class="btn primary-btn">Submit
-                                                Now</button>
-                                        </div>
-                                    </form>
+                                <div class="single-prd-item">
+                                    <div class="image-container">
+                                        <img id="image2" class="img-fluid" src="/SharpImages/<%= products.image[1] %>"
+                                            alt="" />
+                                    </div>
+                                </div>
+                                <div class="single-prd-item">
+                                    <div class="image-container">
+                                        <img id="image3" class="img-fluid" src="/SharpImages/<%= products.image[2] %>"
+                                            alt="" />
+                                    </div>
+                                </div>
+                                <div class="single-prd-item">
+                                    <div class="image-container">
+                                        <img id="image4" class="img-fluid" src="/SharpImages/<%= products.image[3] %>"
+                                            alt="" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="row total_rate">
-                                    <div class="col-6">
-                                        <div class="box_total">
-                                            <h5>Overall</h5>
-                                            <h4>4.0</h4>
-                                            <h6>(03 Reviews)</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="rating_list">
-                                            <h3>Based on 3 Reviews</h3>
-                                            <ul class="list">
-                                                <li><a href="#">5 Star <i class="fa fa-star"></i><i
-                                                            class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                            class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
-                                                </li>
-                                                <li><a href="#">4 Star <i class="fa fa-star"></i><i
-                                                            class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                            class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
-                                                </li>
-                                                <li><a href="#">3 Star <i class="fa fa-star"></i><i
-                                                            class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                            class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
-                                                </li>
-                                                <li><a href="#">2 Star <i class="fa fa-star"></i><i
-                                                            class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                            class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
-                                                </li>
-                                                <li><a href="#">1 Star <i class="fa fa-star"></i><i
-                                                            class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                            class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                        <div class="col-lg-6 offset-lg-1">
+                            <div class="s_product_text">
+                                <h3>
+                                    <%=products.name%>
+                                </h3>
+                                <h2>$<%=products.price%>
+                                </h2>
+                                <ul class="list">
+                                    <li><a class="active" href="#"><span>Category</span> : <%=products.category%></a>
+                                    </li>
+                                    <li><a href="#"><span>Availibility</span> : <%=products.stockQuantity%></a></li>
+                                </ul>
+                                <p>
+                                    <%=products.description%>.
+                                </p>
+                                <div class="product_count">
+                                    <label for="qty">Quantity:</label>
+                                    <input type="text" name="qty" id="quantityInput" maxlength="12" value="1"
+                                        title="Quantity:" class="input-text qty" readonly>
+                                    <button onclick="increaseQuantity()" class="increase items-count" type="button">
+                                        <i class="lnr lnr-chevron-up"></i>
+                                    </button>
+
+                                    <button onclick="decreaseQuantity()" class="reduced items-count" type="button">
+                                        <i class="lnr lnr-chevron-down"></i>
+                                    </button>
                                 </div>
-                                <div class="review_list">
-                                    <div class="review_item">
-                                        <div class="media">
-                                            <div class="d-flex">
-                                                <img src="img/product/review-1.png" alt="">
-                                            </div>
-                                            <div class="media-body">
-                                                <h4>Blake Ruiz</h4>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et
-                                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                            ullamco laboris nisi ut aliquip ex ea
-                                            commodo</p>
-                                    </div>
-                                    <div class="review_item">
-                                        <div class="media">
-                                            <div class="d-flex">
-                                                <img src="img/product/review-2.png" alt="">
-                                            </div>
-                                            <div class="media-body">
-                                                <h4>Blake Ruiz</h4>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et
-                                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                            ullamco laboris nisi ut aliquip ex ea
-                                            commodo</p>
-                                    </div>
-                                    <div class="review_item">
-                                        <div class="media">
-                                            <div class="d-flex">
-                                                <img src="img/product/review-3.png" alt="">
-                                            </div>
-                                            <div class="media-body">
-                                                <h4>Blake Ruiz</h4>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et
-                                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                            ullamco laboris nisi ut aliquip ex ea
-                                            commodo</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="review_box">
-                                    <h4>Add a Review</h4>
-                                    <p>Your Rating:</p>
-                                    <ul class="list">
-                                        <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                        <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                        <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                        <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                        <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                    </ul>
-                                    <p>Outstanding</p>
-                                    <form class="row contact_form" action="contact_process.php" method="post"
-                                        id="contactForm" novalidate="novalidate">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" id="name" name="name"
-                                                    placeholder="Your Full name" onfocus="this.placeholder = ''"
-                                                    onblur="this.placeholder = 'Your Full name'">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <input type="email" class="form-control" id="email" name="email"
-                                                    placeholder="Email Address" onfocus="this.placeholder = ''"
-                                                    onblur="this.placeholder = 'Email Address'">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" id="number" name="number"
-                                                    placeholder="Phone Number" onfocus="this.placeholder = ''"
-                                                    onblur="this.placeholder = 'Phone Number'">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <textarea class="form-control" name="message" id="message" rows="1"
-                                                    placeholder="Review" onfocus="this.placeholder = ''"
-                                                    onblur="this.placeholder = 'Review'"></textarea></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 text-right">
-                                            <button type="submit" value="submit" class="primary-btn">Submit Now</button>
-                                        </div>
-                                    </form>
+                                <div class="card_area d-flex align-items-center">
+                                    <a class="primary-btn" data-productId="<%= products._id %>" href="#">Add to Cart</a>
+                                    <a class="icon_btn " data-productId="<%= products._id %>" id="addToWishlist"
+                                        href="#"><i class="lnr lnr lnr-heart"></i></a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-        <!--================End Product Description Area =================-->
+            <!--================End Single Product Area ================= -->
 
-        <!-- Start related-product Area -->
-        <section class="related-product-area section_gap_bottom">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-6 text-center">
-                        <div class="section-title">
-                            <h1>Deals of the Week</h1>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                incididunt ut labore et dolore
-                                magna aliqua.</p>
+            <!--================Product Description Area =================-->
+            <section class="product_description_area">
+                <div class="container">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                aria-controls="home" aria-selected="true">Description</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                aria-controls="profile" aria-selected="false">Specification</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                                aria-controls="contact" aria-selected="false">Comments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab"
+                                aria-controls="review" aria-selected="false">Reviews</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <p>Beryl Cook is one of Britain’s most talented and amusing artists .Beryl’s pictures
+                                feature
+                                women of all shapes
+                                and sizes enjoying themselves .Born between the two world wars, Beryl Cook eventually
+                                left
+                                Kendrick School in
+                                Reading at the age of 15, where she went to secretarial school and then into an
+                                insurance
+                                office. After moving to
+                                London and then Hampton, she eventually married her next door neighbour from Reading,
+                                John
+                                Cook. He was an
+                                officer in the Merchant Navy and after he left the sea in 1956, they bought a pub for a
+                                year
+                                before John took a
+                                job in Southern Rhodesia with a motor company. Beryl bought their young son a box of
+                                watercolours, and when
+                                showing him how to use it, she decided that she herself quite enjoyed painting. John
+                                subsequently bought her a
+                                child’s painting set for her birthday and it was with this that she produced her first
+                                significant work, a
+                                half-length portrait of a dark-skinned lady with a vacant expression and large drooping
+                                breasts. It was aptly
+                                named ‘Hangover’ by Beryl’s husband and</p>
+                            <p>It is often frustrating to attempt to plan meals that are designed for one. Despite this
+                                fact, we are seeing
+                                more and more recipe books and Internet websites that are dedicated to the act of
+                                cooking
+                                for one. Divorce and
+                                the death of spouses or grown children leaving for college are all reasons that someone
+                                accustomed to cooking for
+                                more than one would suddenly need to learn how to adjust all the cooking practices
+                                utilized
+                                before into a
+                                streamlined plan of cooking that is more efficient for one person creating less</p>
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <h5>Width</h5>
+                                            </td>
+                                            <td>
+                                                <h5>128mm</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5>Height</h5>
+                                            </td>
+                                            <td>
+                                                <h5>508mm</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5>Depth</h5>
+                                            </td>
+                                            <td>
+                                                <h5>85mm</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5>Weight</h5>
+                                            </td>
+                                            <td>
+                                                <h5>52gm</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5>Quality checking</h5>
+                                            </td>
+                                            <td>
+                                                <h5>yes</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5>Freshness Duration</h5>
+                                            </td>
+                                            <td>
+                                                <h5>03days</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5>When packeting</h5>
+                                            </td>
+                                            <td>
+                                                <h5>Without touch of hand</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5>Each Box contains</h5>
+                                            </td>
+                                            <td>
+                                                <h5>60pcs</h5>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="comment_list">
+                                        <div class="review_item">
+                                            <div class="media">
+                                                <div class="d-flex">
+                                                    <img src="img/product/review-1.png" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <h4>Blake Ruiz</h4>
+                                                    <h5>12th Feb, 2018 at 05:56 pm</h5>
+                                                    <a class="reply_btn" href="#">Reply</a>
+                                                </div>
+                                            </div>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et
+                                                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                                                ullamco laboris nisi ut aliquip ex ea
+                                                commodo</p>
+                                        </div>
+                                        <div class="review_item reply">
+                                            <div class="media">
+                                                <div class="d-flex">
+                                                    <img src="img/product/review-2.png" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <h4>Blake Ruiz</h4>
+                                                    <h5>12th Feb, 2018 at 05:56 pm</h5>
+                                                    <a class="reply_btn" href="#">Reply</a>
+                                                </div>
+                                            </div>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et
+                                                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                                                ullamco laboris nisi ut aliquip ex ea
+                                                commodo</p>
+                                        </div>
+                                        <div class="review_item">
+                                            <div class="media">
+                                                <div class="d-flex">
+                                                    <img src="img/product/review-3.png" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <h4>Blake Ruiz</h4>
+                                                    <h5>12th Feb, 2018 at 05:56 pm</h5>
+                                                    <a class="reply_btn" href="#">Reply</a>
+                                                </div>
+                                            </div>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et
+                                                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                                                ullamco laboris nisi ut aliquip ex ea
+                                                commodo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="review_box">
+                                        <h4>Post a comment</h4>
+                                        <form class="row contact_form" action="contact_process.php" method="post"
+                                            id="contactForm" novalidate="novalidate">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        placeholder="Your Full name">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input type="email" class="form-control" id="email" name="email"
+                                                        placeholder="Email Address">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="number" name="number"
+                                                        placeholder="Phone Number">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <textarea class="form-control" name="message" id="message" rows="1"
+                                                        placeholder="Message"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 text-right">
+                                                <button type="submit" value="submit" class="btn primary-btn">Submit
+                                                    Now</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="row total_rate">
+                                        <div class="col-6">
+                                            <div class="box_total">
+                                                <h5>Overall</h5>
+                                                <h4>4.0</h4>
+                                                <h6>(03 Reviews)</h6>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="rating_list">
+                                                <h3>Based on 3 Reviews</h3>
+                                                <ul class="list">
+                                                    <li><a href="#">5 Star <i class="fa fa-star"></i><i
+                                                                class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                                class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
+                                                    </li>
+                                                    <li><a href="#">4 Star <i class="fa fa-star"></i><i
+                                                                class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                                class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
+                                                    </li>
+                                                    <li><a href="#">3 Star <i class="fa fa-star"></i><i
+                                                                class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                                class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
+                                                    </li>
+                                                    <li><a href="#">2 Star <i class="fa fa-star"></i><i
+                                                                class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                                class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
+                                                    </li>
+                                                    <li><a href="#">1 Star <i class="fa fa-star"></i><i
+                                                                class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                                class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review_list">
+                                        <div class="review_item">
+                                            <div class="media">
+                                                <div class="d-flex">
+                                                    <img src="img/product/review-1.png" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <h4>Blake Ruiz</h4>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                            </div>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et
+                                                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                                                ullamco laboris nisi ut aliquip ex ea
+                                                commodo</p>
+                                        </div>
+                                        <div class="review_item">
+                                            <div class="media">
+                                                <div class="d-flex">
+                                                    <img src="img/product/review-2.png" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <h4>Blake Ruiz</h4>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                            </div>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et
+                                                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                                                ullamco laboris nisi ut aliquip ex ea
+                                                commodo</p>
+                                        </div>
+                                        <div class="review_item">
+                                            <div class="media">
+                                                <div class="d-flex">
+                                                    <img src="img/product/review-3.png" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <h4>Blake Ruiz</h4>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                            </div>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et
+                                                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                                                ullamco laboris nisi ut aliquip ex ea
+                                                commodo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="review_box">
+                                        <h4>Add a Review</h4>
+                                        <p>Your Rating:</p>
+                                        <ul class="list">
+                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                        </ul>
+                                        <p>Outstanding</p>
+                                        <form class="row contact_form" action="contact_process.php" method="post"
+                                            id="contactForm" novalidate="novalidate">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        placeholder="Your Full name" onfocus="this.placeholder = ''"
+                                                        onblur="this.placeholder = 'Your Full name'">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input type="email" class="form-control" id="email" name="email"
+                                                        placeholder="Email Address" onfocus="this.placeholder = ''"
+                                                        onblur="this.placeholder = 'Email Address'">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="number" name="number"
+                                                        placeholder="Phone Number" onfocus="this.placeholder = ''"
+                                                        onblur="this.placeholder = 'Phone Number'">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <textarea class="form-control" name="message" id="message" rows="1"
+                                                        placeholder="Review" onfocus="this.placeholder = ''"
+                                                        onblur="this.placeholder = 'Review'"></textarea></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 text-right">
+                                                <button type="submit" value="submit" class="primary-btn">Submit
+                                                    Now</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-9">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r1.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
+            </section>
+            <!--================End Product Description Area =================-->
+
+            <!-- Start related-product Area -->
+            <section class="related-product-area section_gap_bottom">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6 text-center">
+                            <div class="section-title">
+                                <h1>Deals of the Week</h1>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                    incididunt ut labore et dolore
+                                    magna aliqua.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+                                    <div class="single-related-product d-flex">
+                                        <a href="#"><img src="img/r1.jpg" alt=""></a>
+                                        <div class="desc">
+                                            <a href="#" class="title">Black lace Heels</a>
+                                            <div class="price">
+                                                <h6>$189.00</h6>
+                                                <h6 class="l-through">$210.00</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r2.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
+                                <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+                                    <div class="single-related-product d-flex">
+                                        <a href="#"><img src="img/r2.jpg" alt=""></a>
+                                        <div class="desc">
+                                            <a href="#" class="title">Black lace Heels</a>
+                                            <div class="price">
+                                                <h6>$189.00</h6>
+                                                <h6 class="l-through">$210.00</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r3.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
+                                <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+                                    <div class="single-related-product d-flex">
+                                        <a href="#"><img src="img/r3.jpg" alt=""></a>
+                                        <div class="desc">
+                                            <a href="#" class="title">Black lace Heels</a>
+                                            <div class="price">
+                                                <h6>$189.00</h6>
+                                                <h6 class="l-through">$210.00</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r5.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
+                                <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+                                    <div class="single-related-product d-flex">
+                                        <a href="#"><img src="img/r5.jpg" alt=""></a>
+                                        <div class="desc">
+                                            <a href="#" class="title">Black lace Heels</a>
+                                            <div class="price">
+                                                <h6>$189.00</h6>
+                                                <h6 class="l-through">$210.00</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r6.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
+                                <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+                                    <div class="single-related-product d-flex">
+                                        <a href="#"><img src="img/r6.jpg" alt=""></a>
+                                        <div class="desc">
+                                            <a href="#" class="title">Black lace Heels</a>
+                                            <div class="price">
+                                                <h6>$189.00</h6>
+                                                <h6 class="l-through">$210.00</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r7.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
+                                <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+                                    <div class="single-related-product d-flex">
+                                        <a href="#"><img src="img/r7.jpg" alt=""></a>
+                                        <div class="desc">
+                                            <a href="#" class="title">Black lace Heels</a>
+                                            <div class="price">
+                                                <h6>$189.00</h6>
+                                                <h6 class="l-through">$210.00</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r9.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="single-related-product d-flex">
+                                        <a href="#"><img src="img/r9.jpg" alt=""></a>
+                                        <div class="desc">
+                                            <a href="#" class="title">Black lace Heels</a>
+                                            <div class="price">
+                                                <h6>$189.00</h6>
+                                                <h6 class="l-through">$210.00</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r10.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="single-related-product d-flex">
+                                        <a href="#"><img src="img/r10.jpg" alt=""></a>
+                                        <div class="desc">
+                                            <a href="#" class="title">Black lace Heels</a>
+                                            <div class="price">
+                                                <h6>$189.00</h6>
+                                                <h6 class="l-through">$210.00</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r11.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
+                                <div class="col-lg-4 col-md-4 col-sm-6">
+                                    <div class="single-related-product d-flex">
+                                        <a href="#"><img src="img/r11.jpg" alt=""></a>
+                                        <div class="desc">
+                                            <a href="#" class="title">Black lace Heels</a>
+                                            <div class="price">
+                                                <h6>$189.00</h6>
+                                                <h6 class="l-through">$210.00</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="ctg-right">
-                            <a href="#" target="_blank">
-                                <img class="img-fluid d-block mx-auto" src="img/category/c5.jpg" alt="">
-                            </a>
+                        <div class="col-lg-3">
+                            <div class="ctg-right">
+                                <a href="#" target="_blank">
+                                    <img class="img-fluid d-block mx-auto" src="img/category/c5.jpg" alt="">
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        <!-- End related-product Area -->
+            </section>
+            <!-- End related-product Area -->
 
-        <%- include('../layout/userLayouts/footer') -%>
+            <%- include('../layout/userLayouts/footer') -%>
 
 
-            <script>
-                // Image Zoom  
-                document.addEventListener('DOMContentLoaded', function () {
-                    //  zoom on a specific image
-                    function zoomIn(event, zoomFactor) {
-                        const image = event.target;
+                <script>
+                    // Image Zoom  
+                    document.addEventListener('DOMContentLoaded', function () {
+                        //  zoom on a specific image
+                        function zoomIn(event, zoomFactor) {
+                            const image = event.target;
 
-                        image.style.transform = `scale(${zoomFactor})`;
-                    }
+                            image.style.transform = `scale(${zoomFactor})`;
+                        }
 
-                    function resetZoom(event) {
-                        const image = event.target;
+                        function resetZoom(event) {
+                            const image = event.target;
 
-                        image.style.transform = 'scale(1)';
-                    }
+                            image.style.transform = 'scale(1)';
+                        }
 
-                    // Add event listeners to each image in the s_Product_carousel
-                    const sProductCarousel = document.querySelector('.s_Product_carousel');
-                    const productImages = sProductCarousel.querySelectorAll('.image-container img');
-                    productImages.forEach(img => {
-                        img.addEventListener('mouseover', function () {
-                            img.style.transform = 'scale(2.0)';
-                            img.style.transition = 'transform 0.3s ease';
+                        // Add event listeners to each image in the s_Product_carousel
+                        const sProductCarousel = document.querySelector('.s_Product_carousel');
+                        const productImages = sProductCarousel.querySelectorAll('.image-container img');
+                        productImages.forEach(img => {
+                            img.addEventListener('mouseover', function () {
+                                img.style.transform = 'scale(2.0)';
+                                img.style.transition = 'transform 0.3s ease';
+                            });
+
+                            img.addEventListener('mousemove', function (e) {
+                                // Move the image according to mouse movement
+                                const boundingBox = img.getBoundingClientRect();
+                                const offsetX = (e.clientX - boundingBox.left) / boundingBox.width;
+                                const offsetY = (e.clientY - boundingBox.top) / boundingBox.height;
+
+                                img.style.transformOrigin = `${offsetX * 100}% ${offsetY * 100}%`;
+                            });
+
+                            img.addEventListener('mouseleave', function () {
+                                img.style.transform = 'scale(1)';
+                            });
+
+                            img.addEventListener('mousemove', function (e) {
+                                zoomIn(e, 1.5);
+                            });
+
+                            img.addEventListener('mouseout', resetZoom);
                         });
-
-                        img.addEventListener('mousemove', function (e) {
-                            // Move the image according to mouse movement
-                            const boundingBox = img.getBoundingClientRect();
-                            const offsetX = (e.clientX - boundingBox.left) / boundingBox.width;
-                            const offsetY = (e.clientY - boundingBox.top) / boundingBox.height;
-
-                            img.style.transformOrigin = `${offsetX * 100}% ${offsetY * 100}%`;
-                        });
-
-                        img.addEventListener('mouseleave', function () {
-                            img.style.transform = 'scale(1)';
-                        });
-
-                        img.addEventListener('mousemove', function (e) {
-                            zoomIn(e, 1.5);
-                        });
-
-                        img.addEventListener('mouseout', resetZoom);
-                    });
-                });
-
-
-
-                // AddToCart
-                document.querySelector('.card_area .primary-btn').addEventListener('click', async (event) => {
-                    try {
-                        event.preventDefault();  // Prevent the default form submission behavior
-
-                        const productId = event.target.getAttribute('data-productId');
-                        const quantity = document.getElementById('quantityInput').value;
-
-                        // Check if the stock quantity is greater than or equal to 1
-                        if (<%= products.stockQuantity %> >= 1) {
-                    const response = await fetch('/addToCart', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ productId, quantity }),
                     });
 
-                    const responseData = await response.json();
 
-                    if (responseData.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Item added to cart successfully!',
-                            showConfirmButton: true,
-                            showCancelButton: true,
-                            confirmButtonText: 'Go to Cart',
-                            cancelButtonText: 'Continue Shopping',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
 
-                                window.location.href = '/cart';
-                            } else {
-                                window.location.href = '/shop';
-                            }
+                    // AddToCart
+                    document.querySelector('.card_area .primary-btn').addEventListener('click', async (event) => {
+                        try {
+                            event.preventDefault();
+
+                            const productId = event.target.getAttribute('data-productId');
+                            const quantity = document.getElementById('quantityInput').value;
+
+                            // Check if the stock quantity is greater than or equal to 1
+                            if (<%= products.stockQuantity %> >= 1) {
+                        const response = await fetch('/addToCart', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ productId, quantity }),
                         });
+
+                        const responseData = await response.json();
+
+                        if (responseData.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Item added to cart successfully!',
+                                showConfirmButton: true,
+                                showCancelButton: true,
+                                confirmButtonText: 'Go to Cart',
+                                cancelButtonText: 'Continue Shopping',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+
+                                    window.location.href = '/cart';
+                                }
+                            });
+                        } else {
+                            alert('Error adding item to cart.');
+                        }
                     } else {
-                        alert('Error adding item to cart.');
+                        // Stock quantity is less than 1, show a SweetAlert message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Out of Stock',
+                            text: 'Sorry, this item is out of stock.',
+                            confirmButtonText: 'OK',
+                        });
                     }
-                } else {
-                    // Stock quantity is less than 1, show a SweetAlert message
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Out of Stock',
-                        text: 'Sorry, this item is out of stock.',
-                        confirmButtonText: 'OK',
-                    });
-                }
     } catch (error) {
-                    console.error('An error occurred:', error);
-                }
+                        console.error('An error occurred:', error);
+                    }
 });
 
+                    function increaseQuantity() {
+                        var result = document.getElementById('quantityInput');
+                        var quantityInput = parseInt(result.value);
+                        var stockQuantity = <%= products.stockQuantity %>;
 
-
-
-
-                function increaseQuantity() {
-                    var result = document.getElementById('quantityInput');
-                    var quantityInput = parseInt(result.value);
-                    var stockQuantity = <%= products.stockQuantity %>;
-
-                    if (!isNaN(quantityInput) && quantityInput < stockQuantity) {
-                        result.value++;
+                        if (!isNaN(quantityInput) && quantityInput < stockQuantity) {
+                            result.value++;
+                        } else {
+                            // Display SweetAlert when reaching the stock quantity limit
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Max Quantity ',
+                                text: 'You have reached the maximum available quantity.',
+                            });
+                        }
                     }
-                }
 
-                function decreaseQuantity() {
-                    var result = document.getElementById('quantityInput');
-                    var quantityInput = parseInt(result.value);
+                    function decreaseQuantity() {
+                        var result = document.getElementById('quantityInput');
+                        var quantityInput = parseInt(result.value);
 
-                    if (!isNaN(quantityInput) && quantityInput > 1) {
-                        result.value--;
+                        if (!isNaN(quantityInput) && quantityInput > 1) {
+                            result.value--;
+                        }
                     }
-                }
-            </script>
+
+
+
+
+                    // AddToWishlist
+                    const addToWishlistButton = document.getElementById('addToWishlist');
+
+                    addToWishlistButton.addEventListener('click', async (event) => {
+                        event.preventDefault();
+                        try {
+                            console.log('Add to Wishlist button clicked');
+                            const productId = addToWishlistButton.getAttribute('data-productId');
+                            console.log('Product ID:', productId);
+
+                            const response = await fetch('/addToWishlist', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ productId }),
+                            });
+
+                            const result = await response.json();
+
+                            if (result.success) {
+                                // Product added to wishlist successfully
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: 'Product added to wishlist successfully',
+                                });
+                            } else {
+                                // Product is already in the wishlist
+                                Swal.fire({
+                                    icon: 'info',
+                                    text: 'Product is already added to wishlist',
+                                });
+                                console.error(result.error);
+                            }
+                        } catch (error) {
+                            console.error('An error occurred:', error);
+                        }
+                    });
+
+
+
+                </script>

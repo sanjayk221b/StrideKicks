@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const couponSchema = new mongoose.Schmema({
+const couponSchema = new mongoose.Schema({
     couponName: {
         type: String,
         required: true
@@ -17,6 +17,14 @@ const couponSchema = new mongoose.Schmema({
         type: Number,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true
+    },
     expiryDate: {
         type: Date
     },
@@ -24,10 +32,14 @@ const couponSchema = new mongoose.Schmema({
         type: String,
         default: 'Active'
     },
-    userUsed:[{
-        userId:{
-            type:ObjectId,
-            ref:'user'
+    usersClaimed: [{
+        userId: {
+            type: mongoose.Types.ObjectId,
+            ref: "user"
         }
     }]
-})
+}, { timestamps: true })
+
+
+
+module.exports = mongoose.model('coupon', couponSchema);

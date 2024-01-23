@@ -1,13 +1,14 @@
 
 const User = require('../model/userModel');
 const Products = require('../model/productsModel');
-const Categories = require('../model/categoriesModel')
-const userOtp = require('../model/userOtpModel')
+const Categories = require('../model/categoriesModel');
+const userOtp = require('../model/userOtpModel');
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
-dotenv.config()
+dotenv.config();
 const randomString = require('randomstring');
+const moment = require('moment');
 
 
 //Register Verify
@@ -93,7 +94,7 @@ const sendOtpVerification = async ({ email }, res) => {
         console.log('resend comment', email);
         setTimeout(async () => {
             await newOtpVerification.deleteOne({ email: email })
-        }, 60000)
+        }, 60000);
         res.redirect(`/otp?email=${email}`)
     } catch (error) {
         console.log(error.message);
@@ -167,7 +168,7 @@ const verifyLogin = async (req, res) => {
                 }
             } else if (!user.verified) {
                 req.flash('message', 'Email is not verified Register Again');
-                await User.deleteOne({verified:fals})
+                await User.deleteOne({ verified: fals })
                 res.redirect("/login");
             } else {
                 req.flash('message', 'User doesn\'t Exist');
@@ -279,7 +280,6 @@ const updateUserProfile = async (req, res) => {
     try {
         const userId = req.session.userId;
         const { username, mobile } = req.body;
-        console.log('updateUserProdile');
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             {
@@ -309,6 +309,7 @@ const updatePassword = async (req, res) => {
         const passwordMatch = await bcrypt.compare(currentPassword, user.password);
 
         if (!passwordMatch) {
+            console.log('oldpassword do not match')
             return res.status(400).json({ success: false, message: 'Old password is incorrect.' });
         }
 
@@ -348,6 +349,14 @@ const forgotPassword = async (req, res) => {
                     }
                 })
                 console.log('updated data ', updatedUser);
+                setTimeout(async () => {
+                    await User.updateOne({ email: email }, {
+                        $unset: {
+                            token: 1
+                        }
+                    });
+                    console.log('Token deleted after 3 minutes');
+                }, 180000);
                 sendResetPasswordMail(userData.name, userData.email, randomToken);
                 res.render('forgotPassword', { message: 'Please check your mail to reset password' })
                 console.log('random token generated', randomToken);
@@ -468,7 +477,7 @@ const loadRegister = async (req, res) => {
     }
 }
 
-
+//Load Shop
 const loadShop = async (req, res) => {
     try {
         const userData = await User.findOne({ _id: req.session.userId });
@@ -477,6 +486,7 @@ const loadShop = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const perPage = 6;
         const searchQuery = req.query.search || '';
+        const sortType = req.query.sort || 'low-to-high';
 
         const conditions = { isListed: true };
         if (categoryId) {
@@ -486,12 +496,20 @@ const loadShop = async (req, res) => {
             conditions.name = { $regex: searchQuery, $options: 'i' };
         }
 
+        let sortOption = {};
+        if (sortType === 'low-to-high') {
+            sortOption = { price: 1 }; // Ascending order
+        } else if (sortType === 'high-to-low') {
+            sortOption = { price: -1 }; // Descending order
+        }
+
         const totalProducts = await Products.countDocuments(conditions);
         const totalPages = Math.ceil(totalProducts / perPage);
         const hasPreviousPage = page > 1;
         const hasNextPage = page < totalPages;
 
         const products = await Products.find(conditions)
+            .sort(sortOption)
             .skip((page - 1) * perPage)
             .limit(perPage);
 
@@ -505,7 +523,9 @@ const loadShop = async (req, res) => {
             totalPages,
             hasPreviousPage,
             hasNextPage,
-            searchQuery
+            searchQuery,
+            sortType,
+            categoryId: categoryId || '', 
         });
 
     } catch (error) {
@@ -584,6 +604,7 @@ const load_EditProfile = async (req, res) => {
 }
 
 
+
 const load_manageAddress = async (req, res) => {
     try {
 
@@ -591,6 +612,15 @@ const load_manageAddress = async (req, res) => {
         res.render('manageAddress', { user: userData })
     } catch (error) {
         console.log(error);
+    }
+}
+
+const load_Wallet = async (req, res) => {
+    try {
+        const userData = await User.findOne({ _id: req.session.userId })
+        res.render('wallet', { user: userData, moment })
+    } catch (error) {
+        console.log(error)
     }
 }
 
@@ -675,6 +705,6 @@ module.exports = {
     forgotPassword,
     sendResetPasswordMail,
     load_resetPassword,
-    resetPassword
-
+    resetPassword,
+    load_Wallet
 }

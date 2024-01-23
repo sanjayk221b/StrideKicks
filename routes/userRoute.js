@@ -1,8 +1,10 @@
 const express = require("express");
 const userRouter = express();
 const userController = require("../controller/userController");
-const cartController = require("../controller/cartController")
+const cartController = require("../controller/cartController");
 const orderController = require('../controller/orderController');
+const couponController = require('../controller/couponController');
+const wishlistController = require('../controller/wishlistController');
 const auth = require('../midddleware/auth');
 
 //set view engine
@@ -38,6 +40,7 @@ userRouter.delete('/cart/removeItem',auth.checkBlocked,auth.isLogin,cartControll
 
 userRouter.get('/checkout',auth.checkBlocked,auth.isLogin,cartController.loadCheckout);
 userRouter.post('/placeOrder',auth.checkBlocked,auth.isLogin,orderController.placeOrder);
+userRouter.post('/applyCoupon',auth.checkBlocked,auth.isLogin,couponController.applyCoupon);
 userRouter.post('/verifyPayment',auth.checkBlocked,auth.isLogin,orderController.verifyPayment)
 userRouter.get('/confirmation',auth.checkBlocked, auth.isLogin,orderController.load_orderConfirmation);
 
@@ -57,12 +60,18 @@ userRouter.delete('/deleteAddress/:addressId',auth.checkBlocked,auth.isLogin,use
 userRouter.get('/editAddress',auth.checkBlocked,auth.isLogin,userController.load_EditAddress);
 userRouter.post('/editAddress',auth.checkBlocked,auth.isLogin,userController.editAddress);
 
-
+userRouter.get('/wallet',auth.checkBlocked,auth.isLogin,userController.load_Wallet);
 
 userRouter.get('/orders',auth.checkBlocked,auth.isLogin,orderController.load_userOrders);
 userRouter.get('/singleOrder',auth.checkBlocked,auth.isLogin,orderController.load_SingleOrder);
 userRouter.post('/cancelOrder',auth.checkBlocked,auth.isLogin,orderController.cancelOrder);
 userRouter.post('/returnOrder',auth.checkBlocked,auth.isLogin,orderController.cancelOrder);
+
+userRouter.get('/wishlist',auth.checkBlocked,auth.isLogin,wishlistController.load_Wishlist);
+userRouter.post('/addToWishlist',auth.checkBlocked,auth.isLogin,wishlistController.addToWishlist);
+userRouter.delete('/removeFromWishlist',auth.checkBlocked,auth.isLogin,wishlistController.removeFromWishlist);
+
+
 
 
 module.exports = userRouter;
