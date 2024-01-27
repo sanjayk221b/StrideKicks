@@ -1,12 +1,14 @@
 const dotenv = require('dotenv');
 dotenv.config();
-const bcrypt = require('bcrypt');   
+const bcrypt = require('bcrypt');
 const User = require('../model/userModel');
-const Categories = require('../model/categoriesModel')
-const Products = require('../model/productsModel')
+const Categories = require('../model/categoriesModel');
+const Products = require('../model/productsModel');
+const Offers = require('../model/offersModel');
 const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
+const moment = require('moment')
 
 const addProducts = async (req, res) => {
     try {
@@ -108,7 +110,7 @@ const editProducts = async (req, res) => {
 
             // Append newly added images to the existing ones
             imageData = existingImages.concat(imageData);
-            
+
             // Validate the total number of images
             if (imageData.length !== 4) {
                 req.flash('message', 'Exactly 4 images are required.');
@@ -143,23 +145,23 @@ const editProducts = async (req, res) => {
 //Delete Single Image
 const deleteImage = async (req, res) => {
     try {
-      const { img, productId } = req.body;
-      console.log("Delete request received:", img, productId);
-      console.log(req.body);
-  
-      fs.unlink(path.join(__dirname, "../public/sharpImages", img), () => {});
-       await Products.updateOne(
-        { _id: productId },
-        { $pull: { image: img } }
-      );
-      res.send({ success: true });
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).send({ success: false, error: error.message });
-    } 
-  };
+        const { img, productId } = req.body;
+        console.log("Delete request received:", img, productId);
+        console.log(req.body);
 
-  //Delete Product
+        fs.unlink(path.join(__dirname, "../public/sharpImages", img), () => { });
+        await Products.updateOne(
+            { _id: productId },
+            { $pull: { image: img } }
+        );
+        res.send({ success: true });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, error: error.message });
+    }
+};
+
+//Delete Product
 const deleteProducts = async (req, res) => {
     try {
         const productId = req.params.productId;
@@ -177,8 +179,9 @@ const deleteProducts = async (req, res) => {
 //Load Products
 const loadProducts = async (req, res) => {
     try {
-        const products = await Products.find({})
-        res.render('products', { products: products })
+        const products = await Products.find({});
+        const offers = await Offers.find({});
+        res.render('products', { products, offers, moment });
     } catch (error) {
         console.log(error.message)
     }

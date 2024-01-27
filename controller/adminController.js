@@ -2,8 +2,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 const bcrypt = require('bcrypt');
 const User = require('../model/userModel');
-const Categories = require('../model/categoriesModel')
-const Products = require('../model/productsModel')
+const Categories = require('../model/categoriesModel');
+const Products = require('../model/productsModel');
+const Orders = require('../model/ordersModel');
+const Offers = require('../model/offersModel');
+const moment = require('moment');
 const sharp = require('sharp');
 const path = require('path');
 
@@ -33,13 +36,58 @@ const adminLogin = async (req, res) => {
     }
 }
 
+const chartData = async (req, res) => {
+    try {
+        const monthlyData = await Orders.aggregate([
+            {
+                $unwind: "$items",
+            },
+            {
+                $match: {
+                    $and: [
+                        { "items.orderStatus": "delivered" },
+                        { status: { $ne: "pending" } },
+                    ],
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        month: { $month: "$date" },
+                        year: { $year: "$date" },
+                    },
+                    totalRevenue: { $sum: "$items.totalPrice" },
+                },
+            },
+            {
+                $sort: { "_id.year": -1, "_id.month": -1 },
+            },
+        ]);
+
+        // Format the data for the chart
+        const labels = [];
+        const revenueData = [];
+
+        monthlyData.forEach((result) => {
+            const monthYearLabel = `${result._id.month}/${result._id.year}`;
+            labels.push(monthYearLabel);
+            revenueData.push(result.totalRevenue);
+        });
+
+        // Send the data to the client
+        res.json({ labels, revenueData });
+    } catch (error) {
+        console.log(error)
+        return res.status(500)
+    }
+}
 
 //Block Or Unblock user
 const updateUserStatus = async (req, res) => {
     try {
         const userId = req.params.id;
         const userData = await User.findById(userId);
-        const sessionId = req.session.userId; 
+        const sessionId = req.session.userId;
 
         if (!userData) {
             return res.status(404).send('User not found');
@@ -92,7 +140,7 @@ const addCategories = async (req, res) => {
 const editCategories = async (req, res) => {
     try {
         console.log(req.body);
-        const categoryName = req.body.categoryName.toUpperCase(); 
+        const categoryName = req.body.categoryName.toUpperCase();
 
         const categoryExist = await Categories.findOne({
             _id: { $ne: req.body.id }, // Exclude the current category
@@ -174,11 +222,219 @@ const loadLogin = async (req, res) => {
 //Load Dashboard
 const loadDashboard = async (req, res) => {
     try {
-        res.render('dashboard');
+        const ordersCount = await Orders.countDocuments({status:{$ne:"Pending"}});
+        const productsCount = await Products.countDocuments();
+        const categoriescount = await Categories.countDocuments();
+        const placedCount = await Orders.find({ status: "Placed" }).count();
+        const deliveredCount = await Orders.find({ status: "Delivered" }).count();
+        const cancelledCount = await Orders.find({ status: "Cancelled" }).count();
+        const currentYear = new Date().getFullYear();
+        const latestUsers = await User.find({}).sort({ createdAt: -1 }).limit(5);
+
+        //Total Revenue
+        const totalRevenue = await Orders.aggregate([
+            {
+                $unwind: "$items"
+            },
+            {
+                $match: {
+                    $and: [
+                        { "items.orderStatus": "delivered" },
+                        { status: { $ne: "pending" } },
+                    ]
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: { $sum: "$items.totalPrice" }
+                }
+            }
+        ]);
+
+
+        // Monthly Data for the current year
+        const monthlyData = await Orders.aggregate([
+            {
+                $unwind: "$items"
+            },
+            {
+                $match: {
+                    $and: [
+                        { "items.orderStatus": "delivered" },
+                        { status: { $ne: "pending" } },
+                        { date: { $gte: new Date(currentYear, 0, 1), $lt: new Date(currentYear + 1, 0, 1) } }
+                    ]
+                }
+            },
+            {
+                $group: {
+                    _id: { month: { $month: "$date" } },
+                    totalRevenue: { $sum: "$items.totalPrice" },
+                    totalOrders: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "_id.month": 1 } // Sort by month
+            }
+        ]);
+
+        // Separate monthlyOrders and monthlyRevenue
+        const monthlyOrders = Array.from({ length: 12 }, (_, i) => {
+            const monthData = monthlyData.find(data => data._id.month === i + 1);
+            return {
+                totalOrders: monthData ? monthData.totalOrders : 0
+            };
+        });
+
+        const monthlyRevenue = Array.from({ length: 12 }, (_, i) => {
+            const monthData = monthlyData.find(data => data._id.month === i + 1);
+            return {
+                totalRevenue: monthData ? monthData.totalRevenue : 0
+            };
+        });
+
+        // Monthly User Data for the current year
+        const monthlyUserData = await User.aggregate([
+            {
+                $match: {
+                    "createdAt": {
+                        $gte: new Date(currentYear, 0, 1),
+                        $lt: new Date(currentYear + 1, 0, 1)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { month: { $month: "$createdAt" } },
+                    totalUsers: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "_id.month": 1 } // Sort by month
+            }
+        ]);
+
+        //  MonthlyUsers
+        const monthlyUsers = Array.from({ length: 12 }, (_, i) => {
+            const monthUserData = monthlyUserData.find(data => data._id.month === i + 1);
+            return {
+                totalUsers: monthUserData ? monthUserData.totalUsers : 0
+            };
+        });
+
+        // Yearly Data For Current Year
+        const yearlyData = await Orders.aggregate([
+            {
+                $unwind: "$items"
+            },
+            {
+                $match: {
+                    $and: [
+                        { "items.orderStatus": "delivered" },
+                        { status: { $ne: "pending" } },
+                        { date: { $gte: new Date(2018, 0, 1), $lt: new Date(2025, 0, 1) } }
+                    ]
+                }
+            },
+            {
+                $group: {
+                    _id: { year: { $year: "$date" } },
+                    totalRevenue: { $sum: "$items.totalPrice" },
+                    totalOrders: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "_id.year": 1 } // Sort by year
+            }
+        ]);
+
+        // Separate yearlyOrders and yearlyRevenue with zeros for missing years
+        const yearsFrom2018 = Array.from({ length: 7 }, (_, i) => 2018 + i);
+        const yearlyOrders = yearsFrom2018.map(year => {
+            const yearData = yearlyData.find(data => data._id.year === year);
+            return {
+                totalOrders: yearData ? yearData.totalOrders : 0,
+                year
+            };
+        });
+
+        const yearlyRevenue = yearsFrom2018.map(year => {
+            const yearData = yearlyData.find(data => data._id.year === year);
+            return {
+                totalRevenue: yearData ? yearData.totalRevenue : 0,
+                year
+            };
+        });
+        // Yearly User Data for the current year
+        const yearlyUserData = await User.aggregate([
+            {
+                $match: {
+                    "createdAt": {
+                        $gte: new Date(2018, 0, 1),
+                        $lt: new Date(2025, 0, 1)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { year: { $year: "$createdAt" } },
+                    totalUsers: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "_id.year": 1 } // Sort by year
+            }
+        ]);
+
+        // Separate yearlyUsers 
+        const yearlyUsers = yearsFrom2018.map(year => {
+            const yearUserData = yearlyUserData.find(data => data._id.year === year);
+            return {
+                totalUsers: yearUserData ? yearUserData.totalUsers : 0,
+                year
+            };
+        });
+
+        //Latest Orders
+        const latestOrders = await Orders.aggregate([
+            {
+                $unwind: "$items",
+            },
+            {
+                $match: {
+                    status: { $ne: "Pending" },
+                },
+            },
+            {
+                $sort: {
+                    createdAt: -1,
+                },
+            },
+            {
+                $limit: 10,
+            },
+        ]);
+
+
+        res.render('dashboard', {
+            ordersCount,
+            productsCount,
+            totalRevenue: totalRevenue[0].totalRevenue,
+            monthlyRevenue,
+            monthlyOrders,
+            monthlyUsers,
+            yearlyOrders,
+            yearlyRevenue,
+            yearlyUsers,
+            latestUsers,
+            latestOrders
+        });
     } catch (error) {
         console.log(error.message);
     }
-}
+};
+
 
 //Load users 
 const loadUsers = async (req, res) => {
@@ -194,8 +450,9 @@ const loadUsers = async (req, res) => {
 //load Categories
 const loadCategories = async (req, res) => {
     try {
-        const categories = await Categories.find({})
-        res.render('categories', { categories: categories });
+        const categories = await Categories.find({});
+        const offers = await Offers.find({});
+        res.render('categories', { categories, offers, moment });
     } catch (error) {
         console.log(error.message)
     }
@@ -250,4 +507,5 @@ module.exports = {
     updateCategoryStatus,
     deleteCategories,
     logoutAdmin,
+    chartData
 }   

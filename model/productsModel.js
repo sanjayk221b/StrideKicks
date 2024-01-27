@@ -5,7 +5,7 @@ const productsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    description: {         
+    description: {
         type: String,
         required: true
     },
@@ -32,6 +32,13 @@ const productsSchema = new mongoose.Schema({
     isListed: {
         type: Boolean,
         default: true
+    },
+    offer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "offer",
+    },
+    offerPrice: {
+        type:Number,
     }
 
 });

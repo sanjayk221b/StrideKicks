@@ -12,7 +12,11 @@ const categorySchema = new mongoose.Schema({
     isListed: {
         type: Boolean,
         default: true
+    },
+    offer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "offer",
     }
 });
 
-module.exports = mongoose.model('category',categorySchema);
+module.exports = mongoose.model('category', categorySchema);

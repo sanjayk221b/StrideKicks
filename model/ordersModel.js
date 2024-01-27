@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const orderSchema = mongoose.Schema({
     userId: {
@@ -18,8 +18,9 @@ const orderSchema = mongoose.Schema({
         required: true
     },
     totalAmount: {
-        type: String,
-        required: true
+        type: Number,
+        default: 0,
+        required: true 
     },
     totalDiscountAmount: {
         type: Number,
@@ -43,10 +44,6 @@ const orderSchema = mongoose.Schema({
     },
     paymentId: {
         type: String
-    },
-    total: {
-        type: Number,
-
     },
     items: [{
         productId: {
@@ -78,6 +75,6 @@ const orderSchema = mongoose.Schema({
             type: String
         },
     }]
-})
+}, { timestamps: true })
 
-module.exports = mongoose.model('order', orderSchema)
+    module.exports = mongoose.model('order', orderSchema);

@@ -342,7 +342,7 @@ const updateOrderStatus = async (req, res) => {
             if (product) {
                 product.stockQuantity += item.quantity;
                 await product.save();
-            }
+            };
             // Calculate discount amount for the item
             const discountAmount = item.discountPerItem || 0;
             const deductedAmount = item.totalPrice - discountAmount;
