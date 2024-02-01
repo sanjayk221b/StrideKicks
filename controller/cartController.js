@@ -8,26 +8,28 @@ const Coupons = require('../model/couponModel');
 //Load Cart
 const loadCart = async (req, res) => {
     try {
-        const userId = req.session.userId
+        const userId = req.session.userId;
+
         if (userId) {
             const cartDetails = await Cart.findOne({ userId: userId }).populate({ path: 'items.productId' });
             const user = await User.findOne({ _id: userId });
-            const coupons = await Coupons.find({})
+            const coupons = await Coupons.find({});
 
             let amount = 0;
             if (cartDetails) {
-                cartDetails.items.forEach((cartItem => {
-                    let itemPrice = cartItem.price;
-                    amount += itemPrice * cartItem.quantity
-                }))
+                cartDetails.items.forEach((cartItem) => {
+                    let itemPrice = cartItem.productId.offerPrice || cartItem.productId.price;
+                    amount += itemPrice * cartItem.quantity;
+                });
             }
 
-            res.render('cart', { cart: cartDetails, user: user, subTotal: amount, coupons: coupons })
+            res.render('cart', { cart: cartDetails, user: user, subTotal: amount, coupons: coupons });
         }
     } catch (error) {
         console.log(error);
     }
-}
+};
+
 
 //Add To Cart
 const addToCart = async (req, res) => {
@@ -36,7 +38,8 @@ const addToCart = async (req, res) => {
         const userId = req.session.userId;
 
         if (userId) {
-            const product = await Products.findOne({ _id: productId });
+            const product = await Products.findOne({ _id: productId }).populate('offer');
+            let offerPrice = product.offerPrice || product.price
             let cart = await Cart.findOne({ userId: userId });
 
             if (cart) {
@@ -46,7 +49,7 @@ const addToCart = async (req, res) => {
                         {
                             $inc: {
                                 'items.$.quantity': quantity,
-                                'items.$.totalPrice': quantity * existingProduct.price
+                                'items.$.totalPrice': quantity * offerPrice
                             }
                         })
                 } else {
@@ -56,8 +59,8 @@ const addToCart = async (req, res) => {
                             items: {
                                 productId: productId,
                                 quantity: quantity,
-                                price: product.price,
-                                totalPrice: product.price * quantity
+                                price: offerPrice,
+                                totalPrice: offerPrice * quantity
                             }
                         }
                     })
@@ -69,8 +72,8 @@ const addToCart = async (req, res) => {
                     items: [{
                         productId: productId,
                         quantity: quantity,
-                        price: product.price,
-                        totalPrice: product.price * quantity
+                        price: offerPrice,
+                        totalPrice: offerPrice * quantity
                     }]
                 })
                 await newCart.save()
@@ -84,30 +87,28 @@ const addToCart = async (req, res) => {
     }
 }
 
-//update Cart
 const updateCart = async (req, res) => {
     try {
         const { userId } = req.session;
         const { cartItems } = req.body;
-        // console.log(req.body);
 
         for (const { productId, quantity } of cartItems) {
             const product = await Products.findOne({ _id: productId });
 
-            if (product && product.price !== null) {
-                // console.log(product.price);
+            if (product) {
+                let itemPrice = product.offerPrice || product.price;
+
                 await Cart.findOneAndUpdate(
                     { userId: userId, 'items.productId': productId },
                     {
                         $set: {
                             'items.$.quantity': quantity,
-                            'items.$.totalPrice': product.price * quantity
+                            'items.$.totalPrice': itemPrice * quantity
                         }
                     }
                 );
             } else {
-                // console.log(`Product with ID ${productId} not found or has no price.`);
-                console.log(error);
+                console.log(`Product with ID ${productId} not found.`);
             }
         }
 
@@ -117,6 +118,7 @@ const updateCart = async (req, res) => {
         res.status(500).json({ success: false, error: 'Error updating the cart' });
     }
 };
+
 
 
 const removeItem = async (req, res) => {
@@ -136,28 +138,30 @@ const removeItem = async (req, res) => {
     }
 };
 
-//load Checkout
 const loadCheckout = async (req, res) => {
     try {
-        const userId = req.session.userId
+        const userId = req.session.userId;
+
         if (userId) {
             const cartDetails = await Cart.findOne({ userId: userId }).populate({ path: 'items.productId' });
             const user = await User.findOne({ _id: userId });
-            const coupons = await Coupons.find({ status: 'Active' })
+            const coupons = await Coupons.find({ status: 'Active' });
             let amount = 0;
+
             if (cartDetails) {
-                cartDetails.items.forEach((cartItem => {
-                    let itemPrice = cartItem.price;
-                    amount += itemPrice * cartItem.quantity
-                }))
+                cartDetails.items.forEach((cartItem) => {
+                    let itemPrice = cartItem.productId.offerPrice || cartItem.productId.price;
+                    amount += itemPrice * cartItem.quantity;
+                });
             }
 
-            res.render('checkout', { cart: cartDetails, user: user, subTotal: amount, coupons: coupons })
+            res.render('checkout', { cart: cartDetails, user: user, subTotal: amount, coupons: coupons });
         }
     } catch (error) {
         console.log(error);
     }
-}
+};
+
 
 
 

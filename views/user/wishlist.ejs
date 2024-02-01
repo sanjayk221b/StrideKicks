@@ -51,42 +51,53 @@
                     <section class="lattest-product-area pb-40 category-list">
                         <div class="row">
                             <!-- single product -->
-                            <% wishlist.forEach(product=> { %>
-                                <div class="col-lg-3 col-md-6">
-                                    <div class="single-product">
-                                        <img class="img-fluid" src="/sharpImages/<%= product.productId.image[0] %>"
-                                            alt="">
-                                        <div class="product-details">
-                                            <h6>
-                                                <%=product.productId.name%>
-                                            </h6>
-                                            <div class="price">
-                                                <h6>₹<%=product.productId.price%>
+                            <%if(wishlist.length> 0) {%>
+                                <% wishlist.forEach(product=> { %>
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="single-product">
+                                            <img class="img-fluid" src="/sharpImages/<%= product.productId.image[0] %>"
+                                                alt="">
+                                            <div class="product-details">
+                                                <h6>
+                                                    <%=product.productId.name%>
                                                 </h6>
-                                                <!-- <h6 class="l-through">$210.00</h6> -->
-                                            </div>
-                                            <div class="prd-bottom">
+                                                <div class="price">
+                                                    <h6>₹<%=product.productId.price%>
+                                                    </h6>
+                                                    <!-- <h6 class="l-through">$210.00</h6> -->
+                                                </div>
+                                                <div class="prd-bottom">
 
-                                                <a href="" class="social-info">
-                                                    <span class="ti-bag"></span>
-                                                    <p class="hover-text">add to cart</p>
-                                                </a>
-                                                <a href="#" class="social-info"
-                                                    onclick="removeProduct('<%= product.productId._id %>')">
-                                                    <span class="fa-duotone fa-x"></span>
-                                                    <p class="hover-text">Remove</p>
-                                                </a>
-                                                <a href="" class="social-info">
-                                                    <span class="lnr lnr-move"></span>
-                                                    <p class="hover-text">view more</p>
-                                                </a>
+                                                    <!-- <a href="" class="social-info">
+                                                        <span class="ti-bag"></span>
+                                                        <p class="hover-text">add to cart</p>
+                                                    </a> -->
+                                                    <a href="#" class="social-info"
+                                                        onclick="removeProduct('<%= product.productId._id %>')">
+                                                        <span class="fa-duotone fa-x"></span>
+                                                        <p class="hover-text">Remove</p>
+                                                    </a>
+                                                    <a href="/productDetails?id=<%= product.productId._id %>"
+                                                        class="social-info">
+                                                        <span class="lnr lnr-move"></span>
+                                                        <p class="hover-text">View More</p>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <% }); %>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <div class="col-12 text-center">
+                                                <div class="empty-wishlist mt-4">
+                                                    <h4>Your Wishlist is Empty</h4>
+                                                    <p>Add some products to your wishlist and discover great deals!</p>
+                                                    <a href="/shop" class="btn btn-primary mb-4">Shop Now</a>
+                                                </div>
+                                            </div>
+                                            <% } %>
 
-                                    <!-- single product end-->
+                                                <!-- single product end-->
                         </div>
                 </div>
                 </section>
@@ -171,4 +182,5 @@
 
 
             </body>
+
             </html>

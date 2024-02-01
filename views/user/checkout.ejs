@@ -530,43 +530,87 @@
 
                 });
 
+                document.addEventListener('DOMContentLoaded', function () {
+                    const addToWalletButton = document.getElementById('addToWalletButton');
+
+                    addToWalletButton.addEventListener('click', async function () {
+                        try {
+                            // Use SweetAlert to get the amount from the user
+                            const { value: amount } = await Swal.fire({
+                                title: 'Enter the amount to add to your wallet',
+                                input: 'text', // Use 'text' instead of 'number'
+                                inputAttributes: {
+                                    min: 0,
+                                    step: 0.01, // Optional: You can adjust the step value based on your requirements
+                                    inputMode: 'decimal', // Allow decimal input
+                                },
+                                showCancelButton: true,
+                                confirmButtonText: 'Add to Wallet',
+                            });
+
+                            if (amount === undefined || isNaN(amount) || amount <= 0) {
+                                Swal.fire('Invalid amount', 'Please enter a valid positive amount.', 'error');
+                                return;
+                            }
+                            const response = await axios.post('/addToWallet', { amount });
+
+                            if (response.data.success === true) {
+                                initiateRazorpayForWallet(response.data.payment);
+
+                            } else {
+                                window.location.href = '/checkout';
+                            }
+                        } catch (error) {
+                            console.error('An unexpected error occurred:', error);
+                            alert('An unexpected error occurred. Please try again.');
+                        }
+                    });
+
+                });
+
+                function initiateRazorpayForWallet(payment) {
+                    console.log('razorPayment order :', payment);
+                    var options = {
+                        "key": "rzp_test_h6GOIv1Khv2rKn", // Enter the Key ID generated from the Dashboard
+                        "amount": payment.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                        "currency": "INR",
+                        "name": "Acme Corp", //your business name
+                        "description": "Test Transaction",
+                        "image": "https://example.com/your_logo",
+                        "order_id": payment.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                        "handler": function (response) {
+                            console.log('Razorpay handler called with response:', response);
+                            verifyRazorpayForWallet(response, payment)
+                        },
+                        "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                            "name": "Gaurav Kumar", //your customer's name
+                            "email": "gaurav.kumar@example.com",
+                            "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
+                        },
+                        "notes": {
+                            "address": "Razorpay Corporate Office"
+                        },
+                        "theme": {
+                            "color": "#3399cc"
+                        }
+                    };
+                    var rzp1 = new Razorpay(options);
+                    rzp1.open();
+                }
+
+                async function verifyRazorpayForWallet(razorpay, payment) {
+
+
+                    console.log('raz', razorpay, 'pay', payment);
+                    const response = await axios.post('/verifyAddToWallet', { razorpay, payment })
+                    if (response.data.success == true) {
+                        window.location.href = '/checkout'
+                    } else {
+                        window.location.href = '/checkout'
+                        alert('Payment Failed');
+                    }
+
+                }
+
+
             </script>
-
-<script>
-    // Function to initiate Razorpay payment for adding money to the wallet
-    function addToWallet(amount) {
-        var options = {
-            key: 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay API key
-            amount: amount * 100, // Amount should be in paise
-            name: 'Wallet Recharge',
-            description: 'Add money to wallet',
-            image: 'YOUR_LOGO_URL', // Replace with your logo URL
-            handler: function (response) {
-                // Handle the Razorpay success callback
-                console.log('Payment success:', response);
-                // Update the wallet balance or perform other actions as needed
-                // For example, you can send an AJAX request to update the user's wallet balance
-            },
-            prefill: {
-                name: 'User Name', // Replace with user's name
-                email: 'user@example.com', // Replace with user's email
-            },
-            notes: {
-                // Add any additional notes or metadata as needed
-                custom_field: 'value',
-            },
-            theme: {
-                color: '#3498db', // Replace with your desired color
-            },
-        };
-
-        var rzp = new Razorpay(options);
-        rzp.open();
-    }
-
-    // Add an event listener to the "Add to Wallet" button
-    document.getElementById('addToWalletButton').addEventListener('click', function () {
-        // Replace 'AMOUNT_TO_BE_ADDED' with the desired amount to be added to the wallet
-        addToWallet(AMOUNT_TO_BE_ADDED);
-    });
-</script>

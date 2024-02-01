@@ -3,6 +3,8 @@ const User = require('../model/userModel');
 const Products = require('../model/productsModel');
 const Categories = require('../model/categoriesModel');
 const userOtp = require('../model/userOtpModel');
+const Banner = require('../model/bannerModel');
+const Cart = require('../model/cartModel');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
@@ -14,8 +16,10 @@ const moment = require('moment');
 //Register Verify
 const verifyRegister = async (req, res) => {
     try {
-        const { username, email, mobile, password, confirmPassword } = req.body;
-
+        const { username, email, mobile, password, confirmPassword, code } = req.body;
+        if (code) {
+            req.session.referralCode = code;
+        }
         // Check if email already exists
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
@@ -27,6 +31,7 @@ const verifyRegister = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
+        const referralCode = generateReferralCode();
 
         // Create new user
         const newUser = new User({
@@ -35,7 +40,8 @@ const verifyRegister = async (req, res) => {
             mobile,
             password: hashedPassword,
             verified: false,
-            isAdmin: 0
+            isAdmin: 0,
+            referralCode: referralCode
         });
 
         await newUser.save();
@@ -45,6 +51,9 @@ const verifyRegister = async (req, res) => {
         res.status(500).send({ error: "Internal server error" });
     }
 };
+function generateReferralCode() {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
 
 
 // Otp verification
@@ -61,8 +70,8 @@ const sendOtpVerification = async ({ email }, res) => {
             }
         })
         const otp = `${Math.floor(1000 + Math.random() * 9000)}`
-        console.log('email:', email);
-        console.log('from:', process.env.email_user);
+        // console.log('email:', email);
+        // console.log('from:', process.env.email_user);
         const mailOptions = {
             from: process.env.email_user,
             to: email,
@@ -91,7 +100,7 @@ const sendOtpVerification = async ({ email }, res) => {
         //save otp record
         await newOtpVerification.save();
         await transporter.sendMail(mailOptions);
-        console.log('resend comment', email);
+        // console.log('resend comment', email);
         setTimeout(async () => {
             await newOtpVerification.deleteOne({ email: email })
         }, 60000);
@@ -126,8 +135,37 @@ const verifyOtp = async (req, res) => {
         await userOtp.deleteOne({ email: email });
 
         req.session.userId = userData._id
-
-        res.redirect('/home');
+        if (req.session.referralCode) {
+            await User.findOneAndUpdate(
+                { referralCode: req.session.referralCode },
+                {
+                    $inc: { wallet: 100 },
+                    $push: {
+                        wallet_history: {
+                            date: new Date(),
+                            amount: 100,
+                            description: `Referral Bonus for referring  ${userData.username}`
+                        }
+                    }
+                }
+            );
+            await User.findOneAndUpdate(
+                { _id: req.session.userId },
+                {
+                    $inc: { wallet: 50 },
+                    $push: {
+                        wallet_history: {
+                            date: new Date(),
+                            amount: 50,
+                            description: `Welcome Bonus For using referral link`
+                        }
+                    }
+                }
+            );
+        }
+        req.session.referralCode = null;
+        req.session.userId = null
+        res.redirect('/login');
     } else {
         // res.render('otp', { email: email, message: 'otp is incorrect' })
         req.flash('message', 'Incorrect OTP');
@@ -168,7 +206,7 @@ const verifyLogin = async (req, res) => {
                 }
             } else if (!user.verified) {
                 req.flash('message', 'Email is not verified Register Again');
-                await User.deleteOne({ verified: fals })
+                await User.deleteOne({ verified: false })
                 res.redirect("/login");
             } else {
                 req.flash('message', 'User doesn\'t Exist');
@@ -437,10 +475,9 @@ const resetPassword = async (req, res) => {
 //Home Render
 const loadHome = async (req, res) => {
     try {
-        // console.log('User ID from session:', req.session.userId);
         const userData = await User.findOne({ _id: req.session.userId });
-        // console.log('User Data:', userData);
-        res.render('home', { user: userData });
+        const banners = await Banner.find();
+        res.render('home', { user: userData, banners });
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');
@@ -471,13 +508,14 @@ const loadOtp = async (req, res) => {
 // Register Render
 const loadRegister = async (req, res) => {
     try {
-        res.render('register')
+        const { code } = req.query;
+        console.log(req.query);
+        res.render('register', { code });
     } catch {
         console.log(error.message);
     }
 }
 
-//Load Shop
 const loadShop = async (req, res) => {
     try {
         const userData = await User.findOne({ _id: req.session.userId });
@@ -496,11 +534,14 @@ const loadShop = async (req, res) => {
             conditions.name = { $regex: searchQuery, $options: 'i' };
         }
 
-        let sortOption = {};
-        if (sortType === 'low-to-high') {
-            sortOption = { price: 1 }; // Ascending order
-        } else if (sortType === 'high-to-low') {
-            sortOption = { price: -1 }; // Descending order
+        const defaultSort = { date: -1 }; // Sort by newest first
+
+        let sortOption = defaultSort;
+
+        if (req.query.sort === 'low-to-high') {
+            sortOption = { price: 1 };
+        } else if (req.query.sort === 'high-to-low') {
+            sortOption = { price: -1 };
         }
 
         const totalProducts = await Products.countDocuments(conditions);
@@ -508,10 +549,60 @@ const loadShop = async (req, res) => {
         const hasPreviousPage = page > 1;
         const hasNextPage = page < totalPages;
 
-        const products = await Products.find(conditions)
+        const skipAmount = (page - 1) * perPage;
+
+        let products = await Products.find(conditions)
+            .populate('offer')
             .sort(sortOption)
-            .skip((page - 1) * perPage)
+            .skip(skipAmount)
             .limit(perPage);
+
+        // Get all categories and check if they have an offer
+        const allCategories = await Categories.find({ isListed: true }).populate('offer');
+
+        for (const category of allCategories) {
+            if (category.offer) {
+                // Apply category offer to all products under this category
+                const categoryProducts = await Products.find({ category: category.name });
+                // console.log('categoryProduct with offer', categoryProducts);
+                for (const product of categoryProducts) {
+                    if (!product.offerPrice) {
+                        // If product doesn't have individual offer, apply category offer
+                        // console.log('Product price:', product.price);
+                        // console.log('Offer percentage:', category.offer.percentage);
+
+                        let discount = Math.round(product.price * (category.offer.percentage / 100));
+                        product.offerPrice = product.price - discount;
+
+                        product.offer = category.offer._id;
+                        await product.save();
+                        // console.log("discount", discount);
+                    }
+                }
+            }
+        }
+
+
+        const updatedProducts = await Promise.all(products.map(async (product) => {
+            if (product.offer) {
+                // Product has offer
+                let discount = Math.round(product.price * (product.offer.percentage / 100));
+                product.offerPrice = product.price - discount;
+            } else if (!product.offer && !product.offerPrice) {
+                // Product does not have offer
+                product.offerPrice = undefined;
+            }
+
+            // Save the updated product to the database
+            await product.save();
+
+            return product;
+        }));
+        // 'updatedProducts' now contains the products with the updated offerPrice, and they are saved in the database
+
+
+
+
 
         const categoryData = await Categories.find({ isListed: true });
 
@@ -525,7 +616,7 @@ const loadShop = async (req, res) => {
             hasNextPage,
             searchQuery,
             sortType,
-            categoryId: categoryId || '', 
+            categoryId: categoryId || '',
         });
 
     } catch (error) {
@@ -538,17 +629,32 @@ const loadShop = async (req, res) => {
 
 
 
+
 // load product details
 const loadProductDetails = async (req, res) => {
     try {
-        const id = req.query.id
+        const productId = req.query.id;
         const userData = await User.findOne({ _id: req.session.userId });
-        const products = await Products.findOne({ _id: id })
-        res.render('productDetails', { products: products, user: userData })
+        const cartDetails = await Cart.findOne({ userId: req.session.userId }).populate({ path: 'items.productId' });
+
+        const products = await Products.findOne({ _id: productId }).populate('offer');
+
+        // Find the quantity of the product in the cart
+        let productQuantityInCart = 0;
+        if (cartDetails && cartDetails.items) {
+            const cartItem = cartDetails.items.find(item => item.productId._id.toString() === productId);
+            if (cartItem) {
+                console.log("found cart item");
+                productQuantityInCart = cartItem.quantity;
+            }
+        }
+        console.log("Product quantity in cart", productQuantityInCart);
+        res.render('productDetails', { products, user: userData, productQuantityInCart });
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }
+
 
 const load_AddAddress = async (req, res) => {
     try {

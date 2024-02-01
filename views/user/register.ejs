@@ -26,6 +26,7 @@
 						<form class="row login_form" action="" method="post"
 							onsubmit="return validateForm('signupForm')" id="signupForm">
 							<div class="col-md-12 form-group">
+								<input type="hidden" name="code" id="code" value="<%= code %>">
 								<input type="text" class="form-control" id="username" name="username"
 									placeholder="Username">
 								<div id="usernameError" class="error-message text-danger"></div>

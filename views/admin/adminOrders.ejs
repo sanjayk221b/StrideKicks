@@ -16,256 +16,289 @@
             <%- include('../layout/adminLayouts/sidebar') -%>
 
 
-            <!-- Content Start -->
-            <div class="content">
-                <!-- Navbar Start -->
-                <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-                    <a href="/admin" class="navbar-brand d-flex d-lg-none me-4">
-                        <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
-                    </a>
-                    <a href="#" class="sidebar-toggler flex-shrink-0">
-                        <i class="fa fa-bars"></i>
-                    </a>
-                    <form class="d-none d-md-flex ms-4">
-                        <input class="form-control bg-dark border-0" id="navbar-search" type="search"
-                            placeholder="Search by Name">
-                    </form>
-                    <div class="navbar-nav align-items-center ms-auto ">
-                        <div class="nav-item dropdown me-3">
-                            <a href="/admin/addProducts" class="nav-link">
-                                <i class="fa fa-envelope me-lg-2"></i>
-                                <span class="d-none d-lg-inline-flex">Add Products </span>
-                            </a>
+                <!-- Content Start -->
+                <div class="content">
+                    <!-- Navbar Start -->
+                    <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                        <a href="/admin" class="navbar-brand d-flex d-lg-none me-4">
+                            <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+                        </a>
+                        <a href="#" class="sidebar-toggler flex-shrink-0">
+                            <i class="fa fa-bars"></i>
+                        </a>
+                        <form class="d-none d-md-flex ms-4">
+                            <input class="form-control bg-dark border-0" id="navbar-search" type="search"
+                                placeholder="Search by Name">
+                        </form>
+                        <div class="navbar-nav align-items-center ms-auto ">
+                            <div class="nav-item dropdown me-3">
+                                <a href="" class="nav-link">
+                                    <i class="fa fa-envelope me-lg-2"></i>
+                                    <span class="d-none d-lg-inline-flex"></span>
+                                </a>
 
+                            </div>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
+                                        style="width: 40px; height: 40px;">
+                                    <span class="d-none d-lg-inline-flex">Sanjay k</span>
+                                </a>
+                                <div
+                                    class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                                    <a href="#" class="dropdown-item">My Profile</a>
+                                    <a href="#" class="dropdown-item">Settings</a>
+                                    <a href="/admin/logout" class="dropdown-item">Log Out</a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                                <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
-                                    style="width: 40px; height: 40px;">
-                                <span class="d-none d-lg-inline-flex">Sanjay k</span>
-                            </a>
-                            <div
-                                class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                                <a href="#" class="dropdown-item">My Profile</a>
-                                <a href="#" class="dropdown-item">Settings</a>
-                                <a href="/admin/logout" class="dropdown-item">Log Out</a>
+                    </nav>
+                    <!-- Navbar End -->
+
+
+                    <!-- Table Start -->
+                    <div class="container-fluid pt-4 px-4">
+                        <div class="col-12">
+                            <div class="bg-secondary rounded h-100 p-4">
+                                <h4 class="mb-4">Orders </h4>
+                                <div class="table-responsive">
+                                    <table class="table" id="myDataTable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Order ID</th>
+                                                <th scope="col">Customer</th>
+                                                <th scope="col">Total Price</th>
+                                                <th scope="col">Order Date</th>
+                                                <th scope="col">Payment Method</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% if (orders.length> 0) { %>
+                                                <% orders.forEach(order=> { %>
+                                                    <% if(order.items && order.items.length> 0) {%>
+                                                        <% order.items.forEach(item=> { %>
+                                                            <tr>
+                                                                <td>
+                                                                    <%= order.orderId %>
+                                                                </td>
+
+                                                                <td>
+                                                                    <%= order.username %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= order.totalAmount %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= moment(order.date).format('DD-MM-YYYY') %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= order.payment %>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-select statusSelector"
+                                                                        name="statusSelector"
+                                                                        onchange="updateOrderStatus(this.value,'<%=order._id%>','<%=item._id%>')">
+
+                                                                        <% if (item.orderStatus==='cancelled' ||
+                                                                            item.orderStatus==='returned' ) { %>
+                                                                            <!-- If status is cancelled or returned, show only that status -->
+                                                                            <option value="<%=item.orderStatus%>"
+                                                                                selected>
+                                                                                <%=item.orderStatus.charAt(0).toUpperCase()
+                                                                                    + item.orderStatus.slice(1)%>
+                                                                            </option>
+
+                                                                            <% } else if (item.orderStatus==='delivered'
+                                                                                ) { %>
+                                                                                <!-- If status is delivered, show both 'delivered' and 'returned' options -->
+                                                                                <option value="delivered" selected>
+                                                                                    Delivered</option>
+                                                                                <option value="returned"
+                                                                                    <%=item.orderStatus==='returned'
+                                                                                    ? 'selected' : '' %>>Returned
+                                                                                </option>
+
+                                                                                <% } else { %>
+                                                                                    <!-- If status is not cancelled, returned, or delivered, show all options -->
+                                                                                    <option value="placed"
+                                                                                        <%=item.orderStatus==='placed'
+                                                                                        ? 'selected' : '' %>>Placed
+                                                                                    </option>
+                                                                                    <option value="shipped"
+                                                                                        <%=item.orderStatus==='shipped'
+                                                                                        ? 'selected' : '' %>>Shipped
+                                                                                    </option>
+                                                                                    <option value="out_for_delivery"
+                                                                                        <%=item.orderStatus==='out_for_delivery'
+                                                                                        ? 'selected' : '' %>>Out for
+                                                                                        Delivery</option>
+                                                                                    <option value="delivered"
+                                                                                        <%=item.orderStatus==='delivered'
+                                                                                        ? 'selected' : '' %>>Delivered
+                                                                                    </option>
+                                                                                    <option value="request_return"
+                                                                                        <%=item.orderStatus==='request_return'
+                                                                                        ? 'selected' : '' %>>Request
+                                                                                        Return</option>
+                                                                                    <option value="returned"
+                                                                                        <%=item.orderStatus==='returned'
+                                                                                        ? 'selected' : '' %>>Returned
+                                                                                    </option>
+                                                                                    <option value="request_cancellation"
+                                                                                        <%=item.orderStatus==='request_cancellation'
+                                                                                        ? 'selected' : '' %>>Request
+                                                                                        Cancellation</option>
+                                                                                    <option value="cancelled"
+                                                                                        <%=item.orderStatus==='cancelled'
+                                                                                        ? 'selected' : '' %>>Cancelled
+                                                                                    </option>
+                                                                                    <% } %>
+
+                                                                    </select>
+                                                                </td>
+
+
+
+                                                                <td>
+                                                                    <a href="/admin/orderDetails?itemId=<%=item._id %>"><button
+                                                                            type="button"
+                                                                            class="btn btn-outline-info btn-sm ">view</button></a>
+                                                                </td>
+                                                                <td>
+
+                                                                </td>
+                                                            </tr>
+                                                            <% }) %>
+                                                                <% } %>
+                                                                    <% }) %>
+                                                                        <% } else { %>
+                                                                            <tr>
+                                                                                <td>No orders available</td>
+                                                                            </tr>
+                                                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </nav>
-                <!-- Navbar End -->
-
-
-                <!-- Table Start -->
-                <div class="container-fluid pt-4 px-4">
-                    <div class="col-12">
-                        <div class="bg-secondary rounded h-100 p-4">
-                            <h4 class="mb-4">Orders </h4>
-                            <div class="table-responsive">
-                                <table class="table" id="myDataTable">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Order ID</th>
-                                            <th scope="col">Customer</th>
-                                            <th scope="col">Total Price</th>
-                                            <th scope="col">Order Date</th>
-                                            <th scope="col">Payment Method</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col"></th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% if (orders.length> 0) { %>
-                                            <% orders.forEach(order=> { %>
-                                                <% if(order.items && order.items.length> 0) {%>
-                                                    <% order.items.forEach(item=> { %>
-                                                        <tr>
-                                                            <td>
-                                                                <%= order.orderId %>
-                                                            </td>
-
-                                                            <td>
-                                                                <%= order.username %>
-                                                            </td>
-                                                            <td>
-                                                                <%= order.totalAmount %>
-                                                            </td>
-                                                            <td>
-                                                                <%= moment(order.date).format('DD-MM-YYYY') %>
-                                                            </td>
-                                                            <td>
-                                                                <%= order.payment %>
-                                                            </td>
-                                                            <td>
-                                                                <select class="form-select statusSelector"
-                                                                    name="statusSelector"
-                                                                    onchange="updateOrderStatus(this.value,'<%=order._id%>','<%=item._id%>')">
-                                                                    <option value="placed"
-                                                                        <%=item.orderStatus==='placed' ? 'selected' : ''
-                                                                        %>>Placed</option>
-                                                                    <option value="shipped"
-                                                                        <%=item.orderStatus==='shipped' ? 'selected'
-                                                                        : '' %>>Shipped</option>
-                                                                    <option value="out_for_delivery"
-                                                                        <%=item.orderStatus==='out_for_delivery'
-                                                                        ? 'selected' : '' %>>Out for Delivery</option>
-                                                                    <option value="delivered"
-                                                                        <%=item.orderStatus==='delivered' ? 'selected'
-                                                                        : '' %>>Delivered</option>
-                                                                    <option value="request_return"
-                                                                        <%=item.orderStatus==='request_return'
-                                                                        ? 'selected' : '' %>>Request Return</option>
-                                                                    <option value="returned"
-                                                                        <%=item.orderStatus==='returned' ? 'selected'
-                                                                        : '' %>>Returned</option>
-                                                                    <option value="request_cancellation"
-                                                                        <%=item.orderStatus==='request_cancellation'
-                                                                        ? 'selected' : '' %>>Request Cancellation
-                                                                    </option>
-                                                                    <option value="cancelled"
-                                                                        <%=item.orderStatus==='cancelled' ? 'selected'
-                                                                        : '' %>>Cancelled</option>
-                                                                </select>
-                                                            </td>
-                                                            <td>
-                                                                <a href="/admin/orderDetails?itemId=<%=item._id %>"><button
-                                                                        type="button"
-                                                                        class="btn btn-outline-info btn-sm ">view</button></a>
-                                                            </td>
-                                                            <td>
-
-                                                            </td>
-                                                        </tr>
-                                                        <% }) %>
-                                                            <% } %>
-                                                                <% }) %>
-                                                                    <% } else { %>
-                                                                        <tr>
-                                                                            <td>No orders available</td>
-                                                                        </tr>
-                                                                        <% } %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Table End -->
+                    <!-- Table End -->
 
 
 
 
-                <%- include('../layout/adminLayouts/footer') -%>
+                    <%- include('../layout/adminLayouts/footer') -%>
 
-                    <script>
+                        <script>
 
-                        var $j = jQuery.noConflict();
+                            var $j = jQuery.noConflict();
 
-                        $j(document).ready(function () {
-                            $j('#myDataTable').DataTable({
-                                "order": [[3, "desc"]] // Set default sorting order based on the date (4th column)
+                            $j(document).ready(function () {
+                                $j('#myDataTable').DataTable({
+                                    "order": [[3, "desc"]] // Set default sorting order based on the date (4th column)
+                                });
                             });
-                        });
 
-                        // Toggle the product status (list/unlist)
-                        async function toggleProductStatus(productId, action) {
-                            try {
-                                const actionText = action === 'unlist' ? 'list' : 'unlist';
+                            // Toggle the product status (list/unlist)
+                            async function toggleProductStatus(productId, action) {
+                                try {
+                                    const actionText = action === 'unlist' ? 'list' : 'unlist';
 
-                                // SweetAlert for confirmation
+                                    // SweetAlert for confirmation
+                                    Swal.fire({
+                                        title: 'Confirm Action',
+                                        text: `Do you want to ${actionText} this product?`,
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#d33',
+                                        cancelButtonColor: '#3085d6',
+                                        confirmButtonText: `Yes, ${actionText} it!`
+                                    }).then(async (result) => {
+                                        if (result.isConfirmed) {
+                                            const response = await fetch(`/admin/products/${productId}`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                            });
+
+                                            const data = await response.json();
+
+                                            if (data.status) {
+                                                location.reload();
+                                            } else {
+                                                console.error(`Failed to ${actionText.toLowerCase()} product status:`, data.message);
+                                            }
+                                        }
+                                    });
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            }
+                            //Delete Product
+                            function deleteProduct(productId) {
                                 Swal.fire({
-                                    title: 'Confirm Action',
-                                    text: `Do you want to ${actionText} this product?`,
+                                    title: 'Are you sure?',
+                                    text: 'Once deleted, you will not be able to recover this product!',
                                     icon: 'warning',
                                     showCancelButton: true,
                                     confirmButtonColor: '#d33',
                                     cancelButtonColor: '#3085d6',
-                                    confirmButtonText: `Yes, ${actionText} it!`
-                                }).then(async (result) => {
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
                                     if (result.isConfirmed) {
-                                        const response = await fetch(`/admin/products/${productId}`, {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                        });
-
-                                        const data = await response.json();
-
-                                        if (data.status) {
-                                            location.reload();
-                                        } else {
-                                            console.error(`Failed to ${actionText.toLowerCase()} product status:`, data.message);
-                                        }
+                                        fetch(`/admin/deleteProducts/${productId}`, {
+                                            method: 'POST', // Use DELETE method
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    Swal.fire('Deleted!', 'The product has been deleted.', 'success');
+                                                    location.reload(); // reload the page after deletion
+                                                } else {
+                                                    console.error('Error:', data.error);
+                                                    Swal.fire('Error', 'Failed to delete the product.', 'error');
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                Swal.fire('Error', 'Internal Server Error.', 'error');
+                                            });
                                     }
                                 });
-                            } catch (error) {
-                                console.log(error);
                             }
-                        }
-                        //Delete Product
-                        function deleteProduct(productId) {
-                            Swal.fire({
-                                title: 'Are you sure?',
-                                text: 'Once deleted, you will not be able to recover this product!',
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#d33',
-                                cancelButtonColor: '#3085d6',
-                                confirmButtonText: 'Yes, delete it!'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    fetch(`/admin/deleteProducts/${productId}`, {
-                                        method: 'POST', // Use DELETE method
+
+                            function updateOrderStatus(newStatus, orderId, itemId) {
+                                console.log('Update Order Status called with:', newStatus, orderId, itemId);
+
+                                // Log the fetch request details
+                                fetch('/admin/updateOrderStatus', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        orderId: orderId,
+                                        itemId: itemId,
+                                        newStatus: newStatus,
+                                    }),
+                                })
+                                    .then(response => {
+                                        console.log('Response:', response);
+                                        return response.json();
                                     })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.success) {
-                                                Swal.fire('Deleted!', 'The product has been deleted.', 'success');
-                                                location.reload(); // reload the page after deletion
-                                            } else {
-                                                console.error('Error:', data.error);
-                                                Swal.fire('Error', 'Failed to delete the product.', 'error');
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.error('Error:', error);
-                                            Swal.fire('Error', 'Internal Server Error.', 'error');
-                                        });
-                                }
-                            });
-                        }
-
-                        function updateOrderStatus(newStatus, orderId, itemId) {
-                            console.log('Update Order Status called with:', newStatus, orderId, itemId);
-
-                            // Log the fetch request details
-                            fetch('/admin/updateOrderStatus', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    orderId: orderId,
-                                    itemId: itemId,
-                                    newStatus: newStatus,
-                                }),
-                            })
-                                .then(response => {
-                                    console.log('Response:', response);
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    console.log('Success:', data);
-                                    // Optionally update the UI or perform additional actions
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                });
-                        }
+                                    .then(data => {
+                                        console.log('Success:', data);
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                    });
+                            }
 
 
 
 
-                    </script>
+                        </script>

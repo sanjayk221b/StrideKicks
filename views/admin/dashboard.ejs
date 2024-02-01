@@ -143,7 +143,22 @@
                                         <p class="mb-2">Products</p>
                                         <h6 class="mb-0">
                                             <%= productsCount %>
+
                                         </h6>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-xl-3">
+                                <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                                    <i class="fa fa-chart-area fa-3x text-primary"></i>
+                                    <div class="ms-3">
+                                        <p class="mb-2">Categories</p>
+                                        <h6 class="mb-0">
+                                            <%= categoriesCount %>
+
+                                        </h6>
+
                                     </div>
                                 </div>
                             </div>
@@ -152,13 +167,15 @@
                                     <i class="fa fa-chart-pie fa-3x text-primary"></i>
                                     <div class="ms-3">
                                         <p class="mb-2">Monthly Earnings</p>
-                                        <h6 class="mb-0">₹
+                                        <h6 class="mb-0">₹<%=currentMonthRevenue%>
                                         </h6>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
+
                     <!-- Sale & Revenue End -->
 
 
@@ -232,6 +249,8 @@
 
                     <!-- Latest Orders -->
                     <div class="container-fluid pt-4 px-4">
+                        <a href="/admin/salesReport" class="btn btn-danger mt-4 mb-2 ml-auto  pull-right"> Sales
+                            Report</a>
                         <div class="bg-secondary text-center rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <h6 class="mb-0">Latest orders</h6>
@@ -248,7 +267,7 @@
                                             <th scope="col">Total</th>
                                             <th scope="col">Order Status</th>
                                             <th scope="col">Payment Method</th>
-                                            <th scope="col">View Details</th>
+                                            <!-- <th scope="col">View Details</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -273,7 +292,11 @@
                                                 <td>
                                                     <%= order.payment %>
                                                 </td>
-                                                <td><a class="btn btn-sm btn-primary" href="#">View Details</a></td>
+                                                <!-- <td> <a class="btn btn-sm btn-primary view-details-button"
+                                                        href="/admin/orderDetails?itemId=<%= order.itemId %>"
+                                                        data-item-id="<%= order.itemId %>">
+                                                        View Details
+                                                    </a </td> -->
                                             </tr>
                                             <% }); %>
                                     </tbody>
@@ -304,7 +327,7 @@
                                         {
                                             label: "Revenue",
                                             data: [<%= monthlyRevenue.map(month => month.totalRevenue) %>],
-                                            backgroundColor: "rgba(255, 0, 0, 0.7)", 
+                                            backgroundColor: "rgba(255, 0, 0, 0.7)",
                                             fill: true
                                         },
                                         {

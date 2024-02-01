@@ -11,7 +11,6 @@ const moment = require('moment')
 const loadOffers = async (req, res) => {
     try {
         const offers = await Offer.find({});
-        console.log(offers);
         res.render('offers', { offers, moment });
     } catch (error) {
         console.log(error)
@@ -22,7 +21,6 @@ const loadOffers = async (req, res) => {
 //Load Add Offers
 const load_addOffers = async (req, res) => {
     try {
-
         res.render('addOffer');
     } catch (error) {
         console.log(error);
@@ -54,12 +52,25 @@ const addOffer = async (req, res) => {
     }
 }
 
+//Delete Offer 
+const deleteOffer = async (req, res) => {
+    try {
+        console.log("delete request recieved", "req.query")
+        const { offerId } = req.query;
+        await Offer.findByIdAndDelete({ _id: offerId })
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ success: false, error: "Internal Server Error" });
+
+    }
+}
+
 // Apply Category Offer
 const applyCategoryOffer = async (req, res) => {
     try {
-        console.log("applycategory offer req body", req.body)
         const { offerId, categoryId } = req.body;
         const updatedCategory = await Categories.updateOne({ _id: categoryId }, { $set: { offer: offerId } });
+
         return res.json({ sucess: true });
     } catch (error) {
         res.status(500).json({ success: false, error: "Internal Server Error" });
@@ -69,8 +80,15 @@ const applyCategoryOffer = async (req, res) => {
 // Remove Category Offer 
 const removeCategoryOffer = async (req, res) => {
     try {
-        const { offerId, categoryId } = req.body;
-        const updatedCategory = await Categories.updateOne({ _id: categoryId }, { $unset: { offer: offerId } });
+        const { categoryId } = req.body;
+        const category = await Categories.findOne({ _id: categoryId });
+        const offerId = category.offer;
+        const categoryName = category.name;
+        const updatedCategory = await Categories.updateOne({ _id: categoryId }, { $unset: { offer: offerId } }, { new: true });
+        await Products.updateMany(
+            { category: categoryName },
+            { $unset: { offer: 1, offerPrice: 1 } }
+        );
         return res.json({ sucess: true });
     } catch (error) {
         res.status(500).json({ success: false, error: "Internal Server Error" });
@@ -102,16 +120,18 @@ const applyProductOffer = async (req, res) => {
 //Remove Product Offer
 const removeProductOffer = async (req, res) => {
     try {
+        console.log("removeProduct offer req body", req.body)
+
         const { offerId, productId } = req.body;
-        const updatedProduct = await Products.updateOne(
+        await Products.updateOne(
             { _id: productId },
             {
                 $unset: {
-                    offer: "",
+                    offer: 1, offerPrice: 1
                 },
             }
         );
-        return res.json({ sucess: true });
+        return res.json({ success: true });
     } catch (error) {
         res.status(500).json({ success: false, error: "Internal Server Error" });
     }
@@ -122,9 +142,11 @@ const removeProductOffer = async (req, res) => {
 module.exports = {
     loadOffers,
     addOffer,
+    deleteOffer,
     load_addOffers,
     applyCategoryOffer,
     removeCategoryOffer,
     applyProductOffer,
     removeProductOffer
+
 }

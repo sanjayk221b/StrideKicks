@@ -3,6 +3,31 @@
         ul.main-categories li.main-nav-list.active a {
             color: orange;
         }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #e70303;
+        }
+
+        .discounted-price {
+            font-weight: bold;
+            color: #008000;
+        }
+
+        .image-container {
+            position: relative;
+        }
+
+        .offer-banner {
+            position: absolute;
+            top: 30px;
+            right: 15px;
+            background-color: #ff6600;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
     </style>
 
     <body>
@@ -13,7 +38,8 @@
                 <nav class="navbar navbar-expand-lg navbar-light main_box">
                     <div class="container">
                         <!-- Brand and toggle get grouped for better mobile display -->
-                        <a class="navbar-brand logo_h" href="index.html"><img src="img/logo3.png" style="width: 25%;" alt=""></a>
+                        <a class="navbar-brand logo_h" href="index.html"><img src="img/logo3.png" style="width: 25%;"
+                                alt=""></a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
@@ -172,7 +198,7 @@
                     </div>
                     <!-- End Filter Bar -->
 
-                    <!-- Start Best Seller -->
+                    <!-- Start Product List -->
                     <section class="lattest-product-area pb-40 category-list">
                         <div class="row">
                             <% if(products.length> 0) { %>
@@ -181,39 +207,58 @@
                                         <div class="single-product">
                                             <img class="img-fluid" src="/sharpImages/<%= products[i].image[0] %>"
                                                 alt="">
-                                            <div class="product-details">
-                                                <h6>
-                                                    <%= products[i].name%>
-                                                </h6>
-                                                <div class="price">
-                                                    <h6>₹<%= products[i].price%>
-                                                    </h6>
-                                                    <h6 class="l-through"></h6>
+                                            <% if (products[i].offerPrice !==null && products[i].offerPrice !==undefined) { %>
+                                                <div class="offer-banner">
+                                                    <%= products[i].offer.percentage %> % OFF
                                                 </div>
-                                                <div class="prd-bottom">
-                                                    <a href="#" class="social-info addToCartBtn"
-                                                        data-productId="<%= products[i]._id %>"
-                                                        data-stockQuantity="<%= products[i].stockQuantity %>">
-                                                        <span class="ti-bag"></span>
-                                                        <p class="hover-text">Add to Cart</p>
-                                                    </a>
+                                                <% } %>
+                                                    <div class="product-details">
+                                                        <h6>
+                                                            <%= products[i].name%>
+                                                        </h6>
+                                                        <div class="price">
 
-                                                    <a href="#" class="social-info addToWishlistBtn"
-                                                        data-productId="<%= products[i]._id %>">
-                                                        <span class="lnr lnr-heart"></span>
-                                                        <p class="hover-text">Wishlist</p>
-                                                    </a>
-                                                    <!-- <a href="" class="social-info">
+                                                            <% if(products[i].offerPrice !==undefined) { %>
+                                                                <!-- Display the original price with a strikethrough -->
+                                                                <h6 class="original-price">
+                                                                    <span class="cross-mark">&times;</span> ₹<%=
+                                                                        products[i].price %>
+                                                                </h6>
+                                                                <!-- Display the discounted price -->
+                                                                <h6 class="discounted-price">₹<%= products[i].offerPrice
+                                                                        %>
+                                                                </h6>
+                                                                <% } else { %>
+                                                                    <!-- Display the regular price if there's no offer or offerPrice is undefined -->
+                                                                    <h6>₹<%= products[i].price %>
+                                                                    </h6>
+                                                                    <% } %>
+
+                                                        </div>
+                                                        <div class="prd-bottom">
+                                                            <a href="#" class="social-info addToCartBtn"
+                                                                data-productId="<%= products[i]._id %>"
+                                                                data-stockQuantity="<%= products[i].stockQuantity %>">
+                                                                <span class="ti-bag"></span>
+                                                                <p class="hover-text">Add to Cart</p>
+                                                            </a>
+
+                                                            <a href="#" class="social-info addToWishlistBtn"
+                                                                data-productId="<%= products[i]._id %>">
+                                                                <span class="lnr lnr-heart"></span>
+                                                                <p class="hover-text">Wishlist</p>
+                                                            </a>
+                                                            <!-- <a href="" class="social-info">
                                                         <span class="lnr lnr-sync"></span>
                                                         <p class="hover-text">compare</p>
                                                     </a> -->
-                                                    <a href="/productDetails?id=<%= products[i].id %>"
-                                                        class="social-info">
-                                                        <span class="lnr lnr-move"></span>
-                                                        <p class="hover-text">View More</p>
-                                                    </a>
-                                                </div>
-                                            </div>
+                                                            <a href="/productDetails?id=<%= products[i].id %>"
+                                                                class="social-info">
+                                                                <span class="lnr lnr-move"></span>
+                                                                <p class="hover-text">View More</p>
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                         </div>
                                     </div>
                                     <% } %>
@@ -224,7 +269,7 @@
                                             <% } %>
                         </div>
                     </section>
-                    <!-- End Best Seller -->
+                    <!-- End Product List -->
 
 
 
@@ -490,16 +535,26 @@
                                 const result = await response.json();
 
                                 if (result.success) {
-
+                                    // Show SweetAlert for success
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Product added to wishlist!',
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                    });
                                 } else {
-
-                                    console.error(result.error);
+                                    // Product is already in the wishlist
+                                    Swal.fire({
+                                        icon: 'info',
+                                        text: 'Product is already added to wishlist',
+                                    });
                                 }
                             } catch (error) {
                                 console.error('An error occurred:', error);
                             }
                         });
                     });
+
 
 
 

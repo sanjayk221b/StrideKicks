@@ -1,4 +1,11 @@
 <%- include('../layout/userLayouts/header') -%>
+    <style>
+        .original-price {
+            text-decoration: line-through;
+            color: #ff0a0a;
+            /* You can adjust the color as needed */
+        }
+    </style>
 
     <body>
         <%- include('../layout/userLayouts/navbar') -%>
@@ -53,9 +60,23 @@
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <h5>₹<%= item.productId && item.productId.price.toFixed(2) %>
+                                                        <h5>
+                                                            <% if (item.productId && item.productId.offerPrice !==null
+                                                                && item.productId.offerPrice !==undefined) { %>
+                                                                <span class="original-price">₹<%=
+                                                                        item.productId.price.toFixed(2) %></span><br>
+                                                                ₹<%= item.productId.offerPrice.toFixed(2) %>
+                                                                    <% } else if (item.productId && item.productId.price
+                                                                        !==null && item.productId.price !==undefined) {
+                                                                        %>
+                                                                        ₹<%= item.productId.price.toFixed(2) %>
+                                                                            <% } else { %>
+                                                                                Product is not available
+                                                                                <% } %>
                                                         </h5>
                                                     </td>
+
+
                                                     <td>
                                                         <div class="product_count">
                                                             <input type="text" name="qty"
@@ -75,15 +96,23 @@
                                                     </td>
                                                     <td>
                                                         <h5>
-                                                            <% if (item.productId && item.productId.price !==null &&
-                                                                item.productId.price !==undefined) { %>
-                                                                ₹<%= (item.productId.price * item.quantity).toFixed(2)
-                                                                    %>
+                                                            <% if (item.productId && item.productId.offerPrice !==null
+                                                                && item.productId.offerPrice !==undefined) { %>
+                                                                ₹<%= (item.productId.offerPrice *
+                                                                    item.quantity).toFixed(2) %>
                                                                     <% } else { %>
-                                                                        Product is not available
-                                                                        <% } %>
+                                                                        <% if (item.productId && item.productId.price
+                                                                            !==null && item.productId.price
+                                                                            !==undefined) { %>
+                                                                            ₹<%= (item.productId.price *
+                                                                                item.quantity).toFixed(2) %>
+                                                                                <% } else { %>
+                                                                                    Product is not available
+                                                                                    <% } %>
+                                                                                        <% } %>
                                                         </h5>
                                                     </td>
+
                                                     <td>
                                                         <a href="#"
                                                             onclick="removeProduct('<%= item.productId && item.productId.id %>', event)">

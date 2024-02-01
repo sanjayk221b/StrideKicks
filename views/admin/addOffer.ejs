@@ -102,14 +102,71 @@
                     <!-- Add Offers Form End -->
 
                     <script>
-                        function validateOfferForm() {
-                            // Add validation logic for offer form fields
-                            // Example: Check if fields are not empty, validate dates, etc.
+                        document.getElementById('offerForm').addEventListener('submit', function (event) {
+                            // Prevent the form from submitting
+                            event.preventDefault();
 
-                            // Return true if validation passes, else return false
-                            return true;
-                        }
+                            // Validate form fields
+                            var formIsValid = true;
+
+                            // Offer Name
+                            var offerName = document.getElementById('offerName').value.trim();
+                            if (offerName === '') {
+                                formIsValid = false;
+                                document.getElementById('offerNameError').innerText = 'Offer Name is required';
+                            } else {
+                                document.getElementById('offerNameError').innerText = '';
+                            }
+
+                            // Starting Date
+                            var startingDate = document.getElementById('startingDate').value.trim();
+                            if (startingDate === '') {
+                                formIsValid = false;
+                                document.getElementById('startingDateError').innerText = 'Starting Date is required';
+                            } else {
+                                document.getElementById('startingDateError').innerText = '';
+                            }
+
+                            // Expiry Date
+                            var expiryDate = document.getElementById('expiryDate').value.trim();
+                            if (expiryDate === '') {
+                                formIsValid = false;
+                                document.getElementById('expiryDateError').innerText = 'Expiry Date is required';
+                            } else {
+                                // Convert the expiryDate string to a Date object
+                                var expiryDateObj = new Date(expiryDate);
+                                var currentDate = new Date();
+
+                                if (expiryDateObj < currentDate) {
+                                    formIsValid = false;
+                                    document.getElementById('expiryDateError').innerText = 'Expiration Cannot be before the current date';
+                                } else if (expiryDateObj < new Date(startingDate)) {
+                                    formIsValid = false;
+                                    document.getElementById('expiryDateError').innerText = 'Expiration Date must be after the Starting Date';
+                                } else {
+                                    document.getElementById('expiryDateError').innerText = '';
+                                }
+                            }
+
+                            // Percentage
+                            var percentage = document.getElementById('percentage').value.trim();
+                            if (percentage === '') {
+                                formIsValid = false;
+                                document.getElementById('percentageError').innerText = 'Percentage is required';
+                            } else if (parseFloat(percentage) < 1 || parseFloat(percentage) > 100) {
+                                formIsValid = false;
+                                document.getElementById('percentageError').innerText = 'Percentage should be between 1 and 100';
+                            } else {
+                                document.getElementById('percentageError').innerText = '';
+                            }
+
+                            if (formIsValid) {
+                                // Submit the form
+                                document.getElementById('offerForm').submit();
+                            }
+                        });
                     </script>
+
 
 
 

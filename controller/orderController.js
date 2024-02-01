@@ -5,8 +5,11 @@ const Product = require('../model/productsModel');
 const Coupon = require('../model/couponModel');
 const moment = require('moment');
 const Razorpay = require('razorpay');
-
-
+const puppeteer = require('puppeteer');
+const path = require("path");
+const fs = require("fs");
+const ejs = require("ejs");
+const crypto = require('crypto');
 //=============================================== User Side ============================================================
 //Razorpay instance
 var instance = new Razorpay({
@@ -203,6 +206,59 @@ const verifyPayment = async (req, res) => {
     }
 }
 
+//Add Money to Wallet
+const addMoneyToWallet = async (req, res) => {
+    try {
+        console.log('add money to waller amount', req.body)
+        const { amount } = req.body;
+        const id = crypto.randomBytes(8).toString('hex')
+
+        const options = {
+            amount: amount * 100,
+            currency: 'INR',
+            receipt: '' + id,
+        };
+
+        instance.orders.create(options, function (err, order) {
+            if (err) {
+                console.error('Error creating Razorpay order:', err.error);
+                res.status(500).json({ success: false, error: "Error creating Razorpay order", details: err.error });
+            } else {
+                console.log('Razorpay order created:', order);
+
+                res.json({ success: true, payment: order });
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//verify Add Money To Wallet
+const verifyAddMoneyToWallet = async (req, res) => {
+    try {
+        const details = req.body;
+        const { userId } = req.session;
+        const amount = parseInt(details.payment.amount) / 100;
+        let hmac = crypto.createHmac("sha256", process.env.KEY_SECRET);
+
+        hmac.update(details.razorpay.razorpay_order_id + '|' + details.razorpay.razorpay_payment_id);
+        hmac = hmac.digest('hex');
+
+        if (hmac == details.razorpay.razorpay_signature) {
+            await User.findByIdAndUpdate({ _id: userId }, { $inc: { wallet: amount }, $push: { wallet_history: { date: new Date(), amount: amount, description: 'Deposited via Razorpay' } } });
+
+            res.json({ success: true })
+        } else {
+            res.json({ success: true })
+        }
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500)
+    }
+}
+
 
 //Cancel Orders 
 const cancelOrder = async (req, res) => {
@@ -309,15 +365,19 @@ const load_SingleOrder = async (req, res) => {
 
 //=============================================== Admin Side ============================================================
 
-//load Admin Order Management
+// Load Admin Order Management
 const load_AdminOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ status: { $ne: 'Pending' } }).populate({ path: 'items.productId' });
+        const orders = await Order.find({ status: { $ne: 'Pending' } })
+            .populate({ path: 'items.productId' })
+            .sort({ createdAt: -1 });
+
         res.render('adminOrders', { orders, moment });
     } catch (error) {
         console.log(error);
     }
-}
+};
+
 
 
 // Update Order Status
@@ -326,10 +386,10 @@ const updateOrderStatus = async (req, res) => {
         const { orderId, itemId, newStatus } = req.body;
         const { userId } = req.session;
         console.log("update orderStatus req", req.body);
-
+        let deductedAmount = 0;
         let update = {
             'items.$.orderStatus': newStatus,
-            'items.$.status': newStatus
+            'items.$.status': newStatus,
         };
 
         const order = await Order.findById(orderId);
@@ -343,23 +403,27 @@ const updateOrderStatus = async (req, res) => {
                 product.stockQuantity += item.quantity;
                 await product.save();
             };
-            // Calculate discount amount for the item
-            const discountAmount = item.discountPerItem || 0;
-            const deductedAmount = item.totalPrice - discountAmount;
+            if (item.discountPerItem < item.totalPrice) {
+                // Calculate discount amount for the item
+                const discountAmount = item.discountPerItem || 0;
+                deductedAmount = item.totalPrice - discountAmount;
 
-            // Update user's wallet
-            const user = await User.findById(userId);
-            user.wallet += deductedAmount;
+                // Update user's wallet
+                const user = await User.findById(userId);
+                user.wallet += deductedAmount;
 
-            // Update wallet history
-            user.wallet_history.push({
-                date: new Date(),
-                amount: deductedAmount,
-                description: `Refund For Order ${order.orderId} `
-            });
+                // Update wallet history
+                user.wallet_history.push({
+                    date: new Date(),
+                    amount: deductedAmount,
+                    description: `Refund For Order ${order.orderId} `
+                });
+                await user.save();
 
-            await user.save();
+            }
         }
+        const updatedTotalAmount = order.totalAmount - deductedAmount;
+        update['totalAmount'] = updatedTotalAmount;
 
         const updatedOrder = await Order.findOneAndUpdate(
             { _id: orderId, 'items._id': itemId },
@@ -378,7 +442,6 @@ const updateOrderStatus = async (req, res) => {
 const load_AdminSingleOrder = async (req, res) => {
     try {
         console.log('single order query', req.query);
-        const { userId } = req.session;
         const { itemId } = req.query;
         const orderItem = await Order.findOne({ 'items._id': itemId })
             .populate('items.productId');
@@ -390,8 +453,54 @@ const load_AdminSingleOrder = async (req, res) => {
     }
 };
 
+//Download Invoice 
+const invoiceDownload = async (req, res) => {
+    try {
+        console.log("invoice download request", req.query)
+        const { orderId } = req.query;
+        const { userId } = req.session;
+        let sumTotal = 0;
 
+        const userData = await User.findById(userId);
+        const orderData = await Order.findOne({ orderId: orderId }).populate(
+            "items.productId"
+        );
 
+        orderData.items.forEach((item) => {
+            const total = item.totalPrice;
+            sumTotal += total;
+        });
+
+        const date = new Date();
+        const data = {
+            order: orderData,
+            user: userData,
+            date,
+            sumTotal,
+            moment,
+        };
+
+        // Render the EJS template
+        const ejsTemplate = path.resolve(__dirname, "../views/user/invoice.ejs");
+        const ejsData = await ejs.renderFile(ejsTemplate, data);
+
+        // Launch Puppeteer and generate PDF
+        const browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+        await page.setContent(ejsData, { waitUntil: "networkidle0" });
+        const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
+
+        // Close the browser
+        await browser.close();
+
+        // Set headers for inline display in the browser
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "inline; filename=order_invoice.pdf");
+        res.send(pdfBuffer);
+    } catch (error) {
+        return res.status(500)
+    }
+};
 
 module.exports = {
     //User Side
@@ -401,9 +510,12 @@ module.exports = {
     load_userOrders,
     load_SingleOrder,
     cancelOrder,
+    addMoneyToWallet,
+    verifyAddMoneyToWallet,
 
     //Admin Side
     load_AdminOrders,
     updateOrderStatus,
-    load_AdminSingleOrder
+    load_AdminSingleOrder,
+    invoiceDownload,
 }; 

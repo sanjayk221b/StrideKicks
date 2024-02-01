@@ -90,6 +90,9 @@ const userSchema = new mongoose.Schema({
             },
         },
     ],
+    referralCode: {
+        type: String
+    }
 
 },
     {

@@ -1,0 +1,307 @@
+<%- include('../layout/adminLayouts/header') -%>
+
+
+    <body>
+        <div class="container-fluid position-relative d-flex p-0">
+            <!-- Spinner Start -->
+            <div id="spinner"
+                class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <!-- Spinner End -->
+
+
+            <%- include('../layout/adminLayouts/sidebar') -%>
+
+
+                <!-- Content Start -->
+                <div class="content">
+                    <!-- Navbar Start -->
+                    <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                        <a href="/admin" class="navbar-brand d-flex d-lg-none me-4">
+                            <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+                        </a>
+                        <a href="#" class="sidebar-toggler flex-shrink-0">
+                            <i class="fa fa-bars"></i>
+                        </a>
+                        <form class="d-none d-md-flex ms-4">
+                            <input class="form-control bg-dark border-0" id="navbar-search" type="search"
+                                placeholder="Search by Name">
+                        </form>
+                        <div class="navbar-nav align-items-center ms-auto ">
+                            <div class="nav-item dropdown me-3">
+                                <a href="" class="nav-link">
+                                    <i class="fa fa-envelope me-lg-2"></i>
+                                    <span class="d-none d-lg-inline-flex"> </span>
+                                </a>
+
+                            </div>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
+                                        style="width: 40px; height: 40px;">
+                                    <span class="d-none d-lg-inline-flex">Sanjay k</span>
+                                </a>
+                                <div
+                                    class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                                    <a href="#" class="dropdown-item">My Profile</a>
+                                    <a href="#" class="dropdown-item">Settings</a>
+                                    <a href="/admin/logout" class="dropdown-item">Log Out</a>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                    <!-- Navbar End -->
+
+
+
+                    <!-- Table Start -->
+                    <div class="container-fluid pt-4 px-4">
+                        <div class="col-12">
+                            <div class="bg-secondary rounded h-100 p-4">
+                                <h4 class="mb-4">Sales Report</h4>
+                                <div class="table-responsive">
+                                    <table class="table" id="salesTable">
+                                        <!-- Date Picker Part with styling changes -->
+                                        <div class="container-fluid pt-4 px-4">
+                                            <div class="row mb-3">
+                                                <div class="col-md-3">
+                                                    <label for="startDate">Start Date:</label>
+                                                    <input type="date" class="form-control datepicker" id="startDate"
+                                                        style="width: 100%; background-color: aliceblue;">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="endDate">End Date:</label>
+                                                    <input type="date" class="form-control datepicker" id="endDate"
+                                                        style="width: 100%; background-color: aliceblue;">
+                                                </div>
+                                                <div class=" col-md-2 align-self-end">
+                                                    <label>&nbsp;</label>
+                                                    <button class="btn btn-primary btn-block" id="filterByDate"
+                                                        style="width: 100%;">Apply</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Mobile</th>
+                                                <th scope="col">Address</th>
+                                                <th scope="col">Order ID</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col">Payment Method</th>
+                                                <th scope="col">Total</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Qty</th>
+                                                <th scope="col">Product Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% if (orders.length> 0) { %>
+                                                <% orders.forEach(order=> { %>
+                                                    <% if (order.items && order.items.length> 0) { %>
+                                                        <% order.items.forEach(item=> { %>
+                                                            <tr>
+                                                                <td>
+                                                                    <%= order.userId.email %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= order.userId.mobile %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= order.deliveryAddress %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= order.orderId %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= moment(order.date).format('DD-MM-YYYY') %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= order.payment %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= order.totalAmount %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= item.orderStatus %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= item.quantity %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= item.productId.name %>
+                                                                </td>
+                                                            </tr>
+                                                            <% }) %>
+                                                                <% } %>
+                                                                    <% }) %>
+                                                                        <% } else { %>
+                                                                            <tr>
+                                                                                <td colspan="10">No sales report
+                                                                                    available</td>
+                                                                            </tr>
+                                                                            <% } %>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Table End -->
+
+                    <div class="container-fluid pt-4 px-4">
+                        <button class="btn btn-primary btn-block" onclick="showDownloadOptions('salesTable')"
+                            style="width: 100%;">Download Sales Report</button>
+                    </div>
+
+                    <%- include('../layout/adminLayouts/footer') -%>
+
+
+                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+                        <script>
+                            // Datepicker apply button click handler
+                            $("#filterByDate").click(function () {
+
+                                // Get start and end dates
+                                const startDate = $("#startDate").val();
+                                const endDate = $("#endDate").val();
+                                console.log("startDate", startDate);
+                                console.log("endDate", endDate);
+
+                                // Validate dates
+
+                                // Send AJAX request
+                                $.ajax({
+                                    url: '/admin/datepicker',
+                                    method: 'POST',
+                                    data: {
+                                        startDate,
+                                        endDate
+                                    },
+                                    beforeSend: function () {
+                                        // Show loader
+                                    },
+                                    success: function (response) {
+                                        // Hide loader
+
+                                        // Check for errors
+
+                                        // Render filtered sales report
+                                        let rows = '';
+                                        response.orders.forEach(order => {
+                                            rows += `
+                                        <tr>
+                                            <td>${order.userId.email}</td>
+                                            <td>${order.userId.mobile}</td>
+                                            <td>${order.deliveryAddress}</td>
+                                            <td>${order.orderId}</td>
+                                            <td>${moment(order.date).format('DD-MM-YYYY')}</td>
+                                            <td>${order.payment}</td>
+                                            <td>${order.totalAmount}</td>
+                                            <td>${order.items[0].orderStatus}</td>
+                                            <td>${order.items[0].quantity}</td>
+                                            <td>${order.items[0].productId.name}</td>
+                                        </tr>
+                                    `;
+                                        });
+
+                                        $('#salesTable tbody').html(rows);
+
+                                    },
+                                    error: function (err) {
+                                        console.log(err)
+                                    }
+                                });
+
+                            });
+
+                            // Download options
+                            function showDownloadOptions(divName) {
+                                Swal.fire({
+                                    title: 'Choose download format',
+                                    showDenyButton: true,
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Download as PDF',
+                                    denyButtonText: 'Download as Excel'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        downloadPDF(divName);
+                                    } else if (result.isDenied) {
+                                        downloadExcel(divName);
+                                    }
+                                });
+                            }
+
+                            // Download PDF
+                            function downloadPDF(divName) {
+                                const printWindow = window.open('', '_blank');
+                                printWindow.document.open();
+                                printWindow.document.write(`
+        <html>
+        <head>
+            <title>Sales Report</title>
+        </head>
+        <body>
+            <h4 class="mb-4">StrideKicks</h4>
+            ${document.getElementById(divName).outerHTML}
+        </body>
+        </html>
+    `);
+                                printWindow.document.close();
+                                printWindow.print();
+                            }
+
+
+                            // Download Excel
+                            function downloadExcel(divName) {
+                                const table = document.getElementById(divName);
+                                const rows = table.getElementsByTagName('tr');
+                                const csvContent = [];
+
+                                // Add table header
+                                const headers = [];
+                                for (let i = 0; i < table.rows[0].cells.length; i++) {
+                                    headers.push(table.rows[0].cells[i].innerText);
+                                }
+                                csvContent.push(headers.join(','));
+
+                                // Add table rows
+                                for (let i = 1; i < table.rows.length; i++) {
+                                    const row = [];
+                                    for (let j = 0; j < table.rows[i].cells.length; j++) {
+                                        row.push(table.rows[i].cells[j].innerText);
+                                    }
+                                    csvContent.push(row.join(','));
+                                }
+
+                                // Combine CSV content into a string
+                                const csvString = csvContent.join('\n');
+
+                                // Create a data URI for the CSV content
+                                const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csvString);
+
+                                // Create a link element to trigger the download
+                                const link = document.createElement('a');
+                                link.setAttribute('href', encodedUri);
+                                link.setAttribute('download', 'sales_report.csv');
+
+                                // Append the link to the document body
+                                document.body.appendChild(link);
+
+                                // Simulate a click on the link to initiate the download
+                                link.click();
+
+                                // Remove the link from the document body
+                                document.body.removeChild(link);
+                            }
+
+
+
+                        </script>

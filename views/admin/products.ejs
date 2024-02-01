@@ -169,12 +169,20 @@
                                                             <%= products[i].category %>
                                                         </td>
                                                         <td>
-                                                            <button class="btn btn-outline-warning"
-                                                                style="font-size: 12px;" data-bs-toggle="modal"
-                                                                data-bs-target="#applyOfferModal"
-                                                                data-product-id="<%= products[i]._id %>">
-                                                                Choose Offer
-                                                            </button>
+                                                            <% if(products[i].offerPrice || products[i].offer) {%>
+                                                                <button type="button"
+                                                                    class="btn btn-outline-danger btn-sm"
+                                                                    data-product-id="<%= products[i]._id %>"
+                                                                    id="removeOfferButton">Remove
+                                                                    Offer</button>
+                                                                <% } else {%>
+                                                                    <button class="btn btn-outline-warning"
+                                                                        style="font-size: 12px;" data-bs-toggle="modal"
+                                                                        data-bs-target="#applyOfferModal"
+                                                                        data-product-id="<%= products[i]._id %>">
+                                                                        Choose Offer
+                                                                    </button>
+                                                                    <% } %>
                                                         </td>
 
                                                         <td>
@@ -390,6 +398,7 @@
                                                 console.log('Server Response:', data); // Log the entire response
                                                 if (data.success) {
                                                     console.log('Offer applied successfully');
+                                                    location.reload();
                                                     // Optionally, you can perform additional actions after successful application
                                                 } else {
                                                     console.error('Failed to apply offer:', data.error);
@@ -401,6 +410,31 @@
                                             });
                                     });
                                 });
+
+                                //Remove Offer
+                                document.querySelectorAll('#removeOfferButton').forEach(function (button) {
+                                    button.addEventListener('click', function () {
+                                        const productId = button.dataset.productId;
+
+                                        // Send a patch request to the server with productId
+                                        fetch('/admin/removeProductOffer', {
+                                            method: 'PATCH',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ productId }),
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('Server Response:', data);
+                                                location.reload()
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                            });
+                                    });
+                                });
+
                             });
 
 

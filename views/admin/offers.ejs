@@ -31,13 +31,13 @@
                                 placeholder="Search by Name">
                         </form>
                         <div class="navbar-nav align-items-center ms-auto ">
-                            <div class="nav-item dropdown me-3">
-                                <a href="/admin/addCoupons" class="nav-link">
+                            <!-- <div class="nav-item dropdown me-3">
+                                <a href="" class="nav-link">
                                     <i class="fa fa-envelope me-lg-2"></i>
-                                    <span class="d-none d-lg-inline-flex">Add Coupons </span>
+                                    <span class="d-none d-lg-inline-flex"></span>
                                 </a>
 
-                            </div>
+                            </div> -->
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                                     <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
@@ -69,8 +69,8 @@
                                                 <th scope="col">Starting Date</th>
                                                 <th scope="col">Expiry Date</th>
                                                 <th scope="col">Percentage</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Edit</th>
+                                                <!-- <th scope="col">Status</th> -->
+                                                <!-- <th scope="col">Edit</th> -->
                                                 <th scope="col">Delete</th>
                                             </tr>
                                         </thead>
@@ -89,8 +89,19 @@
                                                     <td>
                                                         <%= offer.percentage %> %
                                                     </td>
-                                                    <td>
+                                                    <!-- <td>
                                                         <%= offer.status %>
+                                                    </td> -->
+                                                    <!-- <td>
+                                                        <a href="">
+                                                            <button class="btn btn-outline-warning btn-sm"
+                                                                type="submit">Edit</button>
+                                                        </a>
+                                                    </td> -->
+                                                    <td>
+                                                        <button class="btn btn-outline-danger btn-sm deleteOfferButton"
+                                                            id="deleteOfferButton"
+                                                            data-offer-id="<%= offer._id %>">Remove</button>
                                                     </td>
                                                 </tr>
                                                 <% }); %>
@@ -105,3 +116,54 @@
 
 
                     <%- include('../layout/adminLayouts/footer') -%>
+                        <script>
+
+                            $(document).ready(function () {
+                                $('#myDataTable').DataTable({
+                                    "paging": true,
+                                    "pageLength": 10
+                                });
+                            });
+
+
+
+                            $(document).ready(function () {
+                                $('.deleteOfferButton').click(function () {
+                                    // Get the offerId from the data attribute
+                                    var offerId = $(this).data('offerId');
+
+                                    // Show a confirmation dialog using SweetAlert
+                                    Swal.fire({
+                                        title: 'Are you sure?',
+                                        text: 'You won\'t be able to revert this!',
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#d33',
+                                        cancelButtonColor: '#3085d6',
+                                        confirmButtonText: 'Yes, delete it!'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // User confirmed, proceed with deletion
+                                            fetch(`/admin/deleteOffer?offerId=${offerId}`, {
+                                                method: 'DELETE'
+                                            })
+                                                .then(response => {
+                                                    if (!response.ok) {
+                                                        throw new Error('HTTP Error! Status: ' + response.status);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(data => {
+                                                    // Handle success, remove the row from the table
+                                                    $(this).closest('tr').remove();
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error deleting offer:', error);
+                                                });
+                                        }
+                                    });
+                                });
+                            });
+
+
+                        </script>

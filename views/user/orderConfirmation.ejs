@@ -32,7 +32,7 @@
                             <li><a href="#"><span>Total</span> : ₹ <%= order.totalAmount %></a></li>
                             <li><a href="#"><span>Payment method</span> : <%= order.payment %></a></li>
                             <% if (order.totalDiscountAmount) { %>
-                                <li><a href="#"><span>Discount</span> : ₹ <%= order.discountAmount %></a></li>
+                                <li><a href="#"><span>Discount</span> : ₹ <%= order.totalDiscountAmount %></a></li>
                                 <% } %>
                         </ul>
                     </div>

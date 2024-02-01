@@ -1,0 +1,122 @@
+<%- include('../layout/adminLayouts/header') -%>
+
+
+    <body>
+        <div class="container-fluid position-relative d-flex p-0">
+            <!-- Spinner Start -->
+            <div id="spinner"
+                class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <!-- Spinner End -->
+
+
+            <%- include('../layout/adminLayouts/sidebar') -%>
+
+
+                <!-- Content Start -->
+                <div class="content">
+                    <!-- Navbar Start -->
+                    <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                        <a href="/admin" class="navbar-brand d-flex d-lg-none me-4">
+                            <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+                        </a>
+                        <a href="#" class="sidebar-toggler flex-shrink-0">
+                            <i class="fa fa-bars"></i>
+                        </a>
+                        <form class="d-none d-md-flex ms-4">
+                            <input class="form-control bg-dark border-0" id="navbar-search" type="search"
+                                placeholder="Search by Name">
+                        </form>
+                        <div class="navbar-nav align-items-center ms-auto ">
+                            <!-- <div class="nav-item dropdown me-3">
+                                <a href="" class="nav-link">
+                                    <i class="fa fa-envelope me-lg-2"></i>
+                                    <span class="d-none d-lg-inline-flex"></span>
+                                </a>
+
+                            </div> -->
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    <img class="rounded-circle me-lg-2" src="/adminAssets/img/user.jpg" alt=""
+                                        style="width: 40px; height: 40px;">
+                                    <span class="d-none d-lg-inline-flex">Sanjay k</span>
+                                </a>
+                                <div
+                                    class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                                    <a href="#" class="dropdown-item">My Profile</a>
+                                    <a href="#" class="dropdown-item">Settings</a>
+                                    <a href="/admin/logout" class="dropdown-item">Log Out</a>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                    <!-- Navbar End -->
+
+
+                    <!-- Add Banner Form Start -->
+                    <div class="container-fluid pt-5 px-4">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10 col-lg-9">
+                                <div class="card bg-secondary text-white">
+                                    <div class="card-header bg-dark">
+                                        <h5>Add Banner</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="bannerForm" action="/admin/addBanner" enctype="multipart/form-data"
+                                            method="post">
+
+                                            <div class="mb-3">
+                                                <label for="bannerTitle" class="form-label">Banner Title</label>
+                                                <input type="text" class="form-control bg-dark text-white"
+                                                    id="bannerTitle" name="title" placeholder="Banner Title">
+                                                <p id="bannerTitleError" class="error-message text-danger"></p>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="bannerDescription" class="form-label">Description</label>
+                                                <textarea class="form-control bg-dark text-white" id="bannerDescription"
+                                                    name="description" placeholder="Description" rows="3"></textarea>
+                                                <p id="bannerDescriptionError" class="error-message text-danger"></p>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="bannerOccasion" class="form-label">Occasion</label>
+                                                <input type="text" class="form-control bg-dark text-white"
+                                                    id="bannerOccasion" name="occassion" placeholder="Occasion">
+                                                <p id="bannerOccasionError" class="error-message text-danger"></p>
+                                            </div>
+
+                                            <!-- <div class="mb-3">
+                                                <label for="bannerStatus" class="form-label">Status</label>
+                                                <select class="form-control bg-dark text-white" id="bannerStatus"
+                                                    name="status">
+                                                    <option value="true">Active</option>
+                                                    <option value="false">Inactive</option>
+                                                </select>
+                                                <p id="bannerStatusError" class="error-message text-danger"></p>
+                                            </div> -->
+
+                                            <div class="mb-3">
+                                                <label for="bannerImage" class="form-label mb-10">Banner
+                                                    Image</label><br>
+                                                <div id="bannerImagePreview" class="preview-container mt-4"></div>
+                                                <input type="file" class="form-control bg-dark text-white mt-4"
+                                                    id="bannerImage" name="images" multiple>
+                                                <p id="bannerImageError" class="error-message text-danger"></p>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-danger">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add Banner Form End -->
+
+
+
+                    <%- include('../layout/adminLayouts/footer') -%>

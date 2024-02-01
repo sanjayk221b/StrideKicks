@@ -36,52 +36,6 @@ const adminLogin = async (req, res) => {
     }
 }
 
-const chartData = async (req, res) => {
-    try {
-        const monthlyData = await Orders.aggregate([
-            {
-                $unwind: "$items",
-            },
-            {
-                $match: {
-                    $and: [
-                        { "items.orderStatus": "delivered" },
-                        { status: { $ne: "pending" } },
-                    ],
-                },
-            },
-            {
-                $group: {
-                    _id: {
-                        month: { $month: "$date" },
-                        year: { $year: "$date" },
-                    },
-                    totalRevenue: { $sum: "$items.totalPrice" },
-                },
-            },
-            {
-                $sort: { "_id.year": -1, "_id.month": -1 },
-            },
-        ]);
-
-        // Format the data for the chart
-        const labels = [];
-        const revenueData = [];
-
-        monthlyData.forEach((result) => {
-            const monthYearLabel = `${result._id.month}/${result._id.year}`;
-            labels.push(monthYearLabel);
-            revenueData.push(result.totalRevenue);
-        });
-
-        // Send the data to the client
-        res.json({ labels, revenueData });
-    } catch (error) {
-        console.log(error)
-        return res.status(500)
-    }
-}
-
 //Block Or Unblock user
 const updateUserStatus = async (req, res) => {
     try {
@@ -222,16 +176,16 @@ const loadLogin = async (req, res) => {
 //Load Dashboard
 const loadDashboard = async (req, res) => {
     try {
-        const ordersCount = await Orders.countDocuments({status:{$ne:"Pending"}});
+        const ordersCount = await Orders.countDocuments({ status: { $ne: "Pending" } });
         const productsCount = await Products.countDocuments();
-        const categoriescount = await Categories.countDocuments();
-        const placedCount = await Orders.find({ status: "Placed" }).count();
-        const deliveredCount = await Orders.find({ status: "Delivered" }).count();
-        const cancelledCount = await Orders.find({ status: "Cancelled" }).count();
+        const categoriesCount = await Categories.countDocuments();
+        // const placedCount = await Orders.find({ status: "Placed" }).count();
+        // const deliveredCount = await Orders.find({ status: "Delivered" }).count();
+        // const cancelledCount = await Orders.find({ status: "Cancelled" }).count();
         const currentYear = new Date().getFullYear();
         const latestUsers = await User.find({}).sort({ createdAt: -1 }).limit(5);
 
-        //Total Revenue
+        // Total Revenue with Discount Subtraction
         const totalRevenue = await Orders.aggregate([
             {
                 $unwind: "$items"
@@ -247,10 +201,36 @@ const loadDashboard = async (req, res) => {
             {
                 $group: {
                     _id: null,
-                    totalRevenue: { $sum: "$items.totalPrice" }
+                    totalRevenue: { $sum: { $subtract: ["$items.totalPrice", "$items.discountPerItem"] } }
                 }
             }
         ]);
+
+        // Current Month Revenue 
+        const currentMonth = new Date().getMonth() + 1; // Get the current month (1-indexed)
+
+        const currentMonthRevenue = await Orders.aggregate([
+            {
+                $unwind: "$items"
+            },
+            {
+                $match: {
+                    $and: [
+                        { "items.orderStatus": "delivered" },
+                        { status: { $ne: "pending" } },
+                        { date: { $gte: new Date(currentYear, currentMonth - 1, 1), $lt: new Date(currentYear, currentMonth, 1) } }
+                    ]
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: { $sum: { $subtract: ["$items.totalPrice", "$items.discountPerItem"] } }
+                }
+            }
+        ]);
+
+        const currentMonthTotalRevenue = currentMonthRevenue.length > 0 ? currentMonthRevenue[0].totalRevenue : 0;
 
 
         // Monthly Data for the current year
@@ -270,7 +250,7 @@ const loadDashboard = async (req, res) => {
             {
                 $group: {
                     _id: { month: { $month: "$date" } },
-                    totalRevenue: { $sum: "$items.totalPrice" },
+                    totalRevenue: { $sum: { $subtract: ["$items.totalPrice", "$items.discountPerItem"] } },
                     totalOrders: { $sum: 1 }
                 }
             },
@@ -340,7 +320,7 @@ const loadDashboard = async (req, res) => {
             {
                 $group: {
                     _id: { year: { $year: "$date" } },
-                    totalRevenue: { $sum: "$items.totalPrice" },
+                    totalRevenue: { $sum: { $subtract: ["$items.totalPrice", "$items.discountPerItem"] } },
                     totalOrders: { $sum: 1 }
                 }
             },
@@ -420,7 +400,9 @@ const loadDashboard = async (req, res) => {
         res.render('dashboard', {
             ordersCount,
             productsCount,
+            categoriesCount,
             totalRevenue: totalRevenue[0].totalRevenue,
+            currentMonthRevenue: currentMonthTotalRevenue,
             monthlyRevenue,
             monthlyOrders,
             monthlyUsers,
@@ -439,10 +421,10 @@ const loadDashboard = async (req, res) => {
 //Load users 
 const loadUsers = async (req, res) => {
     try {
-        const users = await User.find({})
+        const users = await User.find({});
         res.render('users', { users: users });
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
     }
 }
 
@@ -454,7 +436,7 @@ const loadCategories = async (req, res) => {
         const offers = await Offers.find({});
         res.render('categories', { categories, offers, moment });
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
     }
 }
 
@@ -463,7 +445,7 @@ const load_AddCategories = async (req, res) => {
     try {
         res.render('addCategories');
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
     }
 }
 
@@ -480,6 +462,51 @@ const load_EditCategories = async (req, res) => {
         console.log(error.message)
     }
 }
+
+// Load Sales Report
+const load_salesReport = async (req, res) => {
+    try {
+        const orders = await Orders.find({ "items.orderStatus": "delivered" })
+            .populate('userId') // Populate user data
+            .populate('items.productId'); // Populate product data
+
+        res.render('salesReport', { orders, moment });
+    } catch (error) {
+        console.error(error); // Log the error
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+//Date Picker 
+const datePicker = async (req, res) => {
+    try {
+        console.log('datepicker req body', req.body)
+        const { startDate, endDate } = req.body;
+        const startDateObj = new Date(startDate);
+        startDateObj.setHours(0, 0, 0, 0);
+        const endDateObj = new Date(endDate);
+        endDateObj.setHours(23, 59, 59, 999);
+
+        const selectedDate = await Orders.find({
+            createdAt: {
+                $gte: startDateObj,
+                $lte: endDateObj,
+            },
+            "items.orderStatus": "delivered",
+        })
+            .populate('userId') // Populate user reference
+            .populate('items.productId'); // Populate product reference in items
+
+
+        console.log('selectedDate order', selectedDate);
+
+        res.status(200).json({ orders: selectedDate });
+    } catch (err) {
+        res.redirect("/500");
+    }
+};
+
+
 
 
 
@@ -507,5 +534,7 @@ module.exports = {
     updateCategoryStatus,
     deleteCategories,
     logoutAdmin,
-    chartData
+    load_salesReport,
+    datePicker,
+
 }   

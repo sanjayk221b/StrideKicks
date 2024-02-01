@@ -72,8 +72,8 @@
                                             <th scope="col">Expiry Date</th>
                                             <th scope="col">value</th>
                                             <th scope="col">Min</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col"></th>
+                                            <!-- <th scope="col">Status</th> -->
+                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="categoryTableBody">
@@ -101,9 +101,9 @@
                                                     <td>
                                                         <%= coupon[i].minAmount %>
                                                     </td>
-                                                    <td>
+                                                    <!-- <td>
                                                         <%= coupon[i].status %>
-                                                    </td>
+                                                    </td> -->
                                                     <td>
                                                         <button class="btn btn-delete-coupon btn-outline-danger btn-sm"
                                                             data-coupon-id="<%= coupon[i]._id%>"

@@ -10,6 +10,7 @@ const path = require('path');
 const fs = require('fs');
 const moment = require('moment')
 
+//Add Products
 const addProducts = async (req, res) => {
     try {
         // console.log(req.body);

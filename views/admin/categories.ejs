@@ -1,15 +1,86 @@
 <%- include('../layout/adminLayouts/header') -%>
+    <style>
+        /* Add this CSS to customize the modal */
+        #applyOfferModal {
+            background-color: rgba(0, 0, 0, 0.7);
+            /* Semi-transparent black background */
+        }
 
+        .modal-content {
+            background-color: #282c34;
+            /* Dark background color */
+            color: #ffffff;
+            /* Text color */
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #495057;
+            /* Border color for the header */
+        }
+
+        .modal-title {
+            color: #ffc107;
+            /* Title text color */
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-body ul {
+            list-style: none;
+            /* Remove default list styles */
+            padding: 0;
+        }
+
+        .modal-body li {
+            margin-bottom: 10px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #495057;
+            /* Border color for the footer */
+        }
+
+        /* Style the close button */
+        .btn-close {
+            color: #ffffff;
+        }
+
+        /* Apply Offer button */
+        .btn-primary {
+            background-color: #ffc107;
+            /* Button background color */
+            border-color: #ffc107;
+            /* Button border color */
+            color: #282c34;
+            /* Button text color */
+        }
+
+        /* Adjust the modal size */
+        .modal-dialog {
+            max-width: 800px;
+        }
+
+        /* Optional: Add padding to the sides of the modal on smaller screens */
+        @media (max-width: 767px) {
+            .modal-dialog {
+                margin: 0 !important;
+                max-width: 100%;
+                width: 100%;
+            }
+        }
+    </style>
 
     <body>
         <div class="container-fluid position-relative d-flex p-0">
             <!-- Spinner Start -->
-            <!-- <div id="spinner"
+            <div id="spinner"
                 class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
                 <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
-            </div> -->
+            </div>
             <!-- Spinner End -->
 
 
@@ -89,10 +160,23 @@
                                                             <%= categories[i].description %>
                                                         </td>
                                                         <td>
-                                                            <button type="button" class="btn btn-outline-warning btn-sm"
-                                                                data-bs-dismiss="modal">Apply
-                                                                Offer</button>
+                                                            <% if(categories[i].offer) { %>
+                                                                <button type="button"
+                                                                    class="btn btn-outline-danger btn-sm"
+                                                                    data-category-id="<%= categories[i]._id %>"
+                                                                    id="removeOfferButton">Remove
+                                                                    Offer</button>
+                                                                <% } else { %>
+                                                                    <button type="button"
+                                                                        class="btn btn-outline-warning btn-sm"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#applyOfferModal"
+                                                                        data-category-id="<%= categories[i]._id %>">
+                                                                        Choose Offer
+                                                                    </button>
+                                                                    <% } %>
                                                         </td>
+
                                                         <td>
                                                             <span id="status_<%=categories[i]._id%>"
                                                                 class="status-badge">
@@ -147,7 +231,6 @@
                     </div>
                     <!-- Table End -->
 
-
                     <!-- Modal Start -->
                     <div class="modal fade" id="applyOfferModal" tabindex="-1" aria-labelledby="applyOfferModalLabel"
                         aria-hidden="true">
@@ -161,7 +244,7 @@
                                 <% for (let i=0; i < offers.length; i++) { %>
                                     <div class="modal-body">
                                         <ul>
-
+                                            <!-- Offer details -->
                                             <li>
                                                 <%= offers[i].name %>
                                             </li>
@@ -169,24 +252,31 @@
                                                 <%= offers[i].percentage %> %
                                             </li>
                                             <li>
-                                                <%= moment(offers.startingDate).format('MM/DD/YYYY') %>
+                                                <%= moment(offers[i].startingDate).format('MM/DD/YYYY') %>
                                             </li>
                                             <li>
-                                                <%= moment(offers.expiryDate).format('MM/DD/YYYY') %>
+                                                <%= moment(offers[i].expiryDate).format('MM/DD/YYYY') %>
                                             </li>
-                                            <button type="button" class="btn btn-primary btn-sm"
-                                                data-bs-dismiss="modal">Apply
-                                                Offer</button>
+
+                                            <!-- Apply Offer button with data attributes -->
+                                            <button type="button" class="btn btn-primary btn-sm apply-offer-btn"
+                                                data-bs-dismiss="modal" data-offer-id="<%= offers[i]._id %>"
+                                                data-category-id="<%= categories[i]._id %>">
+                                                Apply Offer
+                                            </button>
                                         </ul>
                                     </div>
                                     <% } %>
-                                        <div class="modal-footer">
-
-                                        </div>
+                                        <div class="modal-footer"></div>
                             </div>
                         </div>
                     </div>
                     <!-- Modal End -->
+
+
+
+
+
 
                     <%- include('../layout/adminLayouts/footer') -%>
 
@@ -211,7 +301,6 @@
 
 
                             document.addEventListener('DOMContentLoaded', function () {
-                                console.log('Script is running!');
                                 // Event listener for delete buttons
                                 document.querySelectorAll('.btn-delete-category').forEach(function (button) {
                                     button.addEventListener('click', function () {
@@ -324,4 +413,76 @@
                                     }
                                 });
                             }
+
+
+                            document.addEventListener('DOMContentLoaded', function () {
+                                let selectedCategoryId; // Variable to store the selected category ID
+
+                                // Add event listener to all "Choose Offer" buttons in the table
+                                document.querySelectorAll('.btn-outline-warning').forEach(function (button) {
+                                    button.addEventListener('click', function () {
+                                        selectedCategoryId = button.dataset.categoryId;
+                                    });
+                                });
+
+                                // Add event listener to all "Apply Offer" buttons in the modal
+                                document.querySelectorAll('.apply-offer-btn').forEach(function (button) {
+                                    button.addEventListener('click', function () {
+                                        const offerId = button.dataset.offerId;
+
+                                        // Use the stored category ID instead of relying on the dataset
+                                        const categoryId = selectedCategoryId;
+
+                                        // Send a patch request to the server with offerId and categoryId
+                                        fetch('/admin/applyCategoryOffer', {
+                                            method: 'PATCH',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ offerId, categoryId }),
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('Server Response:', data);
+                                                location.reload();
+                                                if (data.success) {
+                                                    console.log('Category Offer applied successfully');
+                                                } else {
+                                                    console.error('Failed to apply category offer:', data.error);
+                                                    // Handle the error case
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                            });
+                                    });
+                                });
+
+
+                                //Remove Category Offer
+                                document.querySelectorAll('#removeOfferButton').forEach(function (button) {
+                                    button.addEventListener('click', function () {
+                                        const categoryId = button.dataset.categoryId;
+                                        console.log('getting categoryId remove cat offer',categoryId)
+                                        // Send a PATCH request to the server with the categoryId
+                                        fetch('/admin/removeCategoryOffer', {
+                                            method: 'PATCH',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ categoryId }),
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                location.reload();
+                                                console.log('Server Response:', data);
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                            });
+                                    });
+                                });
+
+                            });
+
                         </script>
