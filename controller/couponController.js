@@ -47,15 +47,11 @@ const applyCoupon = async (req, res) => {
 
 
 
-
-
-
 // ===================Admin=====================
 //Load Admin Coupon
 const load_Coupon = async (req, res) => {
     try {
         const coupons = await Coupon.find({});
-        // console.log(coupons)
         res.render('adminCoupons', { coupon: coupons, moment });
     } catch (error) {
         console.log(error)

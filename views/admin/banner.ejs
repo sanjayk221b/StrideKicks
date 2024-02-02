@@ -77,7 +77,6 @@
                                         <tbody>
                                             <% if (banners.length> 0) { %>
                                                 <% banners.forEach(banner=> { %>
-                                                    <tr data-banner-id="<%= banner._id %>"></tr>
                                                     <tr>
                                                         <td>
                                                             <%= banner.title %>
@@ -104,13 +103,13 @@
                                                                 onclick="deleteBanner('<%=banner._id%>')">Delete</button>
                                                         </td>
                                                         <!-- <td>
-                                                            <%= banner.status ? 'Active' : 'Inactive' %>
-                                                        </td> -->
+                                        <%= banner.status ? 'Active' : 'Inactive' %>
+                                    </td> -->
                                                     </tr>
                                                     <% }); %>
                                                         <% } else { %>
                                                             <tr>
-                                                                <td colspan="5">No banners available</td>
+                                                                <td colspan="6">No banners available</td>
                                                             </tr>
                                                             <% } %>
                                         </tbody>
@@ -124,19 +123,22 @@
 
 
 
+
                     <%- include('../layout/adminLayouts/footer') -%>
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
                         <script>
 
-                            var $j = jQuery.noConflict()
+                            var $ = jQuery.noConflict();
 
-                           
-                        $(document).ready(function () {
-                            $('#myDataTable').DataTable({
-                                "paging": true,
-                                "pageLength": 10 
+
+                            $(document).ready(function () {
+                                $('#myDataTable').DataTable({
+                                    "paging": true,
+                                    "pageLength": 10
+                                });
                             });
-                        });
                             function deleteBanner(bannerId) {
                                 if (bannerId) {
                                     // SweetAlert to confirm the deletion

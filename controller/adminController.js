@@ -179,9 +179,6 @@ const loadDashboard = async (req, res) => {
         const ordersCount = await Orders.countDocuments({ status: { $ne: "Pending" } });
         const productsCount = await Products.countDocuments();
         const categoriesCount = await Categories.countDocuments();
-        // const placedCount = await Orders.find({ status: "Placed" }).count();
-        // const deliveredCount = await Orders.find({ status: "Delivered" }).count();
-        // const cancelledCount = await Orders.find({ status: "Cancelled" }).count();
         const currentYear = new Date().getFullYear();
         const latestUsers = await User.find({}).sort({ createdAt: -1 }).limit(5);
 
@@ -273,6 +270,66 @@ const loadDashboard = async (req, res) => {
                 totalRevenue: monthData ? monthData.totalRevenue : 0
             };
         });
+
+        const monthlyRevenueByCategory = await Orders.aggregate([
+            {
+                $unwind: "$items"
+            },
+            {
+                $match: {
+                    $and: [
+                        { "items.orderStatus": "delivered" },
+                        { status: { $ne: "pending" } },
+                        { date: { $gte: new Date(currentYear, 0, 1), $lt: new Date(currentYear + 1, 0, 1) } }
+                    ]
+                }
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "items.productId",
+                    foreignField: "_id",
+                    as: "product"
+                }
+            },
+            {
+                $unwind: "$product"
+            },
+            {
+                $group: {
+                    _id: {
+                        month: { $month: "$date" },
+                        category: "$product.category"
+                    },
+                    totalRevenue: { $sum: { $subtract: ["$items.totalPrice", "$items.discountPerItem"] } },
+                    totalOrders: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "_id.month": 1, "_id.category": 1 } // Sort by month and category
+            }
+        ]);
+
+        // Create separate arrays for men and women with 0 values for months with no orders
+        const mensMonthlyRevenue = Array.from({ length: 12 }, (_, i) => {
+            const mensData = monthlyRevenueByCategory.find(data => data._id.month === i + 1 && data._id.category === "MENS");
+            return {
+                totalRevenue: mensData ? mensData.totalRevenue : 0
+            };
+        });
+
+        const womensMonthlyRevenue = Array.from({ length: 12 }, (_, i) => {
+            const womensData = monthlyRevenueByCategory.find(data => data._id.month === i + 1 && data._id.category === "WOMENS");
+            return {
+                totalRevenue: womensData ? womensData.totalRevenue : 0
+            };
+        });
+
+        console.log("mensMonthlyRevenue", mensMonthlyRevenue);
+        console.log("womensMonthlyRevenue", womensMonthlyRevenue);
+
+
+
 
         // Monthly User Data for the current year
         const monthlyUserData = await User.aggregate([
@@ -410,7 +467,9 @@ const loadDashboard = async (req, res) => {
             yearlyRevenue,
             yearlyUsers,
             latestUsers,
-            latestOrders
+            latestOrders,
+            mensMonthlyRevenue,
+            womensMonthlyRevenue
         });
     } catch (error) {
         console.log(error.message);

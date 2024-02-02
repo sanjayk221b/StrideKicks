@@ -51,19 +51,19 @@
                     <div class="row s_product_inner">
                         <div class="col-lg-5">
                             <div class="s_Product_carousel">
-                                <% products.image.forEach((image, index) => { %>
-                                <div class="single-prd-item">
-                                    <div class="image-container">
-                                        <img id="image<%= index + 1 %>" class="img-fluid" alt="/images/<%= image %>"
-                                            src="/sharpImages/<%= image %>" alt="" />
-                                        <% if (products.offerPrice !== null && products.offerPrice !== undefined) { %>
-                                        <div class="offer-banner">
-                                            <%= products.offer.percentage %> % OFF
+                                <% products.image.forEach((image, index)=> { %>
+                                    <div class="single-prd-item">
+                                        <div class="image-container">
+                                            <img id="image<%= index + 1 %>" class="img-fluid" alt="/images/<%= image %>"
+                                                src="/sharpImages/<%= image %>" alt="" />
+                                            <% if (products.offerPrice !==null && products.offerPrice !==undefined) { %>
+                                                <div class="offer-banner">
+                                                    <%= products.offer.percentage %> % OFF
+                                                </div>
+                                                <% } %>
                                         </div>
-                                        <% } %>
                                     </div>
-                                </div>
-                                <% }); %>
+                                    <% }); %>
                             </div>
                         </div>
                         <div class="col-lg-6 offset-lg-1">
@@ -700,49 +700,68 @@
 
                             const productId = event.target.getAttribute('data-productId');
                             const quantity = document.getElementById('quantityInput').value;
-                            
+
+                            // Fetch product quantity in cart dynamically
+                            const response = await fetch(`/productQuantityInCart?id=${productId}`);
+                            const responseData = await response.json();
+                            const productQuantityInCart = responseData.productQuantityInCart;
+
+                            // Fetch stock quantity dynamically (Assuming you have the stock quantity available in your product details)
+                            const stockQuantity = <%= products.stockQuantity %>;
+
+                            const totalQuantityInCart = productQuantityInCart + parseInt(quantity);
+
                             // Check if the stock quantity is greater than or equal to 1
-                            if (<%= products.stockQuantity %> >= 1) {
-                        const response = await fetch('/addToCart', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ productId, quantity }),
-                        });
+                            if (totalQuantityInCart <= stockQuantity) {
+                                // Continue with adding to the cart logic
+                                const addToCartResponse = await fetch('/addToCart', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ productId, quantity }),
+                                });
 
-                        const responseData = await response.json();
+                                const addToCartData = await addToCartResponse.json();
 
-                        if (responseData.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Item added to cart successfully!',
-                                showConfirmButton: true,
-                                showCancelButton: true,
-                                confirmButtonText: 'Go to Cart',
-                                cancelButtonText: 'Continue Shopping',
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-
-                                    window.location.href = '/cart';
+                                if (addToCartData.success) {
+                                    // Display success message or redirect to the cart page
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Item added to cart successfully!',
+                                        showConfirmButton: true,
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Go to Cart',
+                                        cancelButtonText: 'Continue Shopping',
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = '/cart';
+                                        }
+                                    });
+                                } else {
+                                    alert('Error adding item to cart.');
                                 }
-                            });
-                        } else {
-                            alert('Error adding item to cart.');
+                            } else if (stockQuantity < 1) {
+                                // Stock quantity is less than 1, show a SweetAlert message
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Out of Stock',
+                                    text: 'Sorry, this item is out of stock.',
+                                    confirmButtonText: 'OK',
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Out of Stock',
+                                    text: 'Max Quantity Added To Cart',
+                                    confirmButtonText: 'OK',
+                                });
+                            }
+                        } catch (error) {
+                            console.error('Error processing the request', error);
                         }
-                    } else {
-                        // Stock quantity is less than 1, show a SweetAlert message
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Out of Stock',
-                            text: 'Sorry, this item is out of stock.',
-                            confirmButtonText: 'OK',
-                        });
-                    }
-    } catch (error) {
-                        console.error('The Product is currently un Available', );
-                    }
-});
+                    });
+
 
                     function increaseQuantity() {
                         var result = document.getElementById('quantityInput');

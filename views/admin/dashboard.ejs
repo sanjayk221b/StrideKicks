@@ -204,6 +204,31 @@
                     </div>
                     <!-- Sales Chart End -->
 
+                    <!-- Category Wise Chart Start -->
+                    <div class="container-fluid pt-4 px-4">
+                        <div class="row g-4">
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="bg-secondary text-center rounded p-4">
+                                    <div class="d-flex align-items-center justify-content-between mb-4">
+                                        <h6 class="mb-0">Monthly Sale Statistics</h6>
+                                        <!-- <a href="">Show All</a> -->
+                                    </div>
+                                    <canvas id="monthlyCategory"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="bg-secondary text-center rounded p-4">
+                                    <div class="d-flex align-items-center justify-content-between mb-4">
+                                        <h6 class="mb-0">Yearly Sale Statistics</h6>
+                                        <!-- <a href="">Show All</a> -->
+                                    </div>
+                                    <canvas id="yearlyCategory"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Category wise Chart End -->
+
 
                     <!-- New Members Start -->
                     <div class="container-fluid pt-4 px-4">
@@ -382,5 +407,60 @@
                                     responsive: true
                                 }
                             });
+
+
+                            // Category Wise Sale Statistics Monthly
+                            var ctx2 = $("#monthlyCategory").get(0).getContext("2d");
+                            var myChart2 = new Chart(ctx2, {
+                                type: "line",
+                                data: {
+                                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                                    datasets: [
+                                        {
+                                            label: "MENS",
+                                            data: [<%= monthlyRevenue.map(month => month.totalRevenue) %>],
+                                            backgroundColor: "rgba(255, 0, 0, 0.7)",
+                                            fill: true
+                                        },
+                                        {
+                                            label: "WOMENS",
+                                            data: [<%= monthlyOrders.map(month => month.totalOrders) %>],
+                                            backgroundColor: "rgba(255, 99, 132, 0.7)", // Lighter red for Orders
+                                            fill: true
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true
+                                }
+                            });
+
+
+                             // Category Wise Sales & Revenue Chart Yearly
+                             var ctx2 = $("#yearlyCategory  ").get(0).getContext("2d");
+                            var myChart2 = new Chart(ctx2, {
+                                type: "line",
+                                data: {
+                                    labels: ["2018", "2019", "2020", "2021", "2022", "2023", "2024"],
+                                    datasets: [
+                                        {
+                                            label: "MENS",
+                                            data: [<%= yearlyRevenue.map(data => data.totalRevenue) %>],
+                                            backgroundColor: "rgba(255, 0, 0, 0.7)", // Deeper red for Revenue
+                                            fill: true
+                                        },
+                                        {
+                                            label: "WOMENS",
+                                            data: [<%= yearlyOrders.map(data => data.totalOrders) %>],
+                                            backgroundColor: "rgba(255, 150, 150, 0.7)", // Lighter red for Orders
+                                            fill: true
+                                        },
+                                    ]
+                                },
+                                options: {
+                                    responsive: true
+                                }
+                            });
+
 
                         </script>

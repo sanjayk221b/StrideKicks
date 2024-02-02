@@ -117,6 +117,53 @@
                     </div>
                     <!-- Add Banner Form End -->
 
-
-
                     <%- include('../layout/adminLayouts/footer') -%>
+
+                        <script>
+                            document.getElementById("bannerForm").addEventListener("submit", function (event) {
+                                // Validate Banner Title
+                                var title = document.getElementById("bannerTitle").value.trim();
+                                if (title === "") {
+                                    document.getElementById("bannerTitleError").innerText = "Banner Title cannot be empty";
+                                    event.preventDefault();
+                                } else {
+                                    document.getElementById("bannerTitleError").innerText = "";
+                                }
+
+                                // Validate Description
+                                var description = document.getElementById("bannerDescription").value.trim();
+                                if (description === "") {
+                                    document.getElementById("bannerDescriptionError").innerText = "Description cannot be empty";
+                                    event.preventDefault();
+                                } else {
+                                    document.getElementById("bannerDescriptionError").innerText = "";
+                                }
+
+                                // Validate Occasion
+                                var occasion = document.getElementById("bannerOccasion").value.trim();
+                                if (occasion === "") {
+                                    document.getElementById("bannerOccasionError").innerText = "Occasion cannot be empty";
+                                    event.preventDefault();
+                                } else {
+                                    document.getElementById("bannerOccasionError").innerText = "";
+                                }
+
+                                // Validate Image
+                                var image = document.getElementById("bannerImage").value.trim();
+                                var files = document.getElementById("bannerImage").files;
+                                if (image === "" && files.length === 0) {
+                                    document.getElementById("bannerImageError").innerText = "Please select a banner image";
+                                    event.preventDefault();
+                                } else {
+                                    document.getElementById("bannerImageError").innerText = "";
+                                }
+
+                                // Validate Number of Images
+                                if (files.length !== 1) {
+                                    document.getElementById("bannerImageError").innerText = "Please select  one banner image";
+                                    event.preventDefault();
+                                } else {
+                                    document.getElementById("bannerImageError").innerText = "";
+                                }
+                            });
+                        </script>

@@ -34,6 +34,7 @@ const loadCart = async (req, res) => {
 //Add To Cart
 const addToCart = async (req, res) => {
     try {
+        console.log("addToCart req recieved", req.body);
         const { productId, quantity } = req.body;
         const userId = req.session.userId;
 

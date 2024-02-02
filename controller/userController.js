@@ -516,6 +516,7 @@ const loadRegister = async (req, res) => {
     }
 }
 
+//Load Shop
 const loadShop = async (req, res) => {
     try {
         const userData = await User.findOne({ _id: req.session.userId });
@@ -562,21 +563,15 @@ const loadShop = async (req, res) => {
 
         for (const category of allCategories) {
             if (category.offer) {
-                // Apply category offer to all products under this category
                 const categoryProducts = await Products.find({ category: category.name });
-                // console.log('categoryProduct with offer', categoryProducts);
                 for (const product of categoryProducts) {
                     if (!product.offerPrice) {
-                        // If product doesn't have individual offer, apply category offer
-                        // console.log('Product price:', product.price);
-                        // console.log('Offer percentage:', category.offer.percentage);
 
                         let discount = Math.round(product.price * (category.offer.percentage / 100));
                         product.offerPrice = product.price - discount;
 
                         product.offer = category.offer._id;
                         await product.save();
-                        // console.log("discount", discount);
                     }
                 }
             }
@@ -585,20 +580,18 @@ const loadShop = async (req, res) => {
 
         const updatedProducts = await Promise.all(products.map(async (product) => {
             if (product.offer) {
-                // Product has offer
                 let discount = Math.round(product.price * (product.offer.percentage / 100));
                 product.offerPrice = product.price - discount;
             } else if (!product.offer && !product.offerPrice) {
-                // Product does not have offer
+                
                 product.offerPrice = undefined;
             }
-
-            // Save the updated product to the database
+            
             await product.save();
 
             return product;
         }));
-        // 'updatedProducts' now contains the products with the updated offerPrice, and they are saved in the database
+       
 
 
 
@@ -626,10 +619,6 @@ const loadShop = async (req, res) => {
 };
 
 
-
-
-
-
 // load product details
 const loadProductDetails = async (req, res) => {
     try {
@@ -655,6 +644,27 @@ const loadProductDetails = async (req, res) => {
     }
 }
 
+
+const getproductQuantityInCart = async (req, res) => {
+    try {
+
+        console.log("productQuantityInCart req query", req.query);
+        const productId = req.query.id;
+        const userData = await User.findOne({ _id: req.session.userId });
+        const cartDetails = await Cart.findOne({ userId: req.session.userId }).populate({ path: 'items.productId' });
+        let productQuantityInCart = 0;
+        if (cartDetails && cartDetails.items) {
+            const cartItem = cartDetails.items.find(item => item.productId._id.toString() === productId);
+            if (cartItem) {
+                console.log("found cart item");
+                productQuantityInCart = cartItem.quantity;
+            }
+        }
+        return res.json({productQuantityInCart})
+    } catch (error) {
+
+    }
+}
 
 const load_AddAddress = async (req, res) => {
     try {
@@ -781,6 +791,13 @@ const error404 = async (req, res) => {
         console.log(error);
     }
 }
+const error500 = async (req, res) => {
+    try {
+        res.render('error500')
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 
 module.exports = {
@@ -797,6 +814,7 @@ module.exports = {
     resendOtp,
     error403,
     error404,
+    error500,
     load_AddAddress,
     loadProfile,
     addAddress,
@@ -812,5 +830,6 @@ module.exports = {
     sendResetPasswordMail,
     load_resetPassword,
     resetPassword,
-    load_Wallet
+    load_Wallet,
+    getproductQuantityInCart
 }
