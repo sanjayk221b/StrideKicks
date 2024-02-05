@@ -115,6 +115,11 @@
                                                     <input type="text" class="form-control bg-dark text-white"
                                                         id="couponCode" name="couponCode" placeholder="Coupon Code">
                                                     <p id="couponCodeError" class="error-message text-danger"></p>
+                                                    <% if( messages.message ) { %>
+                                                        <p style="color: red;">
+                                                            <%=messages.message %>
+                                                        </p>
+                                                        <%}%>
                                                 </div>
 
                                                 <div class="mb-3">

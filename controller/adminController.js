@@ -271,6 +271,7 @@ const loadDashboard = async (req, res) => {
             };
         });
 
+        //Monthly Revenue Per Category
         const monthlyRevenueByCategory = await Orders.aggregate([
             {
                 $unwind: "$items"
@@ -324,10 +325,6 @@ const loadDashboard = async (req, res) => {
                 totalRevenue: womensData ? womensData.totalRevenue : 0
             };
         });
-
-        console.log("mensMonthlyRevenue", mensMonthlyRevenue);
-        console.log("womensMonthlyRevenue", womensMonthlyRevenue);
-
 
 
 
@@ -386,7 +383,7 @@ const loadDashboard = async (req, res) => {
             }
         ]);
 
-        // Separate yearlyOrders and yearlyRevenue with zeros for missing years
+        // Separate yearlyOrders and yearlyRevenue 
         const yearsFrom2018 = Array.from({ length: 7 }, (_, i) => 2018 + i);
         const yearlyOrders = yearsFrom2018.map(year => {
             const yearData = yearlyData.find(data => data._id.year === year);
@@ -403,6 +400,65 @@ const loadDashboard = async (req, res) => {
                 year
             };
         });
+
+
+        // Yearly Category Wise Sales
+        const startYear = 2018;
+        const yearlyRevenueByCategory = await Orders.aggregate([
+            {
+                $unwind: "$items"
+            },
+            {
+                $match: {
+                    $and: [
+                        { "items.orderStatus": "delivered" },
+                        { status: { $ne: "pending" } },
+                        { date: { $gte: new Date(startYear, 0, 1), $lt: new Date(currentYear + 1, 0, 1) } }
+                    ]
+                }
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "items.productId",
+                    foreignField: "_id",
+                    as: "product"
+                }
+            },
+            {
+                $unwind: "$product"
+            },
+            {
+                $group: {
+                    _id: { category: "$product.category", year: { $year: "$date" } },
+                    totalRevenue: { $sum: { $subtract: ["$items.totalPrice", "$items.discountPerItem"] } },
+                    totalOrders: { $sum: 1 }
+                }
+            }
+        ]);
+
+        // Extract total revenue per year for the MENS and WOMENS categories
+        const mensYearlyRevenue = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
+            const year = startYear + i;
+            const mensData = yearlyRevenueByCategory.find(data => data._id.category === "MENS" && data._id.year === year);
+            return {
+                totalRevenue: mensData ? mensData.totalRevenue : 0,
+                year
+            };
+        });
+
+        const womensYearlyRevenue = Array.from({ length: currentYear - startYear + 1 }, (_, i) => {
+            const year = startYear + i;
+            const womensData = yearlyRevenueByCategory.find(data => data._id.category === "WOMENS" && data._id.year === year);
+            return {
+                totalRevenue: womensData ? womensData.totalRevenue : 0,
+                year
+            };
+        });
+
+
+
+
         // Yearly User Data for the current year
         const yearlyUserData = await User.aggregate([
             {
@@ -469,7 +525,9 @@ const loadDashboard = async (req, res) => {
             latestUsers,
             latestOrders,
             mensMonthlyRevenue,
-            womensMonthlyRevenue
+            womensMonthlyRevenue,
+            womensYearlyRevenue,
+            mensYearlyRevenue
         });
     } catch (error) {
         console.log(error.message);

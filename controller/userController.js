@@ -70,8 +70,6 @@ const sendOtpVerification = async ({ email }, res) => {
             }
         })
         const otp = `${Math.floor(1000 + Math.random() * 9000)}`
-        // console.log('email:', email);
-        // console.log('from:', process.env.email_user);
         const mailOptions = {
             from: process.env.email_user,
             to: email,
@@ -113,12 +111,8 @@ const sendOtpVerification = async ({ email }, res) => {
 // Otp verification
 const verifyOtp = async (req, res) => {
     const email = req.body.email;
-    // console.log('email: ', req.body.email);
     const otp = req.body.one + req.body.two + req.body.three + req.body.four;
-    // console.log('otp: ', otp);
     const user = await userOtp.findOne({ email: email });
-    console.log('user: ', user);
-
 
     if (!user) {
         res.render('otp', { message: 'otp expired', email: email })
@@ -126,7 +120,6 @@ const verifyOtp = async (req, res) => {
     }
     const { otp: hashedOtp } = user;
     const validOtp = await bcrypt.compare(otp, hashedOtp);
-    console.log(validOtp);
 
 
     if (validOtp == true) {
@@ -175,13 +168,11 @@ const verifyOtp = async (req, res) => {
 
 const resendOtp = async (req, res) => {
     try {
-        console.log('resendId :', req.body);
         const email = req.body.email
-        // console.log("ivda ethi");
 
-        // console.log(user);
         // Resend OTP Verification mail
         await sendOtpVerification({ email }, res);
+        
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Internal Server Error' })
@@ -288,10 +279,8 @@ const editAddress = async (req, res) => {
 // Delete Address
 const deleteAddress = async (req, res) => {
     try {
-        console.log('Delete Address request received id:', req.params);
         const userId = req.session.userId;
         const addressId = req.params.addressId;
-        console.log('Delete Address userId:', userId);
 
         const result = await User.findOneAndUpdate({ _id: userId }, {
             $pull: {
@@ -477,7 +466,8 @@ const loadHome = async (req, res) => {
     try {
         const userData = await User.findOne({ _id: req.session.userId });
         const banners = await Banner.find();
-        res.render('home', { user: userData, banners });
+        const products = await Products.find({}).sort({ date: -1 }).limit(8).populate('offer');
+        res.render('home', { user: userData, banners, products });
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');
@@ -488,7 +478,6 @@ const loadHome = async (req, res) => {
 //Login Page Render
 const loadLogin = async (req, res) => {
     try {
-
         res.render('login');
     } catch {
         console.log(error.message);
@@ -509,7 +498,6 @@ const loadOtp = async (req, res) => {
 const loadRegister = async (req, res) => {
     try {
         const { code } = req.query;
-        console.log(req.query);
         res.render('register', { code });
     } catch {
         console.log(error.message);
@@ -523,7 +511,7 @@ const loadShop = async (req, res) => {
 
         const categoryId = req.query.categoryId;
         const page = parseInt(req.query.page) || 1;
-        const perPage = 6;
+        const perPage = 9;
         const searchQuery = req.query.search || '';
         const sortType = req.query.sort || 'low-to-high';
 
@@ -583,19 +571,11 @@ const loadShop = async (req, res) => {
                 let discount = Math.round(product.price * (product.offer.percentage / 100));
                 product.offerPrice = product.price - discount;
             } else if (!product.offer && !product.offerPrice) {
-                
                 product.offerPrice = undefined;
             }
-            
             await product.save();
-
             return product;
         }));
-       
-
-
-
-
 
         const categoryData = await Categories.find({ isListed: true });
 
@@ -648,7 +628,6 @@ const loadProductDetails = async (req, res) => {
 const getproductQuantityInCart = async (req, res) => {
     try {
 
-        console.log("productQuantityInCart req query", req.query);
         const productId = req.query.id;
         const userData = await User.findOne({ _id: req.session.userId });
         const cartDetails = await Cart.findOne({ userId: req.session.userId }).populate({ path: 'items.productId' });
@@ -660,7 +639,7 @@ const getproductQuantityInCart = async (req, res) => {
                 productQuantityInCart = cartItem.quantity;
             }
         }
-        return res.json({productQuantityInCart})
+        return res.json({ productQuantityInCart })
     } catch (error) {
 
     }
@@ -754,7 +733,6 @@ const load_forgotPassword = async (req, res) => {
 const load_resetPassword = async (req, res) => {
     try {
         const token = req.query.token;
-        console.log('token  load_ResetPassword', token);
         const tokenData = await User.findOne({ token: token })
         if (tokenData) {
             res.render('resetPassword', { userId: tokenData._id });

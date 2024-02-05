@@ -6,13 +6,14 @@ const path = require("path");
 const mongoose = require("mongoose");
 const userRouter = require('./routes/userRoute');
 const adminRouter = require('./routes/adminRoute');
+const connectDB = require('./database/connection');
 const session = require('express-session')
 const flash = require('express-flash')
 
 
 
 //Database connection
-mongoose.connect(process.env.MONGO_URI);
+connectDB();
 
 const PORT = process.env.PORT || 8080
 

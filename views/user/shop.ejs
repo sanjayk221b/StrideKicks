@@ -107,8 +107,7 @@
                         <h1>Shop Category page</h1>
                         <nav class="d-flex align-items-center">
                             <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-                            <a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
-                            <a href="category.html">Fashon Category</a>
+                            <a href="#">Shop</span></a>
                         </nav>
                     </div>
                 </div>
@@ -181,8 +180,8 @@
                                 <% for(let i=0; i < products.length; i++) { %>
                                     <div class="col-lg-4 col-md-6 mb-4">
                                         <div class="single-product">
-                                            <img class="img-fluid" src="/sharpImages/<%= products[i].image[0] %>"
-                                                alt="">
+                                            <a href="/productDetails?id=<%= products[i].id %>"><img class="img-fluid" src="/sharpImages/<%= products[i].image[0] %>"
+                                                alt="" ></a>
                                             <% if (products[i].offerPrice !==null && products[i].offerPrice !==undefined) { %>
                                                 <div class="offer-banner">
                                                     <%= products[i].offer.percentage %> % OFF
@@ -250,15 +249,7 @@
 
 
                     <!-- Start Filter Bar -->
-                    <div class="filter-bar d-flex flex-wrap align-items-center">
-                        <!-- <div class="sorting mr-auto">
-                            <select>
-                                <option value="1">Show 12</option>
-                                <option value="1">Show 12</option>
-                                <option value="1">Show 12</option>
-                            </select>
-                        </div> -->
-                        <!-- Start Filter Bar -->
+                    <div class="filter-bar d-flex flex-wrap align-items-center mb-4">
                         <div class="filter-bar d-flex flex-wrap align-items-center">
                             <div class="pagination">
                                 <% if (hasPreviousPage) { %>
@@ -294,143 +285,7 @@
             </div>
         </div>
 
-        <!-- Start related-product Area -->
-        <section class="related-product-area section_gap">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-6 text-center">
-                        <div class="section-title">
-                            <h1>Deals of the Week</h1>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                incididunt ut labore et dolore
-                                magna aliqua.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-9">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r1.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r2.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r3.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r5.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r6.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r7.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r9.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r10.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-6">
-                                <div class="single-related-product d-flex">
-                                    <a href="#"><img src="img/r11.jpg" alt=""></a>
-                                    <div class="desc">
-                                        <a href="#" class="title">Black lace Heels</a>
-                                        <div class="price">
-                                            <h6>$189.00</h6>
-                                            <h6 class="l-through">$210.00</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="ctg-right">
-                            <a href="#" target="_blank">
-                                <img class="img-fluid d-block mx-auto" src="img/category/c5.jpg" alt="">
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- End related-product Area -->
+       
 
         <%- include('../layout/userLayouts/footer') -%>
             <script>
@@ -438,6 +293,8 @@
                 function submitForm() {
                     document.getElementById("sortForm").submit();
                 }
+                
+
 
                 document.addEventListener('DOMContentLoaded', function () {
                     document.querySelectorAll('.addToCartBtn').forEach(function (button) {
@@ -530,10 +387,6 @@
                             }
                         });
                     });
-
-
-
-
 
                 });
             </script>

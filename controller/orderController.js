@@ -438,20 +438,19 @@ const updateOrderStatus = async (req, res) => {
     }
 };
 
-//User Profile Single Order
+//Admin Single Order
 const load_AdminSingleOrder = async (req, res) => {
     try {
-        console.log('single order query', req.query);
-        const { itemId } = req.query;
-        const orderItem = await Order.findOne({ 'items._id': itemId })
-            .populate('items.productId');
+        console.log('signle order query', req.query);
+        const userId = req.session.userId;
+        const orderId = req.query.orderId;
+        const orders = await Order.find({ orderId: orderId }).populate('items.productId');
 
-        res.render('adminSingleOrder', { orderItem, moment });
+        res.render('adminSingleOrder', { orders: orders, moment });
     } catch (error) {
         console.log(error);
-        res.status(500).send('Internal Server Error');
     }
-};
+}
 
 //Download Invoice 
 const invoiceDownload = async (req, res) => {

@@ -83,6 +83,7 @@
                                                         style="width: 100%;">Apply</button>
                                                 </div>
                                             </div>
+                                            <p id="dateError" style="color:red"></p>
                                         </div>
 
                                         <thead>
@@ -168,7 +169,6 @@
                         <script>
                             // Datepicker apply button click handler
                             $("#filterByDate").click(function () {
-
                                 // Get start and end dates
                                 const startDate = $("#startDate").val();
                                 const endDate = $("#endDate").val();
@@ -176,6 +176,26 @@
                                 console.log("endDate", endDate);
 
                                 // Validate dates
+                                const today = new Date();
+                                const selectedStartDate = new Date(startDate);
+                                const selectedEndDate = new Date(endDate);
+
+                                $("#dateError").text("");
+
+                                if (selectedStartDate < today) {
+                                    $("#dateError").text("Start date should be greater than or equal to today.");
+                                    return;
+                                }
+
+                                if (selectedEndDate < today) {
+                                    $("#dateError").text("End date should be greater than or equal to today.");
+                                    return;
+                                }
+
+                                if (selectedEndDate < selectedStartDate) {
+                                    $("#dateError").text("End date should be greater than or equal to the start date.");
+                                    return;
+                                }
 
                                 // Send AJAX request
                                 $.ajax({
@@ -197,30 +217,29 @@
                                         let rows = '';
                                         response.orders.forEach(order => {
                                             rows += `
-                                        <tr>
-                                            <td>${order.userId.email}</td>
-                                            <td>${order.userId.mobile}</td>
-                                            <td>${order.deliveryAddress}</td>
-                                            <td>${order.orderId}</td>
-                                            <td>${moment(order.date).format('DD-MM-YYYY')}</td>
-                                            <td>${order.payment}</td>
-                                            <td>${order.totalAmount}</td>
-                                            <td>${order.items[0].orderStatus}</td>
-                                            <td>${order.items[0].quantity}</td>
-                                            <td>${order.items[0].productId.name}</td>
-                                        </tr>
-                                    `;
+                    <tr>
+                        <td>${order.userId.email}</td>
+                        <td>${order.userId.mobile}</td>
+                        <td>${order.deliveryAddress}</td>
+                        <td>${order.orderId}</td>
+                        <td>${moment(order.date).format('DD-MM-YYYY')}</td>
+                        <td>${order.payment}</td>
+                        <td>${order.totalAmount}</td>
+                        <td>${order.items[0].orderStatus}</td>
+                        <td>${order.items[0].quantity}</td>
+                        <td>${order.items[0].productId.name}</td>
+                    </tr>
+                `;
                                         });
 
                                         $('#salesTable tbody').html(rows);
-
                                     },
                                     error: function (err) {
-                                        console.log(err)
+                                        console.log(err);
                                     }
                                 });
-
                             });
+
 
                             // Download options
                             function showDownloadOptions(divName) {

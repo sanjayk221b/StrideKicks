@@ -89,7 +89,7 @@
                                                                     <%= order.username %>
                                                                 </td>
                                                                 <td>
-                                                                    <%= order.totalAmount %>
+                                                                    <%= order.totalAmount.toFixed(0) %>
                                                                 </td>
                                                                 <td>
                                                                     <%= moment(order.date).format('DD-MM-YYYY') %>
@@ -163,7 +163,7 @@
 
 
                                                                 <td>
-                                                                    <a href="/admin/orderDetails?itemId=<%=item._id %>"><button
+                                                                    <a href="/admin/orderDetails?orderId=<%= order.orderId %>"><button
                                                                             type="button"
                                                                             class="btn btn-outline-info btn-sm ">view</button></a>
                                                                 </td>

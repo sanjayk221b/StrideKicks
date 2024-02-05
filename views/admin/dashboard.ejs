@@ -309,7 +309,7 @@
                                                     <%= order.date.toDateString() %>
                                                 </td>
                                                 <td>
-                                                    <%= order.totalAmount %>
+                                                    <%= order.totalAmount.toFixed(2) %>
                                                 </td>
                                                 <td>
                                                     <%= order.status %>
@@ -317,11 +317,11 @@
                                                 <td>
                                                     <%= order.payment %>
                                                 </td>
-                                                <!-- <td> <a class="btn btn-sm btn-primary view-details-button"
-                                                        href="/admin/orderDetails?itemId=<%= order.itemId %>"
+                                                <td> <a class="btn btn-sm btn-primary view-details-button"
+                                                        href="/admin/orderDetails?orderId=<%= order.orderId %>"
                                                         data-item-id="<%= order.itemId %>">
                                                         View Details
-                                                    </a </td> -->
+                                                    </a </td>
                                             </tr>
                                             <% }); %>
                                     </tbody>
@@ -418,13 +418,13 @@
                                     datasets: [
                                         {
                                             label: "MENS",
-                                            data: [<%= monthlyRevenue.map(month => month.totalRevenue) %>],
+                                            data: [<%= mensMonthlyRevenue.map(month => month.totalRevenue) %>],
                                             backgroundColor: "rgba(255, 0, 0, 0.7)",
                                             fill: true
                                         },
                                         {
                                             label: "WOMENS",
-                                            data: [<%= monthlyOrders.map(month => month.totalOrders) %>],
+                                            data: [<%= womensMonthlyRevenue.map(month => month.totalRevenue) %>],
                                             backgroundColor: "rgba(255, 99, 132, 0.7)", // Lighter red for Orders
                                             fill: true
                                         }
@@ -436,8 +436,8 @@
                             });
 
 
-                             // Category Wise Sales & Revenue Chart Yearly
-                             var ctx2 = $("#yearlyCategory  ").get(0).getContext("2d");
+                            // Category Wise Sales & Revenue Chart Yearly
+                            var ctx2 = $("#yearlyCategory  ").get(0).getContext("2d");
                             var myChart2 = new Chart(ctx2, {
                                 type: "line",
                                 data: {
@@ -445,13 +445,13 @@
                                     datasets: [
                                         {
                                             label: "MENS",
-                                            data: [<%= yearlyRevenue.map(data => data.totalRevenue) %>],
+                                            data: [<%= mensYearlyRevenue.map(data => data.totalRevenue) %>],
                                             backgroundColor: "rgba(255, 0, 0, 0.7)", // Deeper red for Revenue
                                             fill: true
                                         },
                                         {
                                             label: "WOMENS",
-                                            data: [<%= yearlyOrders.map(data => data.totalOrders) %>],
+                                            data: [<%= womensYearlyRevenue.map(data => data.totalRevenue) %>],
                                             backgroundColor: "rgba(255, 150, 150, 0.7)", // Lighter red for Orders
                                             fill: true
                                         },
