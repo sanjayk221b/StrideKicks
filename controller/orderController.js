@@ -21,7 +21,6 @@ var instance = new Razorpay({
 // Place Orders
 const placeOrder = async (req, res) => {
     try {
-        console.log('place order req body :', req.body)
         const date = new Date();
         const { userId } = req.session;
         const { address, paymentMethod, couponCode } = req.body;
@@ -88,7 +87,6 @@ const placeOrder = async (req, res) => {
             const updatedItem = { ...item.toObject(), discountPerItem: discountPerItem };
             return updatedItem;
         });
-        // console.log('updated items after discountPerItem :', updatedItems)
 
         const orderData = new Order({
             userId: userId,
@@ -141,13 +139,11 @@ const placeOrder = async (req, res) => {
                 currency: "INR",
                 receipt: "" + orderRand,
             };
-            // console.log('Razorpay Options:', options);
             instance.orders.create(options, function (err, order) {
                 if (err) {
                     console.error('Error creating Razorpay order:', err.error);
                     res.status(500).json({ success: false, error: "Error creating Razorpay order", details: err.error });
                 } else {
-                    // console.log('Razorpay order created:', order);
 
                     res.json({ order });
                 }
@@ -175,10 +171,6 @@ const verifyPayment = async (req, res) => {
 
         hmac.update(details.payment.razorpay_order_id + "|" + details.payment.razorpay_payment_id);
         hmac = hmac.digest('hex');
-        // console.log('Data for hmac calculation:', details.payment.razorpay_payment_id, details.payment.razorpay_order_id);
-        // console.log('Calculated hmac:', hmac);
-        // console.log('Razorpay signature:', details.payment.razorpay_signature);
-
 
         if (hmac == details.payment.razorpay_signature) {
             const order = await Order.findOneAndUpdate({ orderId: details.order.receipt }, { $set: { status: "placed", paymentId: details.razorpay_payment_id } }, { new: true });
@@ -309,15 +301,9 @@ const load_orderConfirmation = async (req, res) => {
     try {
         const userId = req.session.userId
         const orderId = req.query.orderId;
-        // console.log('order id in query orderConfirmaton:', orderId);
 
         const order = await Order.findOne({ orderId: orderId }).populate({ path: 'items.productId' })
         const user = await User.findOne({ _id: userId });
-
-
-        // console.log('user in orderConfirmation', user);
-        // console.log('order in orderConfirmation', order);
-        // console.log('orderId in confirmation Load', orderId);
 
         res.render('orderConfirmation', { user: user, order: order, moment })
     } catch (error) {
