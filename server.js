@@ -7,8 +7,8 @@ const mongoose = require("mongoose");
 const userRouter = require('./routes/userRoute');
 const adminRouter = require('./routes/adminRoute');
 const connectDB = require('./database/connection');
-const session = require('express-session')
-const flash = require('express-flash')
+const session = require('express-session');
+const flash = require('express-flash');
 
 
 
