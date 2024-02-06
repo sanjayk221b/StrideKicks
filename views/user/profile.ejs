@@ -111,33 +111,24 @@
 <script>
     // Function to generate and display the referral link
     function generateReferralLink() {
-        // Retrieve the user's referral code from the server-side (you need a way to pass this data to the client-side)
-        // For demonstration purposes, let's assume you have a global variable 'userReferralCode'
         var userReferralCode = "<%= user.referralCode %>";
 
-        // Construct the referral link based on the user's referral code
         var referralLink = "localhost:3001/register?code=" + userReferralCode;
 
-        // Display the referral link in the input field
         document.getElementById("referralLink").value = referralLink;
     }
 
-    // Function to copy the referral link to the clipboard
     function copyReferralLink() {
         var referralLinkInput = document.getElementById("referralLink");
 
-        // Select the text in the input field
         referralLinkInput.select();
-        referralLinkInput.setSelectionRange(0, 99999); /* For mobile devices */
+        referralLinkInput.setSelectionRange(0, 99999); 
 
-        // Copy the text to the clipboard
         document.execCommand("copy");
 
-        // Alert the user that the link has been copied
         alert("Referral link copied to clipboard!");
     }
 
-    // Call the function to generate the referral link when the page loads or when needed
     generateReferralLink();
 </script>
 
