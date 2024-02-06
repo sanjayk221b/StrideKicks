@@ -22,9 +22,13 @@
                                                     <img src="/sharpImages/<%= item.productId.image[0] %>"
                                                         class="img-sm img-thumbnail mb-2" alt="" width="60px"
                                                         height="50px"><br>
+                                                        <span>Product Name : <%= item.productId.name %>
+                                                        </span><br><br>
+                                                        <span>Quantity : <%= item.quantity %>
+                                                        </span><br><br>
                                                     <span>Total Price : <%= item.totalPrice %></span><br><br>
-                                                    <span>Order Date : <%= moment(order.date).format('dddd, MMMM Do') %>
-                                                            </span><br><br>
+                                                    <!-- <span>Order Date : <%= moment(order.date).format('dddd, MMMM Do') %>
+                                                            </span><br><br> -->
                                                     <span> Delivery Address: <%= order.deliveryAddress %></span><br><br>
                                                     <span>Payment Method : <%= order.payment %></span><br><br>
                                                     <span>Expected Delivery : <%= order.expectedDelivery %>

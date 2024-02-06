@@ -44,6 +44,7 @@
 
                                                 <div class="card-body bg-light">
                                                     <span>Total Amount :₹ <%= order.totalAmount %></span><br><br>
+                                                    <span>Items : <%= order.items.length %></span><br><br>
                                                     <span>Order Date : <%= moment(order.date).format('dddd, MMMM Do YYYY') %></span><br><br>
                                                     <span> Delivery Address: <%= order.deliveryAddress %></span><br><br>
                                                     <span>Payment Method : <%= order.payment %></span><br><br>

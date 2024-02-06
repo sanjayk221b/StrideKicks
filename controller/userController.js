@@ -48,7 +48,7 @@ const verifyRegister = async (req, res) => {
         sendOtpVerification(newUser, res);
     } catch (error) {
         console.error(error);
-        res.status(500).send({ error: "Internal server error" });
+       res.redirect('/500')
     }
 };
 function generateReferralCode() {
@@ -105,6 +105,7 @@ const sendOtpVerification = async ({ email }, res) => {
         res.redirect(`/otp?email=${email}`)
     } catch (error) {
         console.log(error.message);
+        res.redirect('/500');
     }
 }
 
@@ -160,7 +161,6 @@ const verifyOtp = async (req, res) => {
         req.session.userId = null
         res.redirect('/login');
     } else {
-        // res.render('otp', { email: email, message: 'otp is incorrect' })
         req.flash('message', 'Incorrect OTP');
         res.redirect(`/otp?email=${email}`)
     }
@@ -175,7 +175,7 @@ const resendOtp = async (req, res) => {
         
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Internal Server Error' })
+        res.redirect('/500')
     }
 }
 
@@ -209,6 +209,7 @@ const verifyLogin = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message);
+        res.redirect('/500')
     }
 }
 
@@ -244,6 +245,7 @@ const addAddress = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        res.redirect('/500');
     }
 };
 
@@ -271,6 +273,7 @@ const editAddress = async (req, res) => {
         res.redirect('/manageAddress');
     } catch (error) {
         console.log(error.message);
+        res.redirect('/500');
     }
 };
 
@@ -296,7 +299,7 @@ const deleteAddress = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message);
-        res.status(500).send("Internal Server Error");
+        res.redirect('/500');
     }
 };
 
@@ -323,6 +326,7 @@ const updateUserProfile = async (req, res) => {
         res.json(updatedUser)
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -355,6 +359,7 @@ const updatePassword = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 
 }
@@ -392,7 +397,8 @@ const forgotPassword = async (req, res) => {
             res.render('forgotPassword', { message: ' User email is incorrect' });
         }
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -432,6 +438,7 @@ const sendResetPasswordMail = async (name, email, token, res) => {
         console.log(token);
     } catch (error) {
         console.log(error.message);
+        res.redirect('/500');
     }
 }
 
@@ -456,6 +463,7 @@ const resetPassword = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 
 }
@@ -470,7 +478,7 @@ const loadHome = async (req, res) => {
         res.render('home', { user: userData, banners, products });
     } catch (error) {
         console.log(error.message);
-        res.status(500).send('Internal Server Error');
+        res.redirect('/500');
     }
 };
 
@@ -481,6 +489,7 @@ const loadLogin = async (req, res) => {
         res.render('login');
     } catch {
         console.log(error.message);
+        res.redirect('/500');
     }
 }
 
@@ -491,6 +500,7 @@ const loadOtp = async (req, res) => {
         res.render('otp', { email: email });
     } catch {
         console.log(error.message);
+        res.redirect('/500');
     }
 }
 
@@ -501,6 +511,7 @@ const loadRegister = async (req, res) => {
         res.render('register', { code });
     } catch {
         console.log(error.message);
+        res.redirect('/500');
     }
 }
 
@@ -594,7 +605,7 @@ const loadShop = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).send('Internal Server Error');
+        res.redirect('/500');
     }
 };
 
@@ -621,6 +632,7 @@ const loadProductDetails = async (req, res) => {
         res.render('productDetails', { products, user: userData, productQuantityInCart });
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -653,7 +665,7 @@ const load_AddAddress = async (req, res) => {
         res.render('addAddress', { user: userData, source: source });
     } catch (error) {
         console.log(error);
-        res.status(500).send('Internal Server Error');
+        res.redirect('/500');
     }
 };
 
@@ -674,7 +686,7 @@ const load_EditAddress = async (req, res) => {
         res.render('editAddress', { address: [selectedAddress] });
     } catch (error) {
         console.log(error);
-        res.status(500).send('Internal Server Error');
+        res.redirect('/500');
     }
 };
 
@@ -686,6 +698,7 @@ const loadProfile = async (req, res) => {
         res.render('profile', { user: userData })
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -695,6 +708,7 @@ const load_EditProfile = async (req, res) => {
         res.render('editProfile', { user: userData });
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -707,6 +721,7 @@ const load_manageAddress = async (req, res) => {
         res.render('manageAddress', { user: userData })
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -715,7 +730,8 @@ const load_Wallet = async (req, res) => {
         const userData = await User.findOne({ _id: req.session.userId })
         res.render('wallet', { user: userData, moment })
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -725,6 +741,7 @@ const load_forgotPassword = async (req, res) => {
         res.render('forgotPassword')
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -742,6 +759,7 @@ const load_resetPassword = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -752,6 +770,7 @@ const logoutUser = async (req, res) => {
         res.redirect("/");
     } catch (error) {
         console.log(error.message);
+        res.redirect('/500');
     }
 }
 
@@ -760,6 +779,7 @@ const error403 = async (req, res) => {
         res.render('error403')
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 const error404 = async (req, res) => {
@@ -767,6 +787,7 @@ const error404 = async (req, res) => {
         res.render('error404')
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 const error500 = async (req, res) => {
@@ -774,6 +795,7 @@ const error500 = async (req, res) => {
         res.render('error500')
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 
