@@ -51,7 +51,13 @@ app.use('/js', express.static(path.resolve(__dirname, 'public/userAssets/js')));
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
 
+//set view engine
+app.set('view engine', 'ejs');
+app.set('views', './views');
 
+app.get('/500', (req, res) => {
+    res.status(500).render("user/error500");
+})
 
 app.listen(PORT, () => {
     console.log(`Server is listening at http://localhost:${PORT}/`);

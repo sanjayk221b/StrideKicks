@@ -19,7 +19,7 @@ userRouter.get("/home", auth.checkBlocked, userController.loadHome)
 userRouter.get("/error403", userController.error403);
 userRouter.get("/error404", userController.error404);
 userRouter.get("/error500", userController.error500);
-
+      
 // Register Routes
 userRouter.get("/register", auth.isLogout, userController.loadRegister)
 userRouter.post("/register", userController.verifyRegister)
