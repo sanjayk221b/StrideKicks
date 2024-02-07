@@ -522,7 +522,7 @@ const loadShop = async (req, res) => {
 
         const categoryId = req.query.categoryId;
         const page = parseInt(req.query.page) || 1;
-        const perPage = 9;
+        const perPage = 6;
         const searchQuery = req.query.search || '';
         const sortType = req.query.sort || 'low-to-high';
 

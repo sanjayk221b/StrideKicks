@@ -37,8 +37,8 @@
             <div class="main_menu">
                 <nav class="navbar navbar-expand-lg navbar-light main_box">
                     <div class="container">
-                        <a class="navbar-brand logo_h" href="/"><img src="/userAssets/img/logo3.jpg    " style="width: 25%;"
-                                alt=""></a>
+                        <a class="navbar-brand logo_h" href="/"><img src="/userAssets/img/logo3.jpg    "
+                                style="width: 25%;" alt=""></a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,8 @@
                                     <a href="/shop" class="nav-link dropdown-toggle" role="button"
                                         aria-haspopup="true">Shop</a>
                                 </li>
-                                <li class="nav-item"><a class="nav-link" href="/cart" class="cart">Cart<span class="ti-bag"></span></a></li>
+                                <li class="nav-item"><a class="nav-link" href="/cart" class="cart">Cart<span
+                                            class="ti-bag"></span></a></li>
 
                                 <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
 
@@ -152,23 +153,22 @@
                     </div>
                     <div class="filter-bar d-flex flex-wrap align-items-center mt-4">
                         <div class="sorting mr-auto">
-                            <form id="sortForm" method="GET" action="/shop">
-                                <label for="sortType">Sort by:</label>
-                                <select id="sortType" name="sort" class="custom-select" onchange="submitForm()">
-                                    <option value="low-to-high" <% if (sortType==='low-to-high' ) { %>selected<% } %>
-                                            >Low to High</option>
-                                    <option value="high-to-low" <% if (sortType==='high-to-low' ) { %>selected<% } %>
-                                            >High to Low</option>
-                                </select>
-                            </form>
+                            <label for="sortType">Sort by:</label>
+                            <!-- Dropdown select for sorting -->
+                            <select id="sortType" class="custom-select" onchange="handleSortChange(this)">
+                                <option value="low-to-high" <% if (sortType==='low-to-high' ) { %>selected<% } %>>Low to High</option>
+                                <option value="high-to-low" <% if (sortType==='high-to-low' ) { %>selected<% } %>>High to Low</option>
+                            </select>
                         </div>
                     </div>
+                    
+
 
 
                 </div>
                 <div class="col-xl-9 col-lg-8 col-md-7">
                     <!-- Start Filter Bar -->
-                    <div class="filter-bar d-flex flex-wrap align-items-center" style="height: 40px;">               
+                    <div class="filter-bar d-flex flex-wrap align-items-center" style="height: 40px;">
                     </div>
 
                     <!-- Start Product List -->
@@ -178,9 +178,10 @@
                                 <% for(let i=0; i < products.length; i++) { %>
                                     <div class="col-lg-4 col-md-6 mb-4">
                                         <div class="single-product">
-                                            <a href="/productDetails?id=<%= products[i].id %>"><img class="img-fluid" src="/sharpImages/<%= products[i].image[0] %>"
-                                                alt="" ></a>
-                                            <% if (products[i].offerPrice !==null && products[i].offerPrice !==undefined) { %>
+                                            <a href="/productDetails?id=<%= products[i].id %>"><img class="img-fluid"
+                                                    src="/sharpImages/<%= products[i].image[0] %>" alt=""></a>
+                                            <% if (products[i].offerPrice !==null && products[i].offerPrice
+                                                !==undefined) { %>
                                                 <div class="offer-banner">
                                                     <%= products[i].offer.percentage %> % OFF
                                                 </div>
@@ -283,17 +284,18 @@
             </div>
         </div>
 
-       
+
 
         <%- include('../layout/userLayouts/footer') -%>
+        <script>
+            function handleSortChange(select) {
+                var sortType = select.value;
+                var url = "/shop?page=1&categoryId=<%= categoryId %>&search=<%= searchQuery %>&sort=" + sortType;
+                window.location.href = url;
+            }
+        </script>
+        
             <script>
-                //Price Filter
-                function submitForm() {
-                    document.getElementById("sortForm").submit();
-                }
-                
-
-
                 document.addEventListener('DOMContentLoaded', function () {
                     document.querySelectorAll('.addToCartBtn').forEach(function (button) {
                         button.addEventListener('click', async function (event) {
@@ -385,6 +387,7 @@
                             }
                         });
                     });
-
                 });
+
+                
             </script>
