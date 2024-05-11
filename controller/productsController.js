@@ -54,6 +54,7 @@ const addProducts = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 }
 //List/ Unlist Product
@@ -76,9 +77,11 @@ const updateProductStatus = async (req, res) => {
         res.json({ status: true, products: updatedProduct })
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 
 }
+
 // Edit Product
 const editProducts = async (req, res) => {
     try {
@@ -136,7 +139,7 @@ const editProducts = async (req, res) => {
         res.redirect(`/admin/products`);
     } catch (error) {
         console.error(error.message);
-        res.status(500).send('Internal Server Error');
+        res.redirect('/500');
     }
 };
 
@@ -158,7 +161,7 @@ const deleteImage = async (req, res) => {
         res.send({ success: true });
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({ success: false, error: error.message });
+        res.redirect('/500');
     }
 };
 
@@ -173,7 +176,7 @@ const deleteProducts = async (req, res) => {
 
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ success: false, error: 'Internal Server Error' });
+        res.redirect('/500');
     }
 };
 
@@ -185,6 +188,7 @@ const loadProducts = async (req, res) => {
         res.render('products', { products, offers, moment });
     } catch (error) {
         console.log(error.message)
+        res.redirect('/500');
     }
 }
 
@@ -195,6 +199,7 @@ const load_AddProducts = async (req, res) => {
         res.render('addProducts', { categories: data })
     } catch (error) {
         console.log(error.message);
+        res.redirect('/500');
     }
 }
 
@@ -209,7 +214,8 @@ const load_EditProducts = async (req, res) => {
         // console.log(categoryData);
         res.render('editProducts', { products: productData, categories: categoryData })
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.redirect('/500');
     }
 }
 

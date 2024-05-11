@@ -27,6 +27,7 @@ const loadCart = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 };
 
@@ -84,7 +85,7 @@ const addToCart = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, error: 'Error adding the items to cart' });
+        res.redirect('/500');
     }
 }
 
@@ -116,7 +117,7 @@ const updateCart = async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, error: 'Error updating the cart' });
+        res.redirect('/500');
     }
 };
 
@@ -160,6 +161,7 @@ const loadCheckout = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
+        res.redirect('/500');
     }
 };
 

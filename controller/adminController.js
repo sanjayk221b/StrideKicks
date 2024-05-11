@@ -144,7 +144,6 @@ const deleteCategories = async (req, res) => {
 
 const updateCategoryStatus = async (req, res) => {
     try {
-        // console.log(req.params);
         const categoryId = req.params.id;
         const categoryData = await Categories.findById(categoryId);
         if (!categoryData) {
@@ -326,7 +325,7 @@ const loadDashboard = async (req, res) => {
             };
         });
 
-
+          
 
         // Monthly User Data for the current year
         const monthlyUserData = await User.aggregate([

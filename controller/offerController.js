@@ -14,7 +14,7 @@ const loadOffers = async (req, res) => {
         res.render('offers', { offers, moment });
     } catch (error) {
         console.log(error)
-        res.status(500).json({ success: false, error: "Internal Server Error" });
+        res.redirect('/500');
     }
 }
 
@@ -24,7 +24,7 @@ const load_addOffers = async (req, res) => {
         res.render('addOffer');
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, error: "Internal Server Error" });
+        res.redirect('/500');
     }
 }
 
@@ -48,7 +48,7 @@ const addOffer = async (req, res) => {
         }
     } catch (error) {
         console.log(error)
-        res.status(500).json({ success: false, error: "Internal Server Error" });
+        res.redirect('/500');
     }
 }
 
@@ -91,7 +91,7 @@ const removeCategoryOffer = async (req, res) => {
         );
         return res.json({ sucess: true });
     } catch (error) {
-        res.status(500).json({ success: false, error: "Internal Server Error" });
+        res.redirect('/500');
     }
 }
 
@@ -111,7 +111,7 @@ const applyProductOffer = async (req, res) => {
         return res.json({ success: true });
     } catch (error) {
         console.error('Error applying offer:', error);
-        res.status(500).json({ success: false, error: "Internal Server Error" });
+        res.redirect('/500');
     }
 }
 
@@ -133,7 +133,7 @@ const removeProductOffer = async (req, res) => {
         );
         return res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ success: false, error: "Internal Server Error" });
+        res.redirect('/500');
     }
 }
 

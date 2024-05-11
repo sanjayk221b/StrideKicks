@@ -40,7 +40,8 @@
                         <a href="/admin/categories" class="nav-item nav-link "><i
                                 class="fa fa-keyboard me-2"></i>Categories</a>
                         <a href="/admin/orders" class="nav-item nav-link "><i class="fa fa-keyboard me-2"></i>Orders</a>
-                        <a href="/admin/coupons" class="nav-item nav-link "><i class="fa fa-keyboard me-2"></i>coupons</a>
+                        <a href="/admin/coupons" class="nav-item nav-link "><i
+                                class="fa fa-keyboard me-2"></i>coupons</a>
                     </div>
                 </nav>
             </div>
@@ -109,8 +110,8 @@
                                     <h5>Edit Products</h5>
                                 </div>
                                 <div class="card-body">
-                                    <form action="/admin/editProducts" id="productForm" enctype="multipart/form-data"
-                                        method="post">
+                                    <form action="/admin/editProducts" id="productForm"
+                                        onsubmit="return validateForm();" enctype="multipart/form-data" method="post">
 
                                         <input type="hidden" id="productId" name="id" value="<%= products._id %>">
 
@@ -118,12 +119,14 @@
                                             <label for="productName" class="form-label">Product Name</label>
                                             <input type="text" class="form-control bg-dark text-white" id="productName"
                                                 name="name" value="<%= products.name %>" required>
+                                            <p id="productNameError" class="error-message text-danger"></p>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="productDescription" class="form-label">Description</label>
                                             <textarea class="form-control bg-dark text-white" id="productDescription"
                                                 name="description" rows="3"><%= products.description %></textarea>
+                                            <p id="productDescriptionError" class="error-message text-danger"></p>
                                         </div>
 
                                         <div class="mb-3">
@@ -131,12 +134,14 @@
                                             <input type="number" class="form-control bg-dark text-white"
                                                 id="productQuantity" name="quantity"
                                                 value="<%= products.stockQuantity %>" required>
+                                            <p id="quantityError" class="error-message text-danger"></p>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="productPrice" class="form-label">Price</label>
                                             <input type="number" class="form-control bg-dark text-white"
                                                 id="productPrice" name="price" value="<%= products.price %>" required>
+                                            <p id="priceError" class="error-message text-danger"></p>
                                         </div>
 
                                         <div class="mb-3">
@@ -150,6 +155,7 @@
                                                     </option>
                                                     <% }) %>
                                             </select>
+                                            <p id="productCategoryError" class="error-message text-danger"></p>
                                         </div>
 
                                         <div class="mb-3">
@@ -164,6 +170,7 @@
                                                         <button type="button"
                                                             class="btn delete-image-btn position-absolute end-0 text-danger"
                                                             style="font-size: 1.5rem; top: -8px;">&times;</button>
+                                                        <p id="productImageError" class="error-message text-danger"></p>
                                                     </div>
                                                     <% } %>
                                                         <div id="imagePreviewContainer" class="d-flex flex-wrap"
@@ -190,6 +197,68 @@
                 <!-- Edit Products Form End -->
 
                 <%- include('../layout/adminLayouts/footer') -%>
+                    <script>
+                        function validateForm() {
+                            // Get form elements
+                            var productName = document.getElementById("productName").value;
+                            var productQuantity = document.getElementById("productQuantity").value;
+                            var productPrice = document.getElementById("productPrice").value;
+                            var productDescription = document.getElementById("productDescription").value;
+                            var productCategory = document.getElementById("productCategory").value;
+                            var productImage = document.getElementById("productImage").value;
+
+                            // Reset error messages
+                            document.getElementById("productNameError").innerText = "";
+                            document.getElementById("quantityError").innerText = "";
+                            document.getElementById("priceError").innerText = "";
+                            document.getElementById("productDescriptionError").innerText = "";
+                            document.getElementById("productCategoryError").innerText = "";
+                            document.getElementById("productImageError").innerText = "";
+
+                            // Validate empty fields
+                            if (productName.trim() === "") {
+                                document.getElementById("productNameError").innerText = "Product Name cannot be empty.";
+                                return false;
+                            }
+
+                            if (productQuantity.trim() === "") {
+                                document.getElementById("quantityError").innerText = "Quantity cannot be empty.";
+                                return false;
+                            }
+
+                            if (productPrice.trim() === "") {
+                                document.getElementById("priceError").innerText = "Price cannot be empty.";
+                                return false;
+                            }
+
+                            if (productDescription.trim() === "") {
+                                document.getElementById("productDescriptionError").innerText = "Description cannot be empty.";
+                                return false;
+                            }
+
+                            if (productCategory.trim() === "" || productCategory === "Select Category") {
+                                document.getElementById("productCategoryError").innerText = "Please select a valid category.";
+                                return false;
+                            }
+
+                            // Validate quantity
+                            if (!Number.isInteger(parseFloat(productQuantity)) || parseInt(productQuantity) <= 0) {
+                                document.getElementById("quantityError").innerText = "Please enter a valid whole number for quantity (greater than zero).";
+                                return false; // Prevent form submission
+                            }
+
+                            // Validate price
+                            if (isNaN(productPrice) || parseFloat(productPrice) <= 0) {
+                                document.getElementById("priceError").innerText = "Please enter a valid price (a number greater than zero).";
+                                return false; // Prevent form submission
+                            }
+
+                            // If everything is valid, the form will be submitted
+                            return true;
+                        }
+                    </script>
+
+
                     <script>
                         document.addEventListener("DOMContentLoaded", function () {
                             document.addEventListener("click", function (event) {
@@ -236,7 +305,7 @@
                                 }
                             }
 
-                            // Function to handle image preview for both existing and newly added images
+                             // Function to handle image preview for both existing and newly added images
                             function previewImages(input) {
                                 const previewContainer = document.getElementById("imagePreviewContainer");
 

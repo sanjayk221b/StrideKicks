@@ -704,9 +704,11 @@
                             // Fetch product quantity in cart dynamically
                             const response = await fetch(`/productQuantityInCart?id=${productId}`);
                             const responseData = await response.json();
+                            console.log(response, "response")
+                            console.log(responseData, "responsedata")
                             const productQuantityInCart = responseData.productQuantityInCart;
 
-                            // Fetch stock quantity dynamically (Assuming you have the stock quantity available in your product details)
+                            // Fetch stock quantity dynamically
                             const stockQuantity = <%= products.stockQuantity %>;
 
                             const totalQuantityInCart = productQuantityInCart + parseInt(quantity);

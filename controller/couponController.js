@@ -39,7 +39,7 @@ const applyCoupon = async (req, res) => {
         return res.json({ applied: true, discountedTotal: discountedTotal, discountAmount: discountAmount });
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: 'An error occurred while applying the coupon.' });
+        res.redirect('/500');
     }
 };
 
@@ -55,6 +55,7 @@ const load_Coupon = async (req, res) => {
         res.render('adminCoupons', { coupon: coupons, moment });
     } catch (error) {
         console.log(error)
+        res.redirect('/500');
     }
 }
 
@@ -63,7 +64,8 @@ const load_AddCoupon = async (req, res) => {
     try {
         res.render('addCoupons');
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -91,7 +93,8 @@ const addCoupon = async (req, res) => {
         await coupon.save();
         res.redirect('/admin/coupons')
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.redirect('/500');
     }
 }
 
@@ -112,7 +115,7 @@ const deleteCoupon = async (req, res) => {
         }
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ status: false, message: 'internal server error' })
+        res.redirect('/500');
     }
 }
 
