@@ -68,7 +68,7 @@ const sendOtpVerification = async ({ email }, res) => {
         user: process.env.email_user,
         pass: "kxep rhia exxg wutl",
       },
-    });
+    }); 
     const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
     const mailOptions = {
       from: process.env.email_user,
