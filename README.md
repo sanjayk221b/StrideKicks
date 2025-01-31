@@ -1,4 +1,4 @@
-﻿# Stridekicks 🛒 | E-Commerce Application
+# Stridekicks 🛒 | E-Commerce Application
 
 Stridekicks is a modern **server-side rendered (SSR)** eCommerce platform built with **Node.js, Express, MongoDB, and EJS**. It provides a seamless shopping experience with wishlist functionality and secure **Razorpay** payments. The application is hosted on **AWS EC2**.
 
